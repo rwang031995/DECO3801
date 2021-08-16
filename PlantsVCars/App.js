@@ -13,7 +13,7 @@ const BottomTabs = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="MyGarden" component={MyGarden} />
+      <Tab.Screen name="My Garden" component={MyGarden} />
     </Tab.Navigator>
   );
 }
@@ -34,7 +34,7 @@ const MyGarden = () => {
   )
 }
 
-function App() {
+const App = () => {
   return (
     <NavigationContainer>
       <BottomTabs/>
