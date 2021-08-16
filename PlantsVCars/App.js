@@ -14,6 +14,7 @@ const BottomTabs = () => {
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="My Garden" component={MyGarden} />
+      <Tab.Screen name="Leaderboard" component={Leaderboard} />
     </Tab.Navigator>
   );
 }
@@ -32,6 +33,14 @@ const MyGarden = () => {
       <Text>This will be the "My Garden" page</Text>
     </View>
   )
+}
+
+const Leaderboard = () => {
+    return (
+      <View style={styles.container}>
+        <Text>This will be a leaderboard</Text>
+      </View>
+    )
 }
 
 const App = () => {
