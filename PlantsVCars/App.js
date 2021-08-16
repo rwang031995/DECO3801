@@ -4,8 +4,21 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-function HomeScreen() {
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const BottomTabs = () => {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="MyGarden" component={MyGarden} />
+    </Tab.Navigator>
+  );
+}
+
+const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text>This will be the home page :)</Text>
@@ -13,14 +26,18 @@ function HomeScreen() {
   );
 }
 
-const Stack = createNativeStackNavigator();
+const MyGarden = () => {
+  return (
+    <View style={styles.container}>
+      <Text>This will be the "My Garden" page</Text>
+    </View>
+  )
+}
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
+      <BottomTabs/>
     </NavigationContainer>
   );
 }
