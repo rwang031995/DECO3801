@@ -1,39 +1,44 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import PvCLeaderboard from "./PvCLeaderboard"
+import { createStackNavigator } from '@react-navigation/stack';
+import PvCLeaderboard from "./Components/PvCLeaderboard"
 
 const Tab = createBottomTabNavigator();
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
+const Stack = createStackNavigator();
 
 var date = new Date();
 var season = seasons[Math.ceil((date.getMonth() + 1)/4)] // getMonth returns month from 0 - 11
 
-const BottomTabs = () => {
+const MyCollection = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="My Garden" component={MyGarden} />
-      <Tab.Screen name={"Challenges"} component={Challenges} />
-      <Tab.Screen name="Leaderboard" component={PvCLeaderboard} />
-    </Tab.Navigator>
-  );
-}
-
-const HomeScreen = () => {
-  return (
-    <View style={styles.container}>
-      <Text>This will be the home page :)</Text>
+    <View>
+      <Text> Collections page</Text>
     </View>
-  );
+  )
 }
 
-const MyGarden = () => {
+const MyGardenNav = ({}) => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name = "My Garden" component = {MyGarden} options = {{headerShown: false}}/>
+      <Stack.Screen name = "My Collection" component = {MyCollection}/>      
+    </Stack.Navigator>
+  )
+}
+const MyGarden = ({navigation}) => {
   const [inventory, setInventory] = useState([]);
 
   return (
     <View style={{ flex: 1 }}>
+      <View style={{ alignItems: 'center', backgroundColor: "brown"}}>
+        <Button
+          title = "My Collection"
+          onPress = { () => navigation.navigate("My Collection")}
+        />
+      </View>
       <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center', backgroundColor: "lightgreen" }}>
         <Text>
           Current date: {date.toDateString() + "\n"}
@@ -49,6 +54,14 @@ const MyGarden = () => {
   )
 }
 
+const OurForest = () => {
+  return (
+    <View style={styles.container}>
+      <Text>This will be the suburb forest for multiplayer.</Text>
+    </View>
+  );
+}
+
 const Challenges = () => {
     return (
         <View style={styles.container}>
@@ -60,7 +73,12 @@ const Challenges = () => {
 const App = () => {
   return (
     <NavigationContainer>
-      <BottomTabs/>
+      <Tab.Navigator>
+        <Tab.Screen name="My Garden" component={MyGardenNav} />
+        <Tab.Screen name="Our Forest" component={OurForest} />
+        <Tab.Screen name={"Challenges"} component={Challenges} />
+        <Tab.Screen name="Leaderboard" component={PvCLeaderboard} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
