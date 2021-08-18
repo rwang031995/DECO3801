@@ -1,13 +1,13 @@
-// Use yarn install to add missing dependencies
-
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const seasons = ["Summer", "Autumn", "Winter", "Spring"];
+
+var date = new Date();
+var season = seasons[Math.ceil((date.getMonth() + 1)/4)] // getMonth returns month from 0 - 11
 
 const BottomTabs = () => {
   return (
@@ -28,9 +28,21 @@ const HomeScreen = () => {
 }
 
 const MyGarden = () => {
+  const [inventory, setInventory] = useState([]);
+
   return (
-    <View style={styles.container}>
-      <Text>This will be the "My Garden" page</Text>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center', backgroundColor: "lightgreen" }}>
+        <Text>
+          Current date: {date.toDateString() + "\n"}
+          Current season: {season + "\n"}
+        </Text>
+      </View>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "orange"}}>
+        <Text>
+          Inventory: {inventory.length == 0 ? "Empty" : inventory}
+        </Text>
+      </View>
     </View>
   )
 }
