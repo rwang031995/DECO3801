@@ -15,6 +15,7 @@ const BottomTabs = () => {
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="My Garden" component={MyGarden} />
+      <Tab.Screen name={"Challenges"} component={Challenges} />
       <Tab.Screen name="Leaderboard" component={PvCLeaderboard} />
     </Tab.Navigator>
   );
@@ -46,6 +47,14 @@ const MyGarden = () => {
       </View>
     </View>
   )
+}
+
+const Challenges = () => {
+    return (
+        <View style={styles.container}>
+            <Text>This will be the Challenges screen</Text>
+        </View>
+    )
 }
 
 const App = () => {
