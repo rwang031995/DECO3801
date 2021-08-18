@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import PvCLeaderboard from "./PvCLeaderboard"
 
 const Tab = createBottomTabNavigator();
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
@@ -14,7 +15,7 @@ const BottomTabs = () => {
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="My Garden" component={MyGarden} />
-      <Tab.Screen name="Leaderboard" component={Leaderboard} />
+      <Tab.Screen name="Leaderboard" component={PvCLeaderboard} />
     </Tab.Navigator>
   );
 }
@@ -45,14 +46,6 @@ const MyGarden = () => {
       </View>
     </View>
   )
-}
-
-const Leaderboard = () => {
-    return (
-      <View style={styles.container}>
-        <Text>This will be a leaderboard</Text>
-      </View>
-    )
 }
 
 const App = () => {
