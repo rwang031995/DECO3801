@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import PvCLeaderboard from "./Components/PvCLeaderboard";
-import PvCMyGardenNav from "./Components/PvCMyGarden";
+import PvCLeaderboard from "./screens/Leaderboard";
+import PvCMyGardenNav from "./screens/MyGarden";
 
 const Tab = createBottomTabNavigator();
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
