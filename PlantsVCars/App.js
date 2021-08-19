@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import PvCLeaderboard from "./Components/PvCLeaderboard"
+import PvCMyGardenNav from "./Components/MyGardenNav"
 
 const Tab = createBottomTabNavigator();
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
