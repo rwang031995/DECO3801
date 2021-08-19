@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import PvCLeaderboard from "./Components/PvCLeaderboard"
-import PvCMyGardenNav from "./Components/MyGardenNav"
+import PvCLeaderboard from "./Components/PvCLeaderboard";
+import PvCMyGardenNav from "./Components/PvCMyGarden";
 
 const Tab = createBottomTabNavigator();
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
-const Stack = createStackNavigator();
 
 var date = new Date();
 var season = seasons[Math.ceil((date.getMonth() + 1)/4)] // getMonth returns month from 0 - 11
@@ -35,7 +33,7 @@ const App = () => {
       <Tab.Navigator>
         <Tab.Screen name="My Garden" component={PvCMyGardenNav} />
         <Tab.Screen name="Our Forest" component={OurForest} />
-        <Tab.Screen name={"Challenges"} component={Challenges} />
+        <Tab.Screen name="Challenges" component={Challenges} />
         <Tab.Screen name="Leaderboard" component={PvCLeaderboard} />
       </Tab.Navigator>
     </NavigationContainer>

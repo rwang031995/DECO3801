@@ -1,16 +1,20 @@
 import {Text, View, Button} from "react-native";
 import React, {useState} from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from '@react-navigation/stack';
 
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
 
 var date = new Date();
-var season = seasons[Math.ceil((date.getMonth() + 1)/4)] // getMonth returns month from 0 - 11
+var season = seasons[Math.ceil((date.getMonth() + 1)/4)]; // getMonth returns month from 0 - 11
 
-const MyGardenNav = ({}) => {
+const Stack = createStackNavigator();
+
+const MyGardenNav = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name = "My Garden" component = {MyGarden} options = {{headerShown: false}}/>
-      <Stack.Screen name = "My Collection" component = {MyCollection}/>      
+      <Stack.Screen name = "My Collection" component = {MyCollection} options = {{headerShown: false}}/>   
     </Stack.Navigator>
   )
 }
@@ -28,7 +32,7 @@ const MyGarden = ({navigation}) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ alignItems: 'center', backgroundColor: "brown"}}>
+      <View style={{ alignItems: 'center', backgroundColor: "darkorange"}}>
         <Button
           title = "My Collection"
           onPress = { () => navigation.navigate("My Collection")}
@@ -49,4 +53,4 @@ const MyGarden = ({navigation}) => {
   )
 }
 
-export default MyGarden;
+export default MyGardenNav;

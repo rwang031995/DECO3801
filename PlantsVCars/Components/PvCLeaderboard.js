@@ -2,7 +2,7 @@ import {Text, View, Alert} from "react-native";
 import Leaderboard from "react-native-leaderboard";
 import React, {Component, useState} from "react";
 
-export default function PvCLeaderboard() {
+const PvCLeaderboard = () => {
 
     const [data, setData] = useState(DATA)
 
@@ -60,3 +60,5 @@ const DATA = [
         score: 15,
     }
 ];
+
+export default PvCLeaderboard;
