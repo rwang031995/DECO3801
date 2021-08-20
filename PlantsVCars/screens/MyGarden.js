@@ -33,85 +33,97 @@ const MyGarden = ({navigation}) => {
   if (season == 'Summer') {
     seasonBG = (
       <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-        <Image source={require('../images/bg/summer/summer-top.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer-duck.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer-top.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer-top.png')} style={{width: "25%", height:"25%"}} />       
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/summer/summer.png')} style={{width: "25%", height:"25%"}} />  
+        <Image source={require('../images/bg/spring/spring-top.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring-duck.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring-top.png')} style={{width: "34%", height:"33%"}} />   
+
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "34%", height:"33%"}} />
+
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "34%", height:"33%"}} />
+
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "34%", height:"33%"}} />
+
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "34%", height:"33%"}} />
       </View>
     );
   } else if (season == 'Winter') {
     seasonBG = (
       <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-          <Image source={require('../images/bg/winter/winter-top.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter-duck.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter-top.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter-top.png')} style={{width: "25%", height:"25%"}} />       
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/winter/winter.png')} style={{width: "25%", height:"25%"}} />  
+          <Image source={require('../images/bg/winter/winter-top.png')} style={{width: "33%", height:"33%"}} />
+          <Image source={require('../images/bg/winter/winter-duck.png')} style={{width: "33%", height:"33%"}} />
+          <Image source={require('../images/bg/winter/winter-top.png')} style={{width: "34%", height:"33%"}} />   
+
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "33%", height:"33%"}} />
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "33%", height:"33%"}} />
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "34%", height:"33%"}} />
+
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "33%", height:"33%"}} />
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "33%", height:"33%"}} />
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "34%", height:"33%"}} />
+
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "33%", height:"33%"}} />
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "33%", height:"33%"}} />
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "34%", height:"33%"}} />
+
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "33%", height:"33%"}} />
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "33%", height:"33%"}} />
+          <Image source={require('../images/bg/winter/winter.png')} style={{width: "34%", height:"33%"}} />  
         </View>
       );
   } else if (season == 'Autumn') {
     seasonBG = (
       <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-          <Image source={require('../images/bg/autumn/autumn-top.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn-duck.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn-top.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn-top.png')} style={{width: "25%", height:"25%"}} />       
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />
-          <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "25%", height:"25%"}} />  
+         <Image source={require('../images/bg/autumn/autumn-top.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/autumn/autumn-duck.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/autumn/autumn-top.png')} style={{width: "34%", height:"33%"}} />   
+
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "34%", height:"33%"}} />
+
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "34%", height:"33%"}} />
+
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "34%", height:"33%"}} />
+
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/autumn/autumn.png')} style={{width: "34%", height:"33%"}} />  
         </View>
     );
   } else {
     seasonBG = (
       <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-        <Image source={require('../images/bg/spring/spring-top.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring-duck.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring-top.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring-top.png')} style={{width: "25%", height:"25%"}} />       
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />
-        <Image source={require('../images/bg/spring/spring.png')} style={{width: "25%", height:"25%"}} />  
+        <Image source={require('../images/bg/spring/spring-top.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring-duck.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring-top.png')} style={{width: "34%", height:"33%"}} />   
+
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "34%", height:"33%"}} />
+
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "34%", height:"33%"}} />
+
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "34%", height:"33%"}} />
+
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "33%", height:"33%"}} />
+        <Image source={require('../images/bg/spring/spring.png')} style={{width: "34%", height:"33%"}} />  
       </View>
     );
   }
