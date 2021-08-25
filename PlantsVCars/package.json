@@ -7,6 +7,7 @@
     "start": "react-native start"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.15.7",
     "@react-navigation/bottom-tabs": "^6.0.4",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.0.5",
@@ -18,6 +19,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "~0.63.4",
+    "react-native-date-picker": "^3.4.2",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-leaderboard": "^1.0.6",
     "react-native-reanimated": "~2.2.0",
