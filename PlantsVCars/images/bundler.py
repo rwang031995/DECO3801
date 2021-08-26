@@ -29,9 +29,8 @@ def build_manifest(images, source_dir, mpath):
         
     fnsource = """
 const img = (props) => {
-    var source = IMG[props.name];    
-    var realprops = (typeof props !== 'undefined') ? props : {} ;
-    realprops['source'] = source;
+    var realprops = props ;
+    realprops['source'] = IMG[props.name];
 	return <Image  {... realprops} />;
 }
 """    

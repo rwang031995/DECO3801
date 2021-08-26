@@ -12,16 +12,79 @@ const seasons = ["Summer", "Autumn", "Winter", "Spring"];
 var date = new Date();
 var season = seasons[Math.ceil((date.getMonth() + 1)/4)] // getMonth returns month from 0 - 11
 
-const OurForest = () => {
+const styles = StyleSheet.create({
+  container: {
+    flex: 1, 
+    alignItems: 'center', 
+    justifyContent: 'center'
+  },
+  tinyLogo: {
+    width: 50,
+    height: 50,
+  },
+  
+  biigLogo: {
+    width: 200,
+    height: 200,
+  },
+
+  flippy : {
+    width: 150,
+    height: 150,
+  },
+  
+  row : {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    padding: 10,
+  }
+  
+})
+
+var images = [
+    {name: "Ben", style: styles.tinyLogo},
+    {name: "Ben", style: styles.tinyLogo},
+    {name: "Ben", style: styles.tinyLogo},
+    {name: "Ben", style: styles.tinyLogo},
+    {name: "Ben", style: styles.biigLogo},
+    {name: "Ben", style: styles.tinyLogo},
+];
+
+console.log(images[0])
+
+// todo: load and position images
+
+var i0 = images[0]
+var i1 = images[1]
+var i2 = images[2]
+var i3 = images[3]
+var i4 = images[4]
+var i5 = images[5]
+
+i0.style = styles.biigLogo;
+
+const OurForest = (images) => {
   return (
     <View style={styles.container}>
       <Text>This will be the suburb forest for multiplayer.</Text>
-      {img({name: "Ben", style: styles.tinyLogo})}    
+      <View style={styles.row}>
+          {img(i0)}
+          {img(i1)}
+      </View>
+      <View style={styles.row}>
+          {img(i2)}
+          {img(i3)}
+      </View>
+      <View style={styles.row}>
+          {img(i4)}
+          {img(i5)}
+      </View>
     </View>
   );
 }
 
-console.log(img({"name": "Ben"}));
+console.log(img(images[0]));
+
 
 const Challenges = () => {
     return (
@@ -42,17 +105,5 @@ const App = () => {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1, 
-    alignItems: 'center', 
-    justifyContent: 'center'
-  },
-  tinyLogo: {
-    width: 50,
-    height: 50,
-  },
-})
 
 export default App;
