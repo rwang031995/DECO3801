@@ -47,9 +47,8 @@ const MyGarden = ({navigation}) => {
         </Text>
       </View>
       
-      <View style={{ flex: 1 }}>
-        <Inventory/>
-      </View>
+      <Inventory/>
+      
     </View>
   )
 }
