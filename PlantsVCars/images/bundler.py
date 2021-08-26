@@ -27,13 +27,23 @@ def build_manifest(images, source_dir, mpath):
     l="require('"
     r="');"
         
-    fnsource = """
-const {0} = (props) => {{
+    imgsource = """
+const img = (props) => {
     var realprops = props ;
     realprops['source'] = IMG[props.name];
-	return <{1}  {{... realprops}} />;
-}}
+	return <Image  {... realprops} />;
+}
 """    
+
+    imgbgsource = """
+const imgbg = (props, contents) => {
+    var realprops = props ;
+    realprops['source'] = IMG[props.name];
+	return <ImageBackground  {... realprops} > {contents} </ImageBackground>;
+	    
+}
+"""    
+
     
  
     with open(mpath, 'w') as manifest:
@@ -54,9 +64,9 @@ const {0} = (props) => {{
             
             print('IMG["'+name+'"] =', l+os.path.join('.', i)+r, file=manifest)
                         
-        print(fnsource.format("img", "Image"), file=manifest)
-        print(fnsource.format("imgbg", "ImageBackground"), file=manifest)
-        print("export {img, imgbg};", file=manifest)
+        print(imgsource, file=manifest)
+        #print(imgbgsource, file=manifest) # NOT WORKING YET
+        print("export {img};", file=manifest)
 
 if __name__ == "__main__":
     

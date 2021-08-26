@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, Button, Image} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import PvCLeaderboard from "./Components/PvCLeaderboard";
-// import PvCMyGardenNav from "./Components/PvCMyGarden";
 import {img, imgbg} from "./images/manifest";
 
 const Tab = createBottomTabNavigator();
@@ -33,7 +31,6 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 10,
     margin: 10,
-    rotate: '90deg',
   },
   
   row : {
@@ -67,9 +64,8 @@ var i5 = images[5]
 i0.style = styles.biigLogo;
 
 const OurForest = (images) => {
-  return (
+    return (
     <View style={styles.container}>
-      {imgbg({name: "Ben", blurRadius: 5, resizeMode: "cover", style: styles.biigLogo})}
       <Text>This will be the suburb forest for multiplayer.</Text>
       <View style={styles.row}>
           {img(i0)}
@@ -84,8 +80,10 @@ const OurForest = (images) => {
           {img(i5)}
       </View>
     </View>
-  );
+    );
 }
+
+
 
 console.log(img(images[0]));
 
