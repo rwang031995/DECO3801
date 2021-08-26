@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import PvCLeaderboard from "./Components/PvCLeaderboard";
 // import PvCMyGardenNav from "./Components/PvCMyGarden";
-import img from "./images/manifest";
+import {img, imgbg} from "./images/manifest";
 
 const Tab = createBottomTabNavigator();
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
@@ -31,6 +31,9 @@ const styles = StyleSheet.create({
   flippy : {
     width: 150,
     height: 150,
+    borderRadius: 10,
+    margin: 10,
+    rotate: '90deg',
   },
   
   row : {
@@ -45,7 +48,7 @@ var images = [
     {name: "Ben", style: styles.tinyLogo},
     {name: "Ben", style: styles.tinyLogo},
     {name: "Ben", style: styles.tinyLogo},
-    {name: "Ben", style: styles.tinyLogo},
+    {name: "Ben", style: styles.flippy},
     {name: "Ben", style: styles.biigLogo},
     {name: "Ben", style: styles.tinyLogo},
 ];
@@ -66,6 +69,7 @@ i0.style = styles.biigLogo;
 const OurForest = (images) => {
   return (
     <View style={styles.container}>
+      {imgbg({name: "Ben", blurRadius: 5, resizeMode: "cover", style: styles.biigLogo})}
       <Text>This will be the suburb forest for multiplayer.</Text>
       <View style={styles.row}>
           {img(i0)}
