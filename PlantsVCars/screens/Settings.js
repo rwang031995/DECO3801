@@ -76,13 +76,21 @@ const ConfigureTransport = () => {
 
     const getSettings = (storageKey, setState) => {
 
-        AsyncStorage.getItem(storageKey).then((value) => {
-            console.log(value)
-            setState(JSON.parse(value))
-        })
+        try {
+            AsyncStorage.getItem(storageKey).then((value) => {
+                console.log(value)
+                setState(JSON.parse(value))
+            })
+        } catch (e) {}
     }
 
-    // get settings from interal storage
+    const setSetting = (storageKey, hasState) => {
+        try {
+            AsyncStorage.setItem(storageKey, `${hasState}`)
+        } catch (e) {}
+    }
+
+    // get settings from internal storage
     useEffect(() => {
         getSettings(STORAGE_KEY.hasBicycle, setHasBicycle)
         getSettings(STORAGE_KEY.hasScooter, setHasScooter)
@@ -92,10 +100,13 @@ const ConfigureTransport = () => {
 
     // set settings in internal storage
     useEffect(() => {
-        AsyncStorage.setItem(STORAGE_KEY.hasBicycle,`${hasBicycle}`)
-        AsyncStorage.setItem(STORAGE_KEY.hasScooter,`${hasScooter}`)
-        AsyncStorage.setItem(STORAGE_KEY.hasBus,`${hasBus}`)
-        AsyncStorage.setItem(STORAGE_KEY.hasTrain,`${hasTrain}`)
+        try {
+            AsyncStorage.setItem(STORAGE_KEY.hasBicycle,`${hasBicycle}`)
+            AsyncStorage.setItem(STORAGE_KEY.hasScooter,`${hasScooter}`)
+            AsyncStorage.setItem(STORAGE_KEY.hasBus,`${hasBus}`)
+            AsyncStorage.setItem(STORAGE_KEY.hasTrain,`${hasTrain}`)
+        } catch (e) {
+        }
     }, [hasBicycle, hasScooter, hasBus, hasTrain])
 
     // const saveSetting = async (key, value) => {
@@ -118,8 +129,12 @@ const SettingsComponent = ({settingsOptions}) => {
     return (
         <ScrollView>
             {settingsOptions.map(({title, subtitle, onPress, toggle, setToggle}) => (
-                <View>
-                <TouchableOpacity key={title} onPress={onPress}>
+                <TouchableOpacity
+                    key={title}
+                    subtitle={subtitle}
+                    onPress={onPress}
+                    toggle={toggle}
+                    setToggle={setToggle}>
                     <View style={styles.container}>
                         <Text style={styles.title}>
                             {title}
@@ -131,16 +146,15 @@ const SettingsComponent = ({settingsOptions}) => {
                             </Text>
                         )}
                     </View>
+                    {
+                        setToggle && (
+                            <View>
+                                <Switch value={toggle} onValueChange={setToggle}/>
+                            </View>
+                        )
+                    }
 
                 </TouchableOpacity>
-            {
-                setToggle && (
-                <View>
-                <Switch value={toggle} onValueChange={setToggle}/>
-                </View>
-                )
-            }
-                </View>
                 ))}
 
         </ScrollView>
@@ -171,18 +185,18 @@ const Settings = ({navigation}) => {
         },
     ];
 
-    const saveSetting = (key, value) => {
-        AsyncStorage.setItem(key, value);
-    };
-
-    const getSettings = async () => {
-        const user = await AsyncStorage.getItem("user");
-        setAge(JSON.parse(user).age);
-    };
-
-    useEffect(() => {
-        getSettings();
-    }, []);
+    // const saveSetting = (key, value) => {
+    //     AsyncStorage.setItem(key, value);
+    // };
+    //
+    // const getSettings = async () => {
+    //     const user = await AsyncStorage.getItem("user");
+    //     setAge(JSON.parse(user).age);
+    // };
+    //
+    // useEffect(() => {
+    //     getSettings();
+    // }, []);
 
     return <SettingsComponent settingsOptions={settingsOptions}/>
 }
