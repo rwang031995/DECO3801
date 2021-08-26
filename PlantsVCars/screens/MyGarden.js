@@ -13,7 +13,7 @@ const Stack = createStackNavigator();
 const MyGardenNav = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name = "My Garden" component = {MyGarden} options = {{headerShown: false}}/>
+      <Stack.Screen name = "Garden" component = {MyGarden} options = {{headerShown: false}}/>
       <Stack.Screen name = "My Collection" component = {MyCollection} options = {{headerShown: false}}/>   
     </Stack.Navigator>
   )
