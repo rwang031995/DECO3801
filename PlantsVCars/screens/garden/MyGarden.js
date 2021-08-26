@@ -3,6 +3,8 @@ import React, {useState} from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 
+import Inventory from "./Inventory";
+
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
 
 var date = new Date();
@@ -44,10 +46,9 @@ const MyGarden = ({navigation}) => {
           Current season: {season + "\n"}
         </Text>
       </View>
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "orange"}}>
-        <Text>
-          Inventory: {inventory.length == 0 ? "Empty" : inventory}
-        </Text>
+      
+      <View style={{ flex: 1 }}>
+        <Inventory/>
       </View>
     </View>
   )
