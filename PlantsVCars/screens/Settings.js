@@ -34,50 +34,67 @@ function useToggle(initialVal = false) {
 }
 
 const ConfigureTransport = () => {
-    const [hasBicycle, setHasBicycle] = useToggle();
-    const [hasScooter, setHasScooter] = useToggle();
-    const [hasBus, setHasBus] = useToggle();
-    const [hasTrain, setHasTrain] = useToggle();
+    const [hasBicycle, setHasBicycle] = React.useState(false);
+    const [hasScooter, setHasScooter] = React.useState(false);
+    const [hasBus, setHasBus] = React.useState(false);
+    const [hasTrain, setHasTrain] = React.useState(false);
 
     const settingsOptions = [
         {
             title: "Bicycle",
             subtitle: "Do you have a bicycle?",
             toggle: hasBicycle,
-            setToggle: () => setHasBicycle()
+            setToggle: () => setHasBicycle(hasBicycle => !hasBicycle)
         },
         {
             title: "Scooter",
             subtitle: "Do you have a scooter?",
             toggle: hasScooter,
-            setToggle: () => setHasScooter()
+            setToggle: () => setHasScooter(hasScooter => !hasScooter)
         },
         {
             title: "Bus",
             subtitle: "Do you have access to a bus?",
             toggle: hasBus,
-            setToggle: () => setHasBus()
+            setToggle: () => setHasBus(hasBus => !hasBus)
         },
         {
             title: "Train",
             subtitle: "Do you have access to a train?",
             toggle: hasTrain,
-            setToggle: () => setHasTrain()
+            setToggle: () => setHasTrain(hasTrain => !hasTrain)
         },
     ];
 
-    const getSettings = async () => {
-        const user = await AsyncStorage.getItem("user");
-        setHasBicycle(JSON.parse(user).hasBicycle);
-    };
+    // const getSettings = async () => {
+    //     const user = await AsyncStorage.getItem(STORAGE_KEY.hasBicycle).then((value) => {
+    //         if (value) {
+    //             setHasBicycle(parseInt(value));
+    //         }
+    //     });
+    // };
+
+    const getSettings = (storageKey, setState) => {
+
+        AsyncStorage.getItem(storageKey).then((value) => {
+            console.log(value)
+            setState(JSON.parse(value))
+        })
+    }
 
     useEffect(() => {
-        getSettings()
+        getSettings(STORAGE_KEY.hasBicycle, setHasBicycle)
+        getSettings(STORAGE_KEY.hasScooter, setHasScooter)
+        getSettings(STORAGE_KEY.hasBus, setHasBus)
+        getSettings(STORAGE_KEY.hasTrain, setHasTrain)
     }, [])
 
     useEffect(() => {
-        AsyncStorage.setItem("user", JSON.stringify(hasBicycle))
-    }, [hasBicycle])
+        AsyncStorage.setItem(STORAGE_KEY.hasBicycle,`${hasBicycle}`)
+        AsyncStorage.setItem(STORAGE_KEY.hasScooter,`${hasScooter}`)
+        AsyncStorage.setItem(STORAGE_KEY.hasBus,`${hasBus}`)
+        AsyncStorage.setItem(STORAGE_KEY.hasTrain,`${hasTrain}`)
+    }, [hasBicycle, hasScooter, hasBus, hasTrain])
 
     // const saveSetting = async (key, value) => {
     //     await AsyncStorage.setItem(key, value);
@@ -181,5 +198,14 @@ const styles = StyleSheet.create({
         paddingTop: 20,
     },
 });
+
+const STORAGE_KEY = {
+
+    hasBicycle : "hasBicycle",
+    hasScooter : "hasScooter",
+    hasBus : "hasBus",
+    hasTrain : "hasTrain",
+    age : "age"
+}
 
 export default SettingsNav;
