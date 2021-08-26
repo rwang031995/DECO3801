@@ -17,6 +17,11 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center'
   },
+  icon : {
+    width: 20,
+    height: 20,
+  },
+  
   tinyLogo: {
     width: 50,
     height: 50,
@@ -94,8 +99,22 @@ const OurForest = (images) => {
 const App = () => {
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="My Garden" component={MyGardenNav} />
+      <Tab.Navigator
+        screenOptions = {({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            const iconMap = {
+                "My Garden" :   "Spring-duck",
+                "Our Forest" :  "Autumn-duck",
+                "Settings" :    "Winter-duck",
+                "Challenges" :  "Summer-duck",
+                "Leaderboard":  "Ben"
+            }
+          
+            return img({name: iconMap[route.name], style: styles.icon});
+          },
+        })}
+      >
+        <Tab.Screen name="My Garden" component={MyGardenNav}  />
         <Tab.Screen name="Our Forest" component={OurForest} />
         <Tab.Screen name="Settings" component={SettingsNav} />        
         <Tab.Screen name={"Challenges"} component={ChallengesScreen} />
