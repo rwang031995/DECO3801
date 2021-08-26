@@ -66,18 +66,31 @@ const ConfigureTransport = () => {
         },
     ];
 
-    const saveSetting = async (key, value) => {
-        await AsyncStorage.setItem(key, value);
-    };
-
     const getSettings = async () => {
         const user = await AsyncStorage.getItem("user");
-        setAge(JSON.parse(user).age);
+        setHasBicycle(JSON.parse(user).hasBicycle);
     };
 
     useEffect(() => {
-        getSettings();
-    }, []);
+        getSettings()
+    }, [])
+
+    useEffect(() => {
+        AsyncStorage.setItem("user", JSON.stringify(hasBicycle))
+    }, [hasBicycle])
+
+    // const saveSetting = async (key, value) => {
+    //     await AsyncStorage.setItem(key, value);
+    // };
+    //
+    // const getSettings = async () => {
+    //     const user = await AsyncStorage.getItem("user");
+    //     setAge(JSON.parse(user).age);
+    // };
+    //
+    // useEffect(() => {
+    //     getSettings();
+    // }, []);
 
     return <SettingsComponent settingsOptions={settingsOptions}/>
 }
@@ -119,10 +132,6 @@ const Settings = ({navigation}) => {
     const [date, setDate] = React.useState(new Date());
     const [age, setAge] = React.useState(new Date());
 
-    const saveSetting = (key, value) => {
-        AsyncStorage.setItem(key, value);
-    };
-
     const settingsOptions = [
         {
             title: "My Age",
@@ -142,6 +151,10 @@ const Settings = ({navigation}) => {
             onPress: () => {}
         },
     ];
+
+    const saveSetting = (key, value) => {
+        AsyncStorage.setItem(key, value);
+    };
 
     const getSettings = async () => {
         const user = await AsyncStorage.getItem("user");
