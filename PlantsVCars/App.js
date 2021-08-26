@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Button, Image} from 'react-native';
+import { StyleSheet, View, Text, Button, Image, ImageBackground} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {img, imgbg} from "./images/manifest";
+import {img} from "./images/manifest";
+import { createStackNavigator } from '@react-navigation/stack';
+import PvCLeaderboard from './screens/Leaderboard';
+import MyGardenNav from './screens/MyGarden'
+import ChallengesScreen from './screens/Challenges';
+import SettingsNav from "./screens/Settings";
 
 const Tab = createBottomTabNavigator();
-const seasons = ["Summer", "Autumn", "Winter", "Spring"];
-
-var date = new Date();
-var season = seasons[Math.ceil((date.getMonth() + 1)/4)] // getMonth returns month from 0 - 11
 
 const styles = StyleSheet.create({
   container: {
@@ -37,22 +38,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     padding: 10,
+  },
+  bg : {
+    width: '100%',
+    height: '100%',
   }
-  
 })
 
 var images = [
-    {name: "Ben", style: styles.tinyLogo},
-    {name: "Ben", style: styles.tinyLogo},
-    {name: "Ben", style: styles.tinyLogo},
-    {name: "Ben", style: styles.flippy},
-    {name: "Ben", style: styles.biigLogo},
-    {name: "Ben", style: styles.tinyLogo},
+    {name: "Waves-in-Sea", style: styles.tinyLogo},
+    {name: "Waves-in-Sea", style: styles.tinyLogo},
+    {name: "Waves-in-Sea", style: styles.tinyLogo},
+    {name: "Waves-in-Sea", style: styles.flippy},
+    {name: "Waves-in-Sea", style: styles.biigLogo},
+    {name: "Waves-in-Sea", style: styles.tinyLogo},
 ];
 
 console.log(images[0])
-
-// todo: load and position images
 
 var i0 = images[0]
 var i1 = images[1]
@@ -66,7 +68,11 @@ i0.style = styles.biigLogo;
 const OurForest = (images) => {
     return (
     <View style={styles.container}>
-      <Text>This will be the suburb forest for multiplayer.</Text>
+    <ImageBackground resizeMode="cover"
+        blurRadius={20}
+        source={require('./images/sub/Waves-in-Sea.jpg')}
+        style={styles.bg}>
+      <Text>This will be the suburb forest for multiplayer; currently showing off the fundamentals of a grid layout and background.</Text>
       <View style={styles.row}>
           {img(i0)}
           {img(i1)}
@@ -79,30 +85,21 @@ const OurForest = (images) => {
           {img(i4)}
           {img(i5)}
       </View>
+    </ImageBackground>
     </View>
     );
 }
 
 
-
-console.log(img(images[0]));
-
-
-const Challenges = () => {
-    return (
-        <View style={styles.container}>
-            <Text>This will be the Challenges screen</Text>
-            
-        </View>
-    )
-}
-
 const App = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator>
+        <Tab.Screen name="My Garden" component={MyGardenNav} />
         <Tab.Screen name="Our Forest" component={OurForest} />
-        <Tab.Screen name="Challenges" component={Challenges} />
+        <Tab.Screen name="Settings" component={SettingsNav} />        
+        <Tab.Screen name={"Challenges"} component={ChallengesScreen} />
+        <Tab.Screen name="Leaderboard" component={PvCLeaderboard} />
       </Tab.Navigator>
     </NavigationContainer>
   );
