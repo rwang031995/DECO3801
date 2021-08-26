@@ -82,6 +82,7 @@ const ConfigureTransport = () => {
         })
     }
 
+    // get settings from interal storage
     useEffect(() => {
         getSettings(STORAGE_KEY.hasBicycle, setHasBicycle)
         getSettings(STORAGE_KEY.hasScooter, setHasScooter)
@@ -89,6 +90,7 @@ const ConfigureTransport = () => {
         getSettings(STORAGE_KEY.hasTrain, setHasTrain)
     }, [])
 
+    // set settings in internal storage
     useEffect(() => {
         AsyncStorage.setItem(STORAGE_KEY.hasBicycle,`${hasBicycle}`)
         AsyncStorage.setItem(STORAGE_KEY.hasScooter,`${hasScooter}`)
