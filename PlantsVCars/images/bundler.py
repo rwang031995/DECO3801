@@ -62,7 +62,7 @@ const imgbg = (props, contents) => {
             prefix = os.path.commonprefix([source_dir, i])            
             suffix = i.lstrip(prefix)
             
-            print('IMG["'+name+'"] =', l+os.path.join('.', i)+r, file=manifest)
+            print('IMG["'+name+'"] =', l+os.path.join('.', suffix)+r, file=manifest)
                         
         print(imgsource, file=manifest)
         #print(imgbgsource, file=manifest) # NOT WORKING YET
