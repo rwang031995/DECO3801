@@ -17,6 +17,11 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center'
   },
+  icon : {
+    width: 20,
+    height: 20,
+  },
+  
   tinyLogo: {
     width: 50,
     height: 50,
