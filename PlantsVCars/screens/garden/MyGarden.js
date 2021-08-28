@@ -31,96 +31,52 @@ const MyCollection = () => {
 }
 
 const styles = StyleSheet.create({
-    oneThird: {
-    width: "33%", 
-    height: "33%",
+    bgTile: {
+      width: "33%",
+      height: "33%",
     },
+    plantTile: {
+        height: "25%",
+        width: "25%",
+        margin: "4%"
+    }
   })
 
 const MyGarden = ({navigation}) => {
   const [inventory, setInventory] = useState([]);
-  var seasonBG;
-  if (season == 'Summer') {
-    seasonBG = (
-      <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>   
-        {img({name: "Summer-top", style: styles.oneThird})}
-        {img({name: "Summer-duck", style: styles.oneThird})}
-        {img({name: "Summer-top", style: styles.oneThird})}
+  
+  var seasonBG = (
+    <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
+        {img({name: season+"-top", style: styles.bgTile})}
+        {img({name: season+"-duck", style: styles.bgTile})}
+        {img({name: season+"-top", style: styles.bgTile})}
 
-        {img({name: "Summer", style: styles.oneThird})}
-        {img({name: "Summer", style: styles.oneThird})}
-        {img({name: "Summer", style: styles.oneThird})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
 
-        {img({name: "Summer", style: styles.oneThird})}
-        {img({name: "Summer", style: styles.oneThird})}
-        {img({name: "Summer", style: styles.oneThird})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+    </View> 
+  );
+  
+  var plantsInGround = (
+    // TODO: make this dynamic somehow
+    <View style={{flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "100%", 
+        justifyContent: "space-around", position: 'absolute', top: '33%'}}>
+        {img({name: "Testflower", style: styles.plantTile})}
+        {img({name: "RoseFlower", style: styles.plantTile})}
+        {img({name: "OrchidFlower", style: styles.plantTile})}
+        {img({name: "RoseFlower", style: styles.plantTile})}
+        {img({name: "OrchidFlower", style: styles.plantTile})}
+        {img({name: "Testflower", style: styles.plantTile})}
+    </View>
+  );
 
-        {img({name: "Summer", style: styles.oneThird})}
-        {img({name: "Summer", style: styles.oneThird})}
-        {img({name: "Summer", style: styles.oneThird})}
-      </View>
-    );
-  } else if (season == 'Winter') {
-    seasonBG = (
-      <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-        {img({name: "Winter-top", style: styles.oneThird})}
-        {img({name: "Winter-duck", style: styles.oneThird})}
-        {img({name: "Winter-top", style: styles.oneThird})}
-
-        {img({name: "Winter", style: styles.oneThird})}
-        {img({name: "Winter", style: styles.oneThird})}
-        {img({name: "Winter", style: styles.oneThird})}
-
-        {img({name: "Winter", style: styles.oneThird})}
-        {img({name: "Winter", style: styles.oneThird})}
-        {img({name: "Winter", style: styles.oneThird})}
-
-        {img({name: "Winter", style: styles.oneThird})}
-        {img({name: "Winter", style: styles.oneThird})}
-        {img({name: "Winter", style: styles.oneThird})}
-        </View>
-      );
-  } else if (season == 'Autumn') {
-    seasonBG = (
-      <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-        {img({name: "Autumn-top", style: styles.oneThird})}
-        {img({name: "Autumn-duck", style: styles.oneThird})}
-        {img({name: "Autumn-top", style: styles.oneThird})}
-
-        {img({name: "Autumn", style: styles.oneThird})}
-        {img({name: "Autumn", style: styles.oneThird})}
-        {img({name: "Autumn", style: styles.oneThird})}
-
-        {img({name: "Autumn", style: styles.oneThird})}
-        {img({name: "Autumn", style: styles.oneThird})}
-        {img({name: "Autumn", style: styles.oneThird})}
-
-        {img({name: "Autumn", style: styles.oneThird})}
-        {img({name: "Autumn", style: styles.oneThird})}
-        {img({name: "Autumn", style: styles.oneThird})}
-        </View>
-    );
-  } else {
-    seasonBG = (
-      <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-        {img({name: "Spring-top", style: styles.oneThird})}
-        {img({name: "Spring-duck", style: styles.oneThird})}
-        {img({name: "Spring-top", style: styles.oneThird})}
-
-        {img({name: "Spring", style: styles.oneThird})}
-        {img({name: "Spring", style: styles.oneThird})}
-        {img({name: "Spring", style: styles.oneThird})}
-
-        {img({name: "Spring", style: styles.oneThird})}
-        {img({name: "Spring", style: styles.oneThird})}
-        {img({name: "Spring", style: styles.oneThird})}
-
-        {img({name: "Spring", style: styles.oneThird})}
-        {img({name: "Spring", style: styles.oneThird})}
-        {img({name: "Spring", style: styles.oneThird})} 
-      </View>
-    );
-  }
   return (
     <View style={{ flex: 1 }}>
       <View style={{ alignItems: 'center', backgroundColor: "darkorange"}}>
@@ -129,16 +85,16 @@ const MyGarden = ({navigation}) => {
           onPress = { () => navigation.navigate("My Collection")}
         />
       </View>
-      <View style={{ flex:4, backgroundColor: "lightgreen"}}>
-      {seasonBG}
-      <View style={{position: 'absolute', justifyContent:'center'}}>       
+      <View style={{ flex:4, backgroundColor: "lightgreen", display:'flex'}}>
+        {seasonBG}
+        <View style={{position: 'absolute', justifyContent:'center'}}>       
           <Text>
             Current date: {date.toDateString() + "\n"}
             Current season: {season + "\n"}
           </Text>
         </View>
-      </View>    
-      
+        {plantsInGround}
+      </View> 
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "orange"}}>
         <Text>
           Inventory: {inventory.length == 0 ? "Empty" : inventory}
