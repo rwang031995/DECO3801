@@ -17,6 +17,11 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center'
   },
+  icon : {
+    width: 20,
+    height: 20,
+  },
+  
   tinyLogo: {
     width: 50,
     height: 50,
@@ -94,7 +99,29 @@ const OurForest = (images) => {
 const App = () => {
   return (
     <NavigationContainer>
-      <Tab.Navigator>
+      <Tab.Navigator
+        screenOptions={({ route, }) => ({
+          tabBarIcon: ({image}) => {
+          if (route.name == 'My Garden') {
+            image = require('./images/icons/MyGardenIcon.png')
+          }
+          if (route.name == 'Our Forest') {
+            image = require('./images/icons/OurForestIcon.png')
+          }
+          if (route.name == 'Settings') {
+            image = require('./images/icons/SettingsIcon.png')
+          }          
+          if (route.name == 'Challenges') {
+            image = require('./images/icons/ChallengesIcon.png')
+          }
+          if (route.name == 'Leaderboard') {
+            image = require('./images/icons/LeaderboardIcon.png')
+          }
+          return (
+            <Image source={image} style={{width: 50, height:50}}/>
+          )}
+          })
+        }>
         <Tab.Screen name="My Garden" component={MyGardenNav} />
         <Tab.Screen name="Our Forest" component={OurForest} />
         <Tab.Screen name="Settings" component={SettingsNav} />        
