@@ -7,7 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import PvCLeaderboard from './screens/Leaderboard';
 import MyGardenNav from './screens/garden/MyGarden'
 import ChallengesScreen from './screens/Challenges';
-import SettingsNav from "./screens/Settings";
+import SettingsNav from "./screens/settings/Settings";
 
 const Tab = createBottomTabNavigator();
 
@@ -124,9 +124,9 @@ const App = () => {
         }>
         <Tab.Screen name="My Garden" component={MyGardenNav} />
         <Tab.Screen name="Our Forest" component={OurForest} />
-        <Tab.Screen name="Settings" component={SettingsNav} />        
         <Tab.Screen name={"Challenges"} component={ChallengesScreen} />
         <Tab.Screen name="Leaderboard" component={PvCLeaderboard} />
+        <Tab.Screen name="Settings" component={SettingsNav} />
       </Tab.Navigator>
     </NavigationContainer>
   );
