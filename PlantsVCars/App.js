@@ -2,17 +2,12 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, Button, Image, ImageBackground} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-<<<<<<< HEAD
-import PvCLeaderboard from "./screens/Leaderboard";
-import PvCMyGardenNav from "./screens/garden/MyGarden";
-=======
 import {img} from "./images/manifest";
 import { createStackNavigator } from '@react-navigation/stack';
 import PvCLeaderboard from './screens/Leaderboard';
-import MyGardenNav from './screens/MyGarden'
+import MyGardenNav from './screens/garden/MyGarden'
 import ChallengesScreen from './screens/Challenges';
 import SettingsNav from "./screens/Settings";
->>>>>>> main
 
 const Tab = createBottomTabNavigator();
 
