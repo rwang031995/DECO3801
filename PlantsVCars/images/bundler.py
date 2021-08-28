@@ -28,7 +28,7 @@ def build_manifest(images, source_dir, mpath):
 const img = (props) => {
     var realprops = props ;
     realprops['source'] = IMG[props.name];
-	return <Image  {... realprops} />;
+	return <Image  {... realprops} />
 }
 """    
 
@@ -36,7 +36,7 @@ const img = (props) => {
 const imgbg = (props, contents) => {
     var realprops = props ;
     realprops['source'] = IMG[props.name];
-	return <ImageBackground  {... realprops} > {contents} </ImageBackground>;
+	return <ImageBackground  {... realprops} > {contents} </ImageBackground>
 	    
 }
 """    
@@ -61,7 +61,7 @@ const imgbg = (props, contents) => {
                         
         print(imgsource, file=manifest)
         #print(imgbgsource, file=manifest) # NOT WORKING YET
-        print("export {img};", file=manifest)
+        print("export {img}\nexport default {img};", file=manifest)
 
 if __name__ == "__main__":
     

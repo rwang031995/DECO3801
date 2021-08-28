@@ -26,7 +26,8 @@ IMG["Spring"] = require('./bg/spring/spring.png');
 const img = (props) => {
     var realprops = props ;
     realprops['source'] = IMG[props.name];
-	return <Image  {... realprops} />;
+	return <Image  {... realprops} />
 }
 
 export {img};
+export default {img};
