@@ -4,11 +4,11 @@ import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ChallengeOptions = [
-    {challenge1 : "Challenge 1", completed1 : false}, 
-    {challenge2 : "Challenge 2", completed2 : false}, 
-    {challenge3 : "Challenge 3", completed3 : false}, 
-    {challenge4 : "Challenge 4", completed4 : false}, 
-    {challenge5 : "Challenge 5", completed5 : false}, 
+    {"challenge" : "Challenge 1", "completed" : false}, 
+    {"challenge" : "Challenge 2", "completed" : false}, 
+    {"challenge" : "Challenge 3", "completed" : false}, 
+    {"challenge" : "Challenge 4", "completed" : false}, 
+    {"challenge" : "Challenge 5", "completed" : false}, 
     ];
 
 const ChallengesScreen = () => {
@@ -99,14 +99,25 @@ const ChallengesScreen = () => {
      * generate challenges from a pool. 
      */
 
-    const addChallenges = (n) => {
+    const clearChallenges = () => {
         setChallenges([]);
+    }
+
+    const generateChallenges = (n) => {
         const selectableChallenges = ChallengeOptions.slice();
         while (n > 0) {
             var value = Math.floor(Math.random() * selectableChallenges.length);
+            setChallenges([...challenges, {
+                text: "12345",
+                isComplete: false
+            }])
             selectableChallenges.splice(value, 1);
             n = n - 1;
         }
+    }
+
+    const printChallenges = () => {
+        console.log(challenges);
     }
 
     //--------------------------------------------------------------------------------
@@ -127,6 +138,7 @@ const ChallengesScreen = () => {
      useEffect(() => {
         loadLevel();
         loadWeek();
+        generateChallenges();
     }, []);
 
     /**
@@ -151,8 +163,10 @@ const ChallengesScreen = () => {
                 <Button title="Level test" onPress = {() => {levelTo(2)}}/>
                 <Text> currentWeek 1 {JSON.stringify(storedWeek)}</Text>
                 <Button title="Week test" onPress = {() => {saveWeek()}}/>
-                <Text> Challenge 1 {challenges[0]}</Text>
-                <Button title="generate challenges" onPress = {() => {addChallenges(1)}}/>
+                <Button title="clear challenges" onPress = {() => {clearChallenges()}}/>
+                <Button title="generate challenges" onPress = {() => {generateChallenges(1)}}/>
+                <Button title="print challenges" onPress = {() => {printChallenges()}}/>
+
                 <Text> Bonus Challenges </Text>
             </View>
         )
@@ -163,9 +177,10 @@ const ChallengesScreen = () => {
                 <Button title="Level test" onPress = {() => {levelTo(1)}}/>
                 <Text> currentWeek 2 {JSON.stringify(storedWeek)}</Text>
                 <Button title="Week test" onPress = {() => {saveWeek()}}/>
-                <Text> Challenge 1 {challenges[0]}</Text>
-                <Text> Challenge 2 {challenges[1]}</Text>
-                <Button title="generate challenges" onPress = {() => {addChallenges(2)}}/>
+                <Button title="clear challenges" onPress = {() => {clearChallenges()}}/>
+                <Button title="generate challenges" onPress = {() => {generateChallenges(2)}}/>
+                <Button title="print challenges" onPress = {() => {printChallenges()}}/>
+
                 <Text> Bonus Challenges </Text>
             </View>
         )
