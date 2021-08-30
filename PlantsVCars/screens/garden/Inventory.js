@@ -1,14 +1,15 @@
 import {Text, View, Button, StyleSheet, Alert, TouchableOpacity} from "react-native";
 import React, {useState} from "react";
 import { set } from "react-native-reanimated";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getInstallationTimeAsync } from "expo-application";
 
 const Inventory = () => {
-    var itemsA = new Array();
-    itemsA[0] = <Item name="water" quantity={10}/>;
-    itemsA[1] = <Item name="sun" quantity={5}/>;
-    itemsA[2] = <Item name="fertilizer" quantity={2}/>;
+    // Check if items are already set (NEEDS TO BE DONE)
 
-    const [items, setItems] = useState(itemsA);
+    setItem(ITEM_KEYS.water, {name: 'Water', quantity: 10});
+    setItem(ITEM_KEYS.sun, {name: 'Sun', quantity: 5});
+    setItem(ITEM_KEYS.fertilizer, {name: 'Fertilizer', quantity: 2});
 
     return (
         <View style={{flex: 1}}>
@@ -22,7 +23,7 @@ const Inventory = () => {
             <View style={{flexDirection: "row"}}>
                 <View style={{flex: 3}}>
                     <Text style={{flexDirection: "row", alignSelf: "flex-start", justifyContent: "space-between"}}>
-                        {items.length == 0 ? "Empty" : items}
+                        <Items/>
                     </Text>
                 </View>
             </View>
@@ -30,22 +31,49 @@ const Inventory = () => {
     );
 }
 
-const Item = (props) => {
-    const [iName, setName] = useState(props.name);
-    const [quantity, setQuantity] = useState(parseInt(props.quantity));
+const Items = (props) => {
+    const [water, setWater] = useState({})
+    const [sun, setSun] = useState({})
+    const [fertilizer, setFertilizer] = useState({})
+
+    getItem(ITEM_KEYS.water, setWater)
+    getItem(ITEM_KEYS.sun, setSun)
+    getItem(ITEM_KEYS.fertilizer, setFertilizer)
 
     return (
         <>
             <Text>
-                {iName}: {quantity + " "}
+                {water.name}: {water.quantity + " "}
             </Text>
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText} onPress={() => setQuantity(quantity + 1)}>
-                    {iName}+
+                <Text style={styles.buttonText} onPress={() => setItem(ITEM_KEYS.water, water)}>
+                    {water.name}+
                 </Text>
             </TouchableOpacity>
         </>
     );
+}
+
+const setItem = async (key, value) => {
+    try {
+        const jsonValue = JSON.stringify(value);
+        await AsyncStorage.setItem(key, jsonValue);
+    } catch(e) {
+        console.log("An error occured while attempting to set an item.");
+    }
+
+    console.log("Successfully stored item.");
+}
+
+const getItem = async (key, setState) => {
+    try {
+        console.log("Attempting to retrieve item")
+        const jsonValue = await AsyncStorage.getItem(key)
+        console.log(JSON.parse(jsonValue))
+        setState(JSON.parse(jsonValue))
+    } catch (e) {
+        console.log("An error has occured while attempting to retrieve an item.");
+    }
 }
 
 const styles = StyleSheet.create({
@@ -65,5 +93,12 @@ const styles = StyleSheet.create({
         fontSize: 8
     }
 })
+
+const ITEM_KEYS = {
+
+    water: "@item_Water",
+    sun: "@item_Sun",
+    fertilizer: "@item_Fertilizer"
+}
 
 export default Inventory;
