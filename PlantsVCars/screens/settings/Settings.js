@@ -68,7 +68,6 @@ const ConfigureTransport = () => {
         },
     ];
 
-
     /* Get settings from internal storage */
     useEffect(() => {
         getSettings(STORAGE_KEY.hasBicycle, setHasBicycle)
@@ -96,28 +95,30 @@ const pick_date = () => {
 
 const SettingsComponent = ({settingsOptions, popupVis, setPopupVis, pickDate}) => {
     return (
-        // <Modal visible={popupVis}>
-        //     <View>
-        //         {pickDate.map(name, onPress)} => (
-        //
-        //         )
-        //     </View>
-        // />
+        <>
+        {/*<Modal visible={popupVis} transparent={true}>*/}
+        {/*    <View>*/}
+        {/*        {pickDate.map(({name, date, setDate, onPress}) => (*/}
+        {/*        <View key={name}>*/}
+        {/*            <DatePicker date={date} onDateChange={setDate}/>*/}
+        {/*        </View>*/}
+        {/*        ))}*/}
+        {/*    </View>*/}
+        {/*</Modal>*/}
 
 
 
 
 
         <ScrollView>
-            {settingsOptions.map(({title, subtitle, onPress, toggle, setToggle}) => (
-                <View style={styles.rowContainer}>
+            {settingsOptions.map(({title, subtitle, onPress, toggle}) => (
+                <View>
                     <TouchableOpacity
                         key={title}
                         subtitle={subtitle}
                         onPress={onPress}
                         toggle={toggle}
-                        setToggle={setToggle}
-                        style={styles.touchableOpacity}>
+                        style={[styles.touchableOpacity, styles.rowContainer]}>
                         <View style={styles.container}>
                             <Text style={styles.title}>
                                 {title}
@@ -129,21 +130,22 @@ const SettingsComponent = ({settingsOptions, popupVis, setPopupVis, pickDate}) =
                                 </Text>
                             )}
                         </View>
-                    </TouchableOpacity>
-                    {
-                        toggle != null && (
-                            <View style={[styles.container, styles.switch]}>
-                                <Switch
-                                    value={toggle}
-                                    onValueChange={onPress}/>
-                            </View>
+                        {
+                            toggle != null && (
+                                <View style={[styles.container, styles.switch]}>
+                                    <Switch
+                                        value={toggle}
+                                        onValueChange={onPress}/>
+                                </View>
 
-                        )
-                    }
+                            )
+                        }
+                    </TouchableOpacity>
                 </View>
                 ))}
 
         </ScrollView>
+        </>
     )
 }
 
@@ -168,7 +170,7 @@ const Settings = ({navigation}) => {
         {
             title: "My Age",
             subtitle: "Configure your date of birth",
-            onPress: () => {<DatePicker date={date} onDateChange={setDate}/>}
+            onPress: () => {setPopupVis(true)}
         },
         {
             title: "My Transport",
@@ -184,10 +186,12 @@ const Settings = ({navigation}) => {
     const pickDate = [
         {
             name: "Pick Date",
+            date: {date},
+            setDate: () => setDate(),
 
             onPress: () => {
                 setSetting(STORAGE_KEY.age, age)
-                setPopupVis(true)
+                setPopupVis(false)
             }
         }
     ]
@@ -220,7 +224,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     switch:{
-        justifyContent: "flex-end"
+        // justifyContent: "flex-end"
+        paddingTop: 40,
+        marginLeft: "auto"
     }
 });
 
