@@ -1,51 +1,79 @@
 import {Text, View, Button, StyleSheet, Alert, TouchableOpacity} from "react-native";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { set } from "react-native-reanimated";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const ITEM_KEYS = {
+    itemWater = "@key_Water",
+    itemSun = "@key_Sun",
+    itemFertilizer = "@key_Fertilizer"
+}
 
 const Inventory = () => {
-    var itemsA = new Array();
-    itemsA[0] = <Item name="water" quantity={10}/>;
-    itemsA[1] = <Item name="sun" quantity={5}/>;
-    itemsA[2] = <Item name="fertilizer" quantity={2}/>;
+    // state declarations
+    const [water, setWater] = useState({});
+    const [sun, setSun] = useState({});
+    const [fertilizer, setFertilizer] = useState({});
 
-    const [items, setItems] = useState(itemsA);
+    // startup (only run on first render) LOOP IT!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    // this will check if keys are already stored and if they are, just recieve them
+    // otherwise, if key doesn't exist, store a new key with a default value
+    useEffect(() => {
+        getItemData(ITEM_KEYS.itemWater).then( itemData => {
+            if (itemData == null) {
+                const waterDefault = {name: "Water", quantity: 10}
+                setItemData(ITEM_KEYS.itemWater, waterDefault)
+                setWater(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
+            } else {
+                setWater(itemData)
+            }      
+        });
+        getItemData(ITEM_KEYS.itemSun).then( itemData => {
+            if (itemData == null) {
+                const sunDefault = {name: "Sun", quantity: 6}
+                setItemData(ITEM_KEYS.itemSun, sunDefault)
+                setSun(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
+            } else {
+                setSun(itemData)
+            }    
+        });
+        getItemData(ITEM_KEYS.itemFertilizer).then( itemData => {
+            if (itemData == null) {
+                const fertilizerDefault = {name: "Fertilizer", quantity: 2}
+                setItemData(ITEM_KEYS.itemFertilizer, fertilizerDefault)
+                setFertilizer(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
+            } else {
+                setFertilizer(itemData)
+            }    
+        });
+    }, []);
 
+    // visual
     return (
-        <View style={{flex: 1}}>
-
-            <View style={{borderTopWidth: 2, borderTopColor: "grey"}}>
-                <Text style={styles.heading}>
-                    Items
-                </Text>
-            </View>
-
-            <View style={{flexDirection: "row"}}>
-                <View style={{flex: 3}}>
-                    <Text style={{flexDirection: "row", alignSelf: "flex-start", justifyContent: "space-between"}}>
-                        {items.length == 0 ? "Empty" : items}
-                    </Text>
-                </View>
-            </View>
-        </View>
+        <Text>
+            Inventory rewrite {water.name}
+        </Text>
     );
 }
 
-const Item = (props) => {
-    const [iName, setName] = useState(props.name);
-    const [quantity, setQuantity] = useState(parseInt(props.quantity));
+// fetching item data
+const getItemData = async (key) => {
+    try {
+        const jsonValue = await AsyncStorage.getItem(key);
+        return JSON.parse(jsonValue);
+    } catch (e) {
+        console.log("Failed to fetch item. Key: " + key);
+    }
+}
 
-    return (
-        <>
-            <Text>
-                {iName}: {quantity + " "}
-            </Text>
-            <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText} onPress={() => setQuantity(quantity + 1)}>
-                    {iName}+
-                </Text>
-            </TouchableOpacity>
-        </>
-    );
+// setting item data
+const setItemData = async (key, value) => {
+    try {
+        const jsonValue = JSON.stringify(value)
+        return await AsyncStorage.setItem(key, jsonValue)
+    } catch (e) {
+        console.log("Failed to set item. Key: " + key);
+    }
 }
 
 const styles = StyleSheet.create({
