@@ -119,22 +119,21 @@ const SettingsComponent = ({settingsOptions, popupVis, setPopupVis, pickDate}) =
                         onPress={onPress}
                         toggle={toggle}
                         style={[styles.touchableOpacity, styles.rowContainer]}>
-                        <View key={title} style={styles.container}>
-                            <Text key={title} style={styles.title}>
+                        <View style={styles.container}>
+                            <Text style={styles.title}>
                                 {title}
                             </Text>
                             {
                                 subtitle != null && (
-                                <Text key={subtitle} style={styles.subtitle}>
+                                <Text style={styles.subtitle}>
                                     {subtitle}
                                 </Text>
                             )}
                         </View>
                         {
                             toggle != null && (
-                                <View key={title} style={[styles.container, styles.switch]}>
+                                <View style={[styles.container, styles.switch]}>
                                     <Switch
-                                        key={title}
                                         value={toggle}
                                         onValueChange={onPress}/>
                                 </View>
