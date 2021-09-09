@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
+import {StyleSheet, View, Text, Button, ScrollView} from 'react-native';
 import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -11,7 +11,155 @@ const ChallengeOptions = [
     {"challenge" : "Challenge 5", "completed" : false}, 
     ];
 
+const ChallengesComponent = ({testText, buttonOptions, challenges}) => {
+
+    return (
+        <ScrollView>
+            {testText.map(({text})=> (
+                <View key={text} style={styles.container}>
+                    <Text key={text}>
+                        {text}
+                    </Text>
+                </View>
+            ))}
+            {/*{challenges.map(({challenge}) => (*/}
+            {/*    challenge.text &&(*/}
+            {/*    <View key={challenge} style={styles.container}>*/}
+            {/*        <Text key={challenge}>*/}
+            {/*            Challenge is : {challenge}*/}
+            {/*        </Text>*/}
+            {/*    </View>)*/}
+            {/*))}*/}
+            {buttonOptions.map(({title, onPress}) => (
+                <View key={title}>
+                    <Button key={title} title={title} onPress={onPress}>
+
+                    </Button>
+                </View>
+                ))}
+        </ScrollView>
+    )
+}
+
+const getCurrentWeek = () => {
+    return moment().clone().startOf("isoWeek").add(1, "days");
+}
+
 const ChallengesScreen = () => {
+
+    const [level, setLevel] = useState(1);
+    const [isChallengeComplete, setIsChallengeComplete] = useState(false);
+    const [challenges, setChallenges] = useState([{text: "Challenge 1", isChallengeComplete: false}]);
+    const [storedWeek, changeWeek] = useState(getCurrentWeek());
+
+    const generateChallenges = () => {
+        const selectableChallenges = ChallengeOptions.slice();
+        let n = level
+        setChallenges(challenges => [])
+        for (let i = 0; i < level; i++) {
+
+            let value = Math.floor(Math.random() * selectableChallenges.length);
+            setChallenges(challenges => [...challenges, {
+                text: `Challenge ${i + 1}`,
+                isChallengeComplete: false
+            }])
+            selectableChallenges.splice(value, 1)
+        }
+    }
+
+    const clearChallenges = () => {
+        setChallenges(challenges => []);
+    }
+
+    const printChallenges = () => {
+        // console.log(challenges)
+        for (let i = 0; i < challenges.length; i++) {
+            let c = challenges[i];
+            console.log(`${c.text}: ${c.isChallengeComplete}`)
+        }
+
+    }
+
+    const increaseLevel = () => {
+        let l = level
+        l = (l % 5) + 1
+        setLevel(level => l)
+        // console.log(level)
+        generateChallenges()
+    }
+
+    useEffect(() => {
+        console.log(level)
+    }, [level])
+
+    const buttonOptions = [
+        {
+            title: "Increase Level",
+            onPress: () => {increaseLevel()}
+        },
+        {
+            title: "Week Test",
+            onPress: () => {}
+        },
+        {
+            title: "Clear Challenges",
+            onPress: () => {clearChallenges()}
+        },
+        {
+            title: "Generate Challenges",
+            onPress: () => {generateChallenges()}
+        },
+        {
+            title: "Print Challenges",
+            onPress: () => {printChallenges()}
+        }
+    ]
+
+    const testText = [
+        {
+            text: `The current level is ${level}`
+        },
+        {
+            text: `The week is ${storedWeek}`
+        }
+    ]
+
+    return <ChallengesComponent buttonOptions={buttonOptions}
+                                testText={testText}
+                                challenges={challenges}/>
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        textAlign: 'right',
+        alignItems: 'center',
+    }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const Challenges = () => {
 
     /**
      * Leveling system.
@@ -126,7 +274,7 @@ const ChallengesScreen = () => {
      * Variables for global storage using Async.
      */
     const [level, setLevel] = useState(1);
-    const [chalComplete, setChalCompleted] = useState(false);
+    const [challengeComplete, setChallengeComplete] = useState(false);
     const [challenges, setChallenges] = useState([]);
     const [storedWeek, changeWeek] = useState(currentWeek());
 
@@ -192,13 +340,5 @@ const ChallengesScreen = () => {
     /**
      * Styling code
      */
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      textAlign: 'right',
-      alignItems: 'center', 
-    }
-})
 
 export default ChallengesScreen;
