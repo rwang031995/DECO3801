@@ -4,11 +4,11 @@ import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ChallengeOptions = [
-    {"challenge" : "Challenge 1", "completed" : false}, 
-    {"challenge" : "Challenge 2", "completed" : false}, 
-    {"challenge" : "Challenge 3", "completed" : false}, 
-    {"challenge" : "Challenge 4", "completed" : false}, 
-    {"challenge" : "Challenge 5", "completed" : false}, 
+    {challenge : "Walk to X once this Week", completed : false}, 
+    {challenge : "Run to X once this Week", completed : false}, 
+    {challenge : "Take a bus once this week", completed : false}, 
+    {challenge : "Take the train once this week", completed : false}, 
+    {challenge : "This is a test example", completed : false}, 
     ];
 
 const ChallengesScreen = () => {
@@ -33,7 +33,7 @@ const ChallengesScreen = () => {
      */
     const loadLevel = async() => {
         try {
-            ourLevel = await AsyncStorage.getItem("MyLevel");
+            let ourLevel = await AsyncStorage.getItem("MyLevel");
             if (ourLevel != null) {
                 setLevel(JSON.parse(ourLevel));
             }
@@ -67,9 +67,9 @@ const ChallengesScreen = () => {
     /**
      * save globally stored week. 
      */
-     const saveWeek = async() => {
+    const saveWeek = async() => {
         try {
-            await AsyncStorage.setItem("currentWeek", JSON.stringify(storedWeek));
+            await AsyncStorage.setItem("currentWeek", JSON.stringify(currentWeek()));
         } catch (err) {
                 console.log("save week error");
         }
@@ -80,7 +80,7 @@ const ChallengesScreen = () => {
      */
     const loadWeek = async() => {
         try {
-            week = await AsyncStorage.getItem("currentWeek");
+            let week = await AsyncStorage.getItem("currentWeek");
             if (week != null) {
                 changeWeek(JSON.parse(week));
             }
@@ -88,6 +88,16 @@ const ChallengesScreen = () => {
             console.log("load week error");
         }
     }
+
+    /**
+     * Do this when the app opens to generate new challenges for each week.
+     */
+         const updateWeek = () => {
+            if (moment().clone().subtract(7, 'days').isSameOrAfter(storedWeek)) {
+                changeWeek(currentWeek());
+                saveWeek();
+            }
+        }
 
     //--------------------------------------------------------------------------------
 
@@ -99,25 +109,42 @@ const ChallengesScreen = () => {
      * generate challenges from a pool. 
      */
 
-    const clearChallenges = () => {
-        setChallenges([]);
-    }
-
-    const generateChallenges = (n) => {
+    const generateChallenges = () => {
         const selectableChallenges = ChallengeOptions.slice();
+        const challengeList = [];
+        var n = 4;
         while (n > 0) {
             var value = Math.floor(Math.random() * selectableChallenges.length);
-            setChallenges([...challenges, {
-                text: "12345",
-                isComplete: false
-            }])
+            challengeList.push(selectableChallenges[value]);
             selectableChallenges.splice(value, 1);
             n = n - 1;
         }
+        setChallenges(challengeList);
     }
 
-    const printChallenges = () => {
-        console.log(challenges);
+    /**
+     * save globally stored week. 
+     */
+    const saveChallenges = async() => {
+        try {
+            await AsyncStorage.setItem("weeklyChallenge", JSON.stringify(challenges));
+        } catch (err) {
+                    console.log("save challenges error");
+        }
+    }
+        
+    /**
+     * load globally stored week. 
+     */
+    const loadChallenges = async() => {
+        try {
+            let weeklyChallenges = await AsyncStorage.getItem("weeklyChallenge");
+            if (weeklyChallenges != null) {
+                setChallenges(JSON.parse(weeklyChallenges));
+            }
+        } catch (err) {
+            console.log("load challenges error");
+        }
     }
 
     //--------------------------------------------------------------------------------
@@ -127,7 +154,12 @@ const ChallengesScreen = () => {
      */
     const [level, setLevel] = useState(1);
     const [chalComplete, setChalCompleted] = useState(false);
-    const [challenges, setChallenges] = useState([]);
+    const [challenges, setChallenges] = useState([    
+        {challenge : "Walk to X once this Week", completed : false}, 
+        {challenge : "Run to X once this Week", completed : false}, 
+        {challenge : "Take a bus once this week", completed : false}, 
+        {challenge : "Take the train once this week", completed : false}
+    ]);
     const [storedWeek, changeWeek] = useState(currentWeek());
 
     //--------------------------------------------------------------------------------
@@ -138,20 +170,9 @@ const ChallengesScreen = () => {
      useEffect(() => {
         loadLevel();
         loadWeek();
-        generateChallenges();
+        loadChallenges();
+        updateWeek();
     }, []);
-
-    /**
-     * Do this when the app opens to generate new challenges for each week.
-     */
-
-    //#FIXME uses currentWeek().clone - should be using storedWeek.clone() but causes an error even though both uses moment.Moment obj.
-    const followingWeek = currentWeek().clone().add(7, 'days');
-    if (currentWeek().isSameOrAfter(followingWeek)) {
-        //Code to refresh the weekly challenges.
-        changeWeek(followingWeek);
-        saveWeek();
-    }
 
     /**
      * View screen
@@ -159,28 +180,25 @@ const ChallengesScreen = () => {
     if (level == 1) {
         return (
             <View style={styles.container}>
-                <Text> Level {level}</Text>
+                <Text style={styles.level}> Level {level}</Text>
                 <Button title="Level test" onPress = {() => {levelTo(2)}}/>
                 <Text> currentWeek 1 {JSON.stringify(storedWeek)}</Text>
-                <Button title="Week test" onPress = {() => {saveWeek()}}/>
-                <Button title="clear challenges" onPress = {() => {clearChallenges()}}/>
-                <Button title="generate challenges" onPress = {() => {generateChallenges(1)}}/>
-                <Button title="print challenges" onPress = {() => {printChallenges()}}/>
-
+                <Button title="generate challenges" onPress = {() => {generateChallenges()}}/>
+                <Text> Challenge 1: {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
                 <Text> Bonus Challenges </Text>
             </View>
         )
     } else if (level == 2) {
         return (
             <View style={styles.container}>
-                <Text> Level {level}</Text>
+                <Text style={styles.level}> Level {level}</Text>
                 <Button title="Level test" onPress = {() => {levelTo(1)}}/>
                 <Text> currentWeek 2 {JSON.stringify(storedWeek)}</Text>
-                <Button title="Week test" onPress = {() => {saveWeek()}}/>
-                <Button title="clear challenges" onPress = {() => {clearChallenges()}}/>
-                <Button title="generate challenges" onPress = {() => {generateChallenges(2)}}/>
-                <Button title="print challenges" onPress = {() => {printChallenges()}}/>
-
+                <Button title="generate challenges" onPress = {() => {generateChallenges()}}/>
+                <Button title="save challenges" onPress = {() => {saveChallenges()}}/>
+                <Text> Challenge 1: {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
+                <Text> status: {JSON.stringify(challenges[0].completed)}</Text>
+                <Text> Challenge 2: {JSON.stringify(challenges[1].challenge).substring(1,JSON.stringify(challenges[1].challenge).length - 1)}</Text>
                 <Text> Bonus Challenges </Text>
             </View>
         )
@@ -196,8 +214,13 @@ const ChallengesScreen = () => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: 'lightblue',
       textAlign: 'right',
       alignItems: 'center', 
+    },
+    level: {
+        fontSize: 20,
+        fontWeight: 'bold',
     }
 })
 
