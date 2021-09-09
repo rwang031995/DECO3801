@@ -112,7 +112,7 @@ const SettingsComponent = ({settingsOptions, popupVis, setPopupVis, pickDate}) =
 
         <ScrollView>
             {settingsOptions.map(({title, subtitle, onPress, toggle}) => (
-                <View>
+                <View key={title}>
                     <TouchableOpacity
                         key={title}
                         subtitle={subtitle}
