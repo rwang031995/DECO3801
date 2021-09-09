@@ -68,12 +68,12 @@ const MyGarden = ({navigation}) => {
     // TODO: make this dynamic somehow
     <View style={{flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "100%", 
         justifyContent: "space-around", position: 'absolute', top: '33%'}}>
-        {img({name: "Testflower", style: styles.plantTile})}
+        {img({name: "DandelionFlower", style: styles.plantTile})}
         {img({name: "RoseFlower", style: styles.plantTile})}
         {img({name: "OrchidFlower", style: styles.plantTile})}
         {img({name: "RoseFlower", style: styles.plantTile})}
         {img({name: "OrchidFlower", style: styles.plantTile})}
-        {img({name: "Testflower", style: styles.plantTile})}
+        {img({name: "TulipFlower", style: styles.plantTile})}
     </View>
   );
 

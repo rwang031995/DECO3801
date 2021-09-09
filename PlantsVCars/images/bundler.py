@@ -21,8 +21,6 @@ def find_images(source_dir, filetypes):
     return out
 
 def build_manifest(images, source_dir, mpath):
-    l="require('"
-    r="');"
         
     imgsource = """
 const img = (props) => {
@@ -56,8 +54,10 @@ const imgbg = (props, contents) => {
             
             prefix = os.path.commonprefix([source_dir, i])            
             suffix = i[len(prefix) + 1:]
+            # can't just do an os.path.join here, need forward slashes
+            path = './' + '/'.join(suffix.split(os.path.sep))
                         
-            print('IMG["'+name+'"] =', l+os.path.join('.', suffix)+r, file=manifest)
+            print('IMG["{}"] = require("{}");'.format(name, path), file=manifest)
                         
         print(imgsource, file=manifest)
         #print(imgbgsource, file=manifest) # NOT WORKING YET
