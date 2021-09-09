@@ -72,12 +72,10 @@ const ChallengesScreen = () => {
     }
 
     const printChallenges = () => {
-        // console.log(challenges)
         for (let i = 0; i < challenges.length; i++) {
             let c = challenges[i];
             console.log(`${c.text}: ${c.isChallengeComplete}`)
         }
-
     }
 
     const increaseLevel = () => {
@@ -85,11 +83,11 @@ const ChallengesScreen = () => {
         l = (l % 5) + 1
         setLevel(level => l)
         // console.log(level)
-        generateChallenges()
     }
 
     useEffect(() => {
         console.log(level)
+        generateChallenges()
     }, [level])
 
     const buttonOptions = [
