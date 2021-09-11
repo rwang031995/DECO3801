@@ -54,6 +54,27 @@ const styles = StyleSheet.create({
 
 const MyGarden = ({navigation}) => {
   const [inventory, setInventory] = useState([]);
+  const [flowerSeating, setFlowerSeating] = useState([
+    {name: "DandelionFlower", health: 0},
+    {name: "RoseFlower", health: 0},
+    {name: "OrchidFlower", health:0},
+    {name: "RoseFlower", health: 0},
+    {name: "OrchidFlower", health: 0},
+    {name: "TulipFlower", health: 0}
+  ]);
+
+  const changeFlower = (index, newName, newHealth) => {
+    let newFlower = {name: newName, health: newHealth}
+    setFlowerSeating([
+      ...flowerSeating.slice(0,index),
+      newFlower,
+      ...flowerSeating.slice(index + 1)
+    ]);
+  }
+
+  const printFlower = () => {
+    console.log(flowerSeating);
+  }
   
   /*var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -77,16 +98,13 @@ const MyGarden = ({navigation}) => {
   var plantsInGround = (
     // TODO: make this dynamic somehow
     <View style={{flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "100%", 
-        justifyContent: "space-around", position: 'absolute', top: '25%'}}>
-        {img({name: "Barren", style: styles.plantTile})}
-        {img({name: "Barren", style: styles.plantTile})}
-        {img({name: "Barren", style: styles.plantTile})}
-        {img({name: "Barren", style: styles.plantTile})}
-        {img({name: "Barren", style: styles.plantTile})}
-        {img({name: "Barren", style: styles.plantTile})}
-        {img({name: "Barren", style: styles.plantTile})}
-        {img({name: "Barren", style: styles.plantTile})}
-        {img({name: "Barren", style: styles.plantTile})}
+        justifyContent: "space-around", position: 'absolute', top: '33%'}}>
+        {img({name: flowerSeating[0].name, style: styles.plantTile})}
+        {img({name: flowerSeating[1].name, style: styles.plantTile})}
+        {img({name: flowerSeating[2].name, style: styles.plantTile})}
+        {img({name: flowerSeating[3].name, style: styles.plantTile})}
+        {img({name: flowerSeating[4].name, style: styles.plantTile})}
+        {img({name: flowerSeating[5].name, style: styles.plantTile})}
     </View>
   );
 
@@ -99,18 +117,22 @@ const MyGarden = ({navigation}) => {
         />
       </View>
       <View style={{ flex:4, backgroundColor: "lightgreen"}}>
-        <ImageZoom cropWidth="100%"
-                   cropHeight="100%"
-                   imageWidth={"100%"}
-                   imageHeight={"100%"}>
+        <Button
+            title = "Change flower"
+            onPress = { () => changeFlower(3, "TulipFlower", 40)}
+          />
+          <ImageZoom cropWidth="100%"
+                    cropHeight="100%"
+                    imageWidth={"100%"}
+                    imageHeight={"100%"}>
 
-                    {img({name: season+"-bg", style: styles.overallBG})}
+                      {img({name: season+"-bg", style: styles.overallBG})}
 
-                    <View style={{position:"absolute", height:"100%", width:"100%"}}>
-                      {plantsInGround}
-                    </View>
-                  
-        </ImageZoom>
+                      <View style={{position:"absolute", height:"100%", width:"100%"}}>
+                        {plantsInGround}
+                      </View>
+                    
+          </ImageZoom>
         <View style={{position: 'absolute', justifyContent:'center'}}>       
           <Text>
             Current date: {date.toDateString() + "\n"}
@@ -125,7 +147,7 @@ const MyGarden = ({navigation}) => {
         </Text>
       </View>
     </View>
-  )
+  );
 }
 
 export default MyGardenNav;
