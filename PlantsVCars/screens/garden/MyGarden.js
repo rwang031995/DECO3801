@@ -1,5 +1,5 @@
 import {Text, View, Button, Image, StyleSheet} from "react-native";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -44,6 +44,27 @@ const styles = StyleSheet.create({
 
 const MyGarden = ({navigation}) => {
   const [inventory, setInventory] = useState([]);
+  const [flowerSeating, setFlowerSeating] = useState([
+    {name: "DandelionFlower", health: 0},
+    {name: "RoseFlower", health: 0},
+    {name: "OrchidFlower", health:0},
+    {name: "RoseFlower", health: 0},
+    {name: "OrchidFlower", health: 0},
+    {name: "TulipFlower", health: 0}
+  ]);
+
+  const changeFlower = (index, newName, newHealth) => {
+    let newFlower = {name: newName, health: newHealth}
+    setFlowerSeating([
+      ...flowerSeating.slice(0,index),
+      newFlower,
+      ...flowerSeating.slice(index + 1)
+    ]);
+  }
+
+  const printFlower = () => {
+    console.log(flowerSeating);
+  }
   
   var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -68,12 +89,12 @@ const MyGarden = ({navigation}) => {
     // TODO: make this dynamic somehow
     <View style={{flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "100%", 
         justifyContent: "space-around", position: 'absolute', top: '33%'}}>
-        {img({name: "DandelionFlower", style: styles.plantTile})}
-        {img({name: "RoseFlower", style: styles.plantTile})}
-        {img({name: "OrchidFlower", style: styles.plantTile})}
-        {img({name: "RoseFlower", style: styles.plantTile})}
-        {img({name: "OrchidFlower", style: styles.plantTile})}
-        {img({name: "TulipFlower", style: styles.plantTile})}
+        {img({name: flowerSeating[0].name, style: styles.plantTile})}
+        {img({name: flowerSeating[1].name, style: styles.plantTile})}
+        {img({name: flowerSeating[2].name, style: styles.plantTile})}
+        {img({name: flowerSeating[3].name, style: styles.plantTile})}
+        {img({name: flowerSeating[4].name, style: styles.plantTile})}
+        {img({name: flowerSeating[5].name, style: styles.plantTile})}
     </View>
   );
 
@@ -85,6 +106,10 @@ const MyGarden = ({navigation}) => {
           onPress = { () => navigation.navigate("My Collection")}
         />
       </View>
+      <Button
+          title = "Change flower"
+          onPress = { () => changeFlower(3, "TulipFlower", 40)}
+        />
       <View style={{ flex:4, backgroundColor: "lightgreen", display:'flex'}}>
         {seasonBG}
         <View style={{position: 'absolute', justifyContent:'center'}}>       
