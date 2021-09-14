@@ -97,7 +97,7 @@ const MyGarden = ({navigation}) => {
       </View> 
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "orange"}}>
         <Text>
-          Inventory: {inventory.length == 0 ? "Empty" : inventory}
+          <Inventory/>
         </Text>
       </View>
     </View>

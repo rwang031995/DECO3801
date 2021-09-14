@@ -4,9 +4,9 @@ import { set } from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ITEM_KEYS = {
-    itemWater = "@key_Water",
-    itemSun = "@key_Sun",
-    itemFertilizer = "@key_Fertilizer"
+    itemWater: "@key_Water",
+    itemSun: "@key_Sun",
+    itemFertilizer: "@key_Fertilizer"
 }
 
 const Inventory = () => {
@@ -20,11 +20,13 @@ const Inventory = () => {
     // otherwise, if key doesn't exist, store a new key with a default value
     useEffect(() => {
         getItemData(ITEM_KEYS.itemWater).then( itemData => {
+            console.log("YOOOOOOOOOO", itemData, "\n")
             if (itemData == null) {
                 const waterDefault = {name: "Water", quantity: 10}
                 setItemData(ITEM_KEYS.itemWater, waterDefault)
                 setWater(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
             } else {
+                console.log("water exists\n")
                 setWater(itemData)
             }      
         });
@@ -48,11 +50,30 @@ const Inventory = () => {
         });
     }, []);
 
+    // on data change (when buttons are pressed)
+    useEffect(() => {
+        console.log("updating items")
+        console.log(water);
+        setItemData(ITEM_KEYS.itemWater, water);
+        setItemData(ITEM_KEYS.itemFertilizer, fertilizer);
+        setItemData(ITEM_KEYS.itemSun, sun);
+    }, [water, sun, fertilizer]);
+
     // visual
     return (
-        <Text>
-            Inventory rewrite {water.name}
-        </Text>
+        <>
+            <Text>
+                Items: {water.name}: {water.quantity}
+            </Text>
+            <TouchableOpacity onPress={() => {
+                                                water.quantity++;
+                                                setWater({name: "Water", quantity: water.quantity});
+                                            }}>
+                <Text>
+                    Add Water
+                </Text>
+            </TouchableOpacity>
+        </>
     );
 }
 
