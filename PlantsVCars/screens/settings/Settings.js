@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {getSettings, setSetting, STORAGE_KEY} from "./Storage"
+import {getStorage, setStorage, STORAGE_KEY} from "./Storage"
 
 import {ScrollView, Switch, Text, TouchableOpacity, View} from "react-native";
 import {StyleSheet} from "react-native";
@@ -70,18 +70,18 @@ const ConfigureTransport = () => {
 
     /* Get settings from internal storage */
     useEffect(() => {
-        getSettings(STORAGE_KEY.hasBicycle, setHasBicycle)
-        getSettings(STORAGE_KEY.hasScooter, setHasScooter)
-        getSettings(STORAGE_KEY.hasBus, setHasBus)
-        getSettings(STORAGE_KEY.hasTrain, setHasTrain)
+        getStorage(STORAGE_KEY.hasBicycle, setHasBicycle)
+        getStorage(STORAGE_KEY.hasScooter, setHasScooter)
+        getStorage(STORAGE_KEY.hasBus, setHasBus)
+        getStorage(STORAGE_KEY.hasTrain, setHasTrain)
     }, [])
 
     /* Set settings in internal storage */
     useEffect(() => {
-        setSetting(STORAGE_KEY.hasBicycle, hasBicycle)
-        setSetting(STORAGE_KEY.hasScooter, hasScooter)
-        setSetting(STORAGE_KEY.hasBus, hasBus)
-        setSetting(STORAGE_KEY.hasTrain, hasTrain)
+        setStorage(STORAGE_KEY.hasBicycle, hasBicycle)
+        setStorage(STORAGE_KEY.hasScooter, hasScooter)
+        setStorage(STORAGE_KEY.hasBus, hasBus)
+        setStorage(STORAGE_KEY.hasTrain, hasTrain)
     }, [hasBicycle, hasScooter, hasBus, hasTrain])
 
     return <SettingsComponent settingsOptions={settingsOptions}/>
@@ -190,7 +190,7 @@ const Settings = ({navigation}) => {
             setDate: () => setDate(),
 
             onPress: () => {
-                setSetting(STORAGE_KEY.age, age)
+                setStorage(STORAGE_KEY.age, age)
                 setPopupVis(false)
             }
         }
