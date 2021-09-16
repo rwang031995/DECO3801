@@ -63,45 +63,47 @@ const Inventory = () => {
     // visual
     return (
         <>
-            <>
+            <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
                 {img({name: "Water", style: styles.itemIcon})}
                 <Text>
                     {water.quantity}
                 </Text>
-                <TouchableOpacity onPress={() => {
+                <TouchableOpacity style={styles.button} onPress={() => {
                     setWater({name: water.name, quantity: water.quantity + 1})
                 }}>
                     <Text>
                         +++
                     </Text>
                 </TouchableOpacity>
-            </>
-            <>
+            </View>
+
+            <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
                 {img({name: "Sunlight", style: styles.itemIcon})}
                 <Text>
                     {sun.quantity}
                 </Text>
-                <TouchableOpacity onPress={() => {
+                <TouchableOpacity style={styles.button} onPress={() => {
                     setSun({name: sun.name, quantity: sun.quantity + 1})
                 }}>
                     <Text>
                         +++
                     </Text>
                 </TouchableOpacity>
-            </>
-            <>
+            </View>
+            
+            <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
                 {img({name: "Fertiliser", style: styles.itemIcon})}
                 <Text>
                     {fertilizer.quantity}
                 </Text>
-                <TouchableOpacity onPress={() => {
+                <TouchableOpacity style={styles.button} onPress={() => {
                     setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1})
                 }}>
                     <Text>
                         +++
                     </Text>
                 </TouchableOpacity>
-            </>
+            </View>
         </>
     );
 }
@@ -137,6 +139,7 @@ const styles = StyleSheet.create({
     button: {
         alignItems: "center",
         backgroundColor: "#DDDDDD",
+        borderRadius: 5,
         padding: 4,
     },
     buttonText: {
@@ -149,7 +152,7 @@ const styles = StyleSheet.create({
         height: '200%',
         resizeMode: 'contain',
         position: 'relative'
-    }
+    },
 })
 
 export default Inventory;
