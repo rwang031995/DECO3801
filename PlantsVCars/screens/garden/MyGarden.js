@@ -1,23 +1,30 @@
-import {Text, View, Button, Image, StyleSheet} from "react-native";
+import {Text, View, Button, Image, StyleSheet, Dimensions} from "react-native";
 import React, {useState} from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from '@react-navigation/stack';
+import {NavigationContainer} from "@react-navigation/native";
+import {createStackNavigator} from '@react-navigation/stack';
+
+//RETRIEVED FROM https://morioh.com/p/e42eec224939
+import ImageZoom from 'react-native-image-pan-zoom'
 
 import Inventory from "./Inventory";
 import {img} from "../../images/manifest"
-
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
 
 var date = new Date();
-var season = seasons[Math.ceil((date.getMonth() + 1)/4)]; // getMonth returns month from 0 - 11
+var season = seasons[Math.ceil((date.getMonth() + 1) / 4)]; // getMonth returns month from 0 - 11
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const Stack = createStackNavigator();
 
 const MyGardenNav = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name = "Garden" component = {MyGarden} options = {{headerShown: false}}/>
-      <Stack.Screen name = "My Collection" component = {MyCollection} options = {{headerShown: false}}/>   
+      <Stack.Screen name="Garden" component={MyGarden}
+                    options={{headerShown: false}}/>
+      <Stack.Screen name="My Collection" component={MyCollection}
+                    options={{headerShown: false}}/>
     </Stack.Navigator>
   )
 }
@@ -31,19 +38,54 @@ const MyCollection = () => {
 }
 
 const styles = StyleSheet.create({
-    bgTile: {
-      width: "33%",
-      height: "33%",
-    },
-    plantTile: {
-        height: "25%",
-        width: "25%",
-        margin: "4%"
-    }
-  })
+  bgTile: {
+    width: "33%",
+    height: "33%",
+  },
+  plantTile: {
+    height: "20%",
+    width: "20%",
+    margin: "4%"
+  },
+  overallBG: {
+    height: windowHeight,
+    width: windowWidth
+  }
+})
 
 const MyGarden = ({navigation}) => {
   const [inventory, setInventory] = useState([]);
+  const [flowerSeating, setFlowerSeating] = useState([
+    {name: "DandelionFlower", health: 50},
+    {name: "RoseFlower", health: 50},
+    {name: "OrchidFlower", health:50},
+    {name: "RoseFlower", health: 0},
+    {name: "OrchidFlower", health: 0},
+    {name: "TulipFlower", health: 0}
+  ]);
+  const [gardenHealth, setGardenHealth] = useState(0);
+
+  /**
+   * Changes the garden flower at index 'index' to flower with name 'newName'
+   * and sets its health to 'newHealth'.
+   */
+
+  const getGardenHealth = () => {
+    var totalHealth = 0;
+    for (let i = 0; i < flowerSeating.length; i++) {
+      totalHealth = totalHealth + flowerSeating[i].health;
+    }
+    setGardenHealth(totalHealth/flowerSeating.length);
+  }
+
+  const changeFlower = (index, newName, newHealth) => {
+    let newFlower = {name: newName, health: newHealth}
+    setFlowerSeating([
+      ...flowerSeating.slice(0, index),
+      newFlower,
+      ...flowerSeating.slice(index + 1)
+    ]);
+  }
   
   var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -60,36 +102,76 @@ const MyGarden = ({navigation}) => {
         {img({name: season, style: styles.bgTile})}
         {img({name: season, style: styles.bgTile})}
         {img({name: season, style: styles.bgTile})}
-    </View> 
-  );
-  
-  var plantsInGround = (
-    // TODO: make this dynamic somehow
-    <View style={{flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "100%", 
-        justifyContent: "space-around", position: 'absolute', top: '33%'}}>
-        {img({name: "Testflower", style: styles.plantTile})}
-        {img({name: "RoseFlower", style: styles.plantTile})}
-        {img({name: "OrchidFlower", style: styles.plantTile})}
-        {img({name: "RoseFlower", style: styles.plantTile})}
-        {img({name: "OrchidFlower", style: styles.plantTile})}
-        {img({name: "Testflower", style: styles.plantTile})}
     </View>
   );
 
+  var plantsInGround = (
+    // TODO: make this dynamic somehow
+    <View style={{
+      flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "80%",
+      justifyContent: "space-around", position: 'absolute', top: '20%'
+    }}>
+      {img({name: flowerSeating[0].name, style: styles.plantTile})}
+      {img({name: flowerSeating[1].name, style: styles.plantTile})}
+      {img({name: flowerSeating[2].name, style: styles.plantTile})}
+      {img({name: flowerSeating[3].name, style: styles.plantTile})}
+      {img({name: flowerSeating[4].name, style: styles.plantTile})}
+      {img({name: flowerSeating[5].name, style: styles.plantTile})}
+    </View>
+  );
+
+
+
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ alignItems: 'center', backgroundColor: "darkorange"}}>
-        <Button
-          title = "My Collection"
-          onPress = { () => navigation.navigate("My Collection")}
-        />
-      </View>
-      <View style={{ flex:4, backgroundColor: "lightgreen", display:'flex'}}>
-        {seasonBG}
-        <View style={{position: 'absolute', justifyContent:'center'}}>       
+    <View style={{flex: 1}}>
+      <View style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: "orange"
+      }}>
+        <View style={{ alignItems: 'center', backgroundColor: "darkorange"}}>
+          <Button
+            title = "My Collection"
+            onPress = { () => navigation.navigate("My Collection")}
+          />
+        </View>
+        <View>
+            <Text> garden health is {gardenHealth} </Text>
+        </View>
+        <View style={{flex: 6, backgroundColor: "lightgreen"}}>
+
+          <ImageZoom cropWidth={windowWidth}
+                    cropHeight={windowHeight}
+                    imageWidth={windowWidth}
+                    imageHeight={windowHeight}
+                    minScale={1}
+          >
+            {img({name: season+"-bg", style: styles.overallBG})}
+            <View style={{position:"absolute", height:"100%", width:"100%"}}>
+              {plantsInGround}
+            </View>
+
+          </ImageZoom>
+
+          {/*<ImageZoom*/}
+          {/*  maxZoom={1.5}*/}
+          {/*  minZoom={1}*/}
+          {/*  initialZoom={1}*/}
+          {/*  bindToBorders={true}*/}
+          {/*>*/}
+          {/*    {img({name: season + "-bg", style: styles.overallBG})}*/}
+          {/*  <View style={{position:"absolute", height:"100%", width:"100%"}}>*/}
+          {/*    {plantsInGround}*/}
+          {/*  </View>*/}
+
+          {/*</ImageZoom>*/}
+
+        </View>
+          
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "orange", width:"100%"}}>
           <Text>
-            Current date: {date.toDateString() + "\n"}
-            Current season: {season + "\n"}
+            Inventory: {inventory.length === 0 ? "Empty" : inventory}
           </Text>
         </View>
         {plantsInGround}
@@ -98,7 +180,7 @@ const MyGarden = ({navigation}) => {
         <Inventory/>
       </View>
     </View>
-  )
+  );
 }
 
 export default MyGardenNav;
