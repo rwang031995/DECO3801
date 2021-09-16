@@ -3,6 +3,8 @@ import React, {useState, useEffect} from "react";
 import { set } from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import {img} from "../../images/manifest"
+
 const ITEM_KEYS = {
     itemWater: "@key_Water",
     itemSun: "@key_Sun",
@@ -20,7 +22,6 @@ const Inventory = () => {
     // otherwise, if key doesn't exist, store a new key with a default value
     useEffect(() => {
         getItemData(ITEM_KEYS.itemWater).then( itemData => {
-            console.log("YOOOOOOOOOO", itemData, "\n")
             if (itemData == null) {
                 const waterDefault = {name: "Water", quantity: 10}
                 setItemData(ITEM_KEYS.itemWater, waterDefault)
@@ -62,17 +63,45 @@ const Inventory = () => {
     // visual
     return (
         <>
-            <Text>
-                Items: {water.name}: {water.quantity}
-            </Text>
-            <TouchableOpacity onPress={() => {
-                                                water.quantity++;
-                                                setWater({name: "Water", quantity: water.quantity});
-                                            }}>
+            <>
+                {img({name: "Water", style: styles.itemIcon})}
                 <Text>
-                    Add Water
+                    {water.quantity}
                 </Text>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                    setWater({name: water.name, quantity: water.quantity + 1})
+                }}>
+                    <Text>
+                        +++
+                    </Text>
+                </TouchableOpacity>
+            </>
+            <>
+                {img({name: "Sunlight", style: styles.itemIcon})}
+                <Text>
+                    {sun.quantity}
+                </Text>
+                <TouchableOpacity onPress={() => {
+                    setSun({name: sun.name, quantity: sun.quantity + 1})
+                }}>
+                    <Text>
+                        +++
+                    </Text>
+                </TouchableOpacity>
+            </>
+            <>
+                {img({name: "Fertiliser", style: styles.itemIcon})}
+                <Text>
+                    {fertilizer.quantity}
+                </Text>
+                <TouchableOpacity onPress={() => {
+                    setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1})
+                }}>
+                    <Text>
+                        +++
+                    </Text>
+                </TouchableOpacity>
+            </>
         </>
     );
 }
@@ -112,6 +141,14 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 8
+    },
+
+    itemIcon: {
+        flex: 1,
+        width: '200%',
+        height: '200%',
+        resizeMode: 'contain',
+        position: 'relative'
     }
 })
 

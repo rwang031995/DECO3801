@@ -49,7 +49,6 @@ const MyGarden = ({navigation}) => {
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
         {img({name: season+"-top", style: styles.bgTile})}
         {img({name: season+"-duck", style: styles.bgTile})}
-        {img({name: season+"-top", style: styles.bgTile})}
 
         {img({name: season, style: styles.bgTile})}
         {img({name: season, style: styles.bgTile})}
@@ -95,10 +94,8 @@ const MyGarden = ({navigation}) => {
         </View>
         {plantsInGround}
       </View> 
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "orange"}}>
-        <Text>
-          <Inventory/>
-        </Text>
+      <View style={{ flex: 1, flexDirection: "row", backgroundColor: 'white', justifyContent: 'center', alignItems: 'center'}}>
+        <Inventory/>
       </View>
     </View>
   )
