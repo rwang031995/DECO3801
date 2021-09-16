@@ -61,7 +61,7 @@ const ChallengesScreen = () => {
      * Gives the start of the week of the current time.
      */
     const currentWeek = () => {
-        return moment().clone().startOf('isoWeek').add(1, 'days');
+        return moment().clone().startOf('isoWeek').add(3, 'days');
     }
 
     /**
@@ -86,17 +86,24 @@ const ChallengesScreen = () => {
             }
         } catch (err) {
             console.log("load week error");
+            
         }
     }
 
     /**
-     * Do this when the app opens to generate new challenges for each week.
+     * #FIXME, It rolls over but it repeatedly calls itself until storedWeek changes. 
      */
-         const updateWeek = () => {
+        const updateWeek = () => {
             if (moment().clone().subtract(7, 'days').isSameOrAfter(storedWeek)) {
                 changeWeek(currentWeek());
-                saveWeek();
+                generateChallenges();
+                console.log("hello");
             }
+        }
+
+        const saveItems = () => {
+            saveWeek();
+            saveChallenges();
         }
 
     //--------------------------------------------------------------------------------
@@ -162,6 +169,8 @@ const ChallengesScreen = () => {
     ]);
     const [storedWeek, changeWeek] = useState(currentWeek());
 
+
+
     //--------------------------------------------------------------------------------
 
     /**
@@ -171,7 +180,10 @@ const ChallengesScreen = () => {
         loadLevel();
         loadWeek();
         loadChallenges();
-        updateWeek();
+        const interval = setInterval(() => {
+            updateWeek();
+            saveItems();
+        }, 10000)
     }, []);
 
     /**
@@ -182,7 +194,6 @@ const ChallengesScreen = () => {
             <View style={styles.container}>
                 <Text style={styles.level}> Level {level}</Text>
                 <Button title="Level test" onPress = {() => {levelTo(2)}}/>
-                <Text> currentWeek 1 {JSON.stringify(storedWeek)}</Text>
                 <Button title="generate challenges" onPress = {() => {generateChallenges()}}/>
                 <Text> Challenge 1: {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
                 <Text> Bonus Challenges </Text>
@@ -192,14 +203,20 @@ const ChallengesScreen = () => {
         return (
             <View style={styles.container}>
                 <Text style={styles.level}> Level {level}</Text>
+                <Text style={styles.headings}> Challenges </Text>
                 <Button title="Level test" onPress = {() => {levelTo(1)}}/>
-                <Text> currentWeek 2 {JSON.stringify(storedWeek)}</Text>
                 <Button title="generate challenges" onPress = {() => {generateChallenges()}}/>
                 <Button title="save challenges" onPress = {() => {saveChallenges()}}/>
-                <Text> Challenge 1: {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
-                <Text> status: {JSON.stringify(challenges[0].completed)}</Text>
-                <Text> Challenge 2: {JSON.stringify(challenges[1].challenge).substring(1,JSON.stringify(challenges[1].challenge).length - 1)}</Text>
-                <Text> Bonus Challenges </Text>
+                <View style={styles.breakline}></View> 
+                <View style={styles.challengeContainer}>
+                    <Text style={styles.challengeText}> {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
+                    <Text style={styles.challengeText}> status: {JSON.stringify(challenges[0].completed)}</Text>
+                </View>
+                <View style={styles.challengeContainer}>
+                    <Text style={styles.challengeText}> {JSON.stringify(challenges[1].challenge).substring(1,JSON.stringify(challenges[1].challenge).length - 1)}</Text>
+                </View>
+
+                <Text style={styles.headings}> Bonus Challenges </Text>
             </View>
         )
     }
@@ -221,6 +238,30 @@ const styles = StyleSheet.create({
     level: {
         fontSize: 20,
         fontWeight: 'bold',
+    },
+    headings: {
+        fontSize: 30,
+        fontWeight: 'bold',
+    },
+    challenges: {
+        fontSize: 15,
+    },
+    challengeContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        borderBottomColor: 'black',
+        borderBottomWidth: 2,
+        width: '100%',
+    },
+    challengeText: {
+        fontSize: 20,
+        paddingTop: 15,
+        paddingBottom: 15,
+    },
+    breakline: {
+        borderBottomColor: 'black',
+        borderBottomWidth: 2,
+        width: '100%',
     }
 })
 
