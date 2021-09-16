@@ -61,7 +61,7 @@ const ChallengesScreen = () => {
      * Gives the start of the week of the current time.
      */
     const currentWeek = () => {
-        return moment().clone().startOf('isoWeek').add(3, 'days');
+        return moment().clone().startOf('isoWeek').add(1, 'days');
     }
 
     /**
@@ -69,7 +69,7 @@ const ChallengesScreen = () => {
      */
     const saveWeek = async() => {
         try {
-            await AsyncStorage.setItem("currentWeek", JSON.stringify(currentWeek()));
+            await AsyncStorage.setItem("currentWeek", JSON.stringify(storedWeek));
         } catch (err) {
                 console.log("save week error");
         }
@@ -93,18 +93,20 @@ const ChallengesScreen = () => {
     /**
      * #FIXME, It rolls over but it repeatedly calls itself until storedWeek changes. 
      */
-        const updateWeek = () => {
-            if (moment().clone().subtract(7, 'days').isSameOrAfter(storedWeek)) {
-                changeWeek(currentWeek());
-                generateChallenges();
-                console.log("hello");
-            }
+    const updateWeek = () => {
+        if (moment().clone().subtract(1, 'days').isSameOrAfter(storedWeek)) {
+            console.log("hello")
         }
+    }
 
-        const saveItems = () => {
-            saveWeek();
-            saveChallenges();
-        }
+    const saveItems = () => {
+        saveWeek();
+        saveChallenges();
+    }
+
+    const printStoredWeek = () => {
+        console.log(storedWeek);
+    }
 
     //--------------------------------------------------------------------------------
 
@@ -182,9 +184,13 @@ const ChallengesScreen = () => {
         loadChallenges();
         const interval = setInterval(() => {
             updateWeek();
-            saveItems();
+            console.log(storedWeek);
         }, 10000)
     }, []);
+
+    // console.log(storedWeek.isSameOrAfter(moment("2020-03-03")));
+    //  In updateWeek, try see if current moment - 7 days is after stored week.
+    // console.log(moment("2020-03-03").isSameOrAfter(storedWeek));
 
     /**
      * View screen
@@ -204,7 +210,7 @@ const ChallengesScreen = () => {
             <View style={styles.container}>
                 <Text style={styles.level}> Level {level}</Text>
                 <Text style={styles.headings}> Challenges </Text>
-                <Button title="Level test" onPress = {() => {levelTo(1)}}/>
+                <Button title="print stored week" onPress = {() => {printStoredWeek()}}/>
                 <Button title="generate challenges" onPress = {() => {generateChallenges()}}/>
                 <Button title="save challenges" onPress = {() => {saveChallenges()}}/>
                 <View style={styles.breakline}></View> 
