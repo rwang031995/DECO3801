@@ -56,13 +56,27 @@ const styles = StyleSheet.create({
 const MyGarden = ({navigation}) => {
   const [inventory, setInventory] = useState([]);
   const [flowerSeating, setFlowerSeating] = useState([
-    {name: "DandelionFlower", health: 0},
-    {name: "RoseFlower", health: 0},
-    {name: "OrchidFlower", health: 0},
+    {name: "DandelionFlower", health: 50},
+    {name: "RoseFlower", health: 50},
+    {name: "OrchidFlower", health:50},
     {name: "RoseFlower", health: 0},
     {name: "OrchidFlower", health: 0},
     {name: "TulipFlower", health: 0}
   ]);
+  const [gardenHealth, setGardenHealth] = useState(0);
+
+  /**
+   * Changes the garden flower at index 'index' to flower with name 'newName'
+   * and sets its health to 'newHealth'.
+   */
+
+  const getGardenHealth = () => {
+    var totalHealth = 0;
+    for (let i = 0; i < flowerSeating.length; i++) {
+      totalHealth = totalHealth + flowerSeating[i].health;
+    }
+    setGardenHealth(totalHealth/flowerSeating.length);
+  }
 
   const changeFlower = (index, newName, newHealth) => {
     let newFlower = {name: newName, health: newHealth}
@@ -72,12 +86,8 @@ const MyGarden = ({navigation}) => {
       ...flowerSeating.slice(index + 1)
     ]);
   }
-
-  const printFlower = () => {
-    console.log(flowerSeating);
-  }
-
-  /*var seasonBG = (
+  
+  var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
         {img({name: season+"-top", style: styles.bgTile})}
         {img({name: season+"-duck", style: styles.bgTile})}
@@ -94,7 +104,7 @@ const MyGarden = ({navigation}) => {
         {img({name: season, style: styles.bgTile})}
         {img({name: season, style: styles.bgTile})}
     </View>
-  );*/
+  );
 
   var plantsInGround = (
     // TODO: make this dynamic somehow
@@ -115,61 +125,56 @@ const MyGarden = ({navigation}) => {
 
   return (
     <View style={{flex: 1}}>
-      <View style={{ alignItems: 'center', backgroundColor: "darkorange"}}>
-        <Button
-          title = "My Collection"
-          onPress = { () => navigation.navigate("My Collection")}
-        />
-      </View>
-      <View style={{flex: 6, backgroundColor: "lightgreen"}}>
-        <Button
-          title="Change flower"
-          onPress={() => changeFlower(3, "TulipFlower", 40)}
-        />
-
-        <ImageZoom cropWidth={windowWidth}
-                   cropHeight={windowHeight}
-                   imageWidth={windowWidth}
-                   imageHeight={windowHeight}
-                   minScale={1}
-        >
-          {img({name: season+"-bg", style: styles.overallBG})}
-          <View style={{position:"absolute", height:"100%", width:"100%"}}>
-            {plantsInGround}
-          </View>
-
-        </ImageZoom>
-
-        {/*<ImageZoom*/}
-        {/*  maxZoom={1.5}*/}
-        {/*  minZoom={1}*/}
-        {/*  initialZoom={1}*/}
-        {/*  bindToBorders={true}*/}
-        {/*>*/}
-        {/*    {img({name: season + "-bg", style: styles.overallBG})}*/}
-        {/*  <View style={{position:"absolute", height:"100%", width:"100%"}}>*/}
-        {/*    {plantsInGround}*/}
-        {/*  </View>*/}
-
-        {/*</ImageZoom>*/}
-
-      </View>
-
-      <View style={{position: 'absolute', justifyContent: 'center'}}>
-        <Text>
-          Current date: {date.toDateString() + "\n"}
-          Current season: {season + "\n"}
-        </Text>
-      </View>
       <View style={{
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: "orange"
       }}>
-        <Text>
-          Inventory: {inventory.length === 0 ? "Empty" : inventory}
-        </Text>
+        <View style={{ alignItems: 'center', backgroundColor: "darkorange"}}>
+          <Button
+            title = "My Collection"
+            onPress = { () => navigation.navigate("My Collection")}
+          />
+        </View>
+        <View>
+            <Text> garden health is {gardenHealth} </Text>
+        </View>
+        <View style={{flex: 6, backgroundColor: "lightgreen"}}>
+
+          <ImageZoom cropWidth={windowWidth}
+                    cropHeight={windowHeight}
+                    imageWidth={windowWidth}
+                    imageHeight={windowHeight}
+                    minScale={1}
+          >
+            {img({name: season+"-bg", style: styles.overallBG})}
+            <View style={{position:"absolute", height:"100%", width:"100%"}}>
+              {plantsInGround}
+            </View>
+
+          </ImageZoom>
+
+          {/*<ImageZoom*/}
+          {/*  maxZoom={1.5}*/}
+          {/*  minZoom={1}*/}
+          {/*  initialZoom={1}*/}
+          {/*  bindToBorders={true}*/}
+          {/*>*/}
+          {/*    {img({name: season + "-bg", style: styles.overallBG})}*/}
+          {/*  <View style={{position:"absolute", height:"100%", width:"100%"}}>*/}
+          {/*    {plantsInGround}*/}
+          {/*  </View>*/}
+
+          {/*</ImageZoom>*/}
+
+        </View>
+          
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "orange", width:"100%"}}>
+          <Text>
+            Inventory: {inventory.length === 0 ? "Empty" : inventory}
+          </Text>
+        </View>
       </View>
     </View>
   );
