@@ -58,18 +58,11 @@ const ChallengesScreen = () => {
      */
 
     /**
-     * Gives the start of the week of the current time.
-     */
-    const currentWeek = () => {
-        return moment().clone().startOf('isoWeek').add(1, 'days');
-    }
-
-    /**
      * save globally stored week. 
      */
     const saveWeek = async() => {
         try {
-            await AsyncStorage.setItem("currentWeek", JSON.stringify(storedWeek));
+            await AsyncStorage.setItem("currentWeek", storedWeek);
         } catch (err) {
                 console.log("save week error");
         }
@@ -82,30 +75,12 @@ const ChallengesScreen = () => {
         try {
             let week = await AsyncStorage.getItem("currentWeek");
             if (week != null) {
-                changeWeek(JSON.parse(week));
+                changeWeek(week);
             }
         } catch (err) {
             console.log("load week error");
             
         }
-    }
-
-    /**
-     * #FIXME, It rolls over but it repeatedly calls itself until storedWeek changes. 
-     */
-    const updateWeek = () => {
-        if (moment().clone().subtract(1, 'days').isSameOrAfter(storedWeek)) {
-            console.log("hello")
-        }
-    }
-
-    const saveItems = () => {
-        saveWeek();
-        saveChallenges();
-    }
-
-    const printStoredWeek = () => {
-        console.log(storedWeek);
     }
 
     //--------------------------------------------------------------------------------
@@ -157,7 +132,7 @@ const ChallengesScreen = () => {
     }
 
     //--------------------------------------------------------------------------------
-
+    
     /**
      * Variables for global storage using Async.
      */
@@ -169,28 +144,41 @@ const ChallengesScreen = () => {
         {challenge : "Take a bus once this week", completed : false}, 
         {challenge : "Take the train once this week", completed : false}
     ]);
-    const [storedWeek, changeWeek] = useState(currentWeek());
-
-
+    const [storedWeek, changeWeek] = useState("2021-09-06T14:00:00.000Z");
 
     //--------------------------------------------------------------------------------
-
     /**
      * Load all the globally stored data upon opening page upon entering page.
      */
-     useEffect(() => {
-        loadLevel();
-        loadWeek();
-        loadChallenges();
-        const interval = setInterval(() => {
-            updateWeek();
-            console.log(storedWeek);
-        }, 10000)
-    }, []);
 
-    // console.log(storedWeek.isSameOrAfter(moment("2020-03-03")));
-    //  In updateWeek, try see if current moment - 7 days is after stored week.
-    // console.log(moment("2020-03-03").isSameOrAfter(storedWeek));
+
+    const updateWeeklyReset = () => {
+        var currentWeek = moment().startOf('isoWeek').add(1,'days');
+        var previousWeek = moment(storedWeek); 
+        if (currentWeek.clone().subtract(7, 'days').isSameOrAfter(previousWeek)) {
+            var newWeek = JSON.stringify(currentWeek).substring(1, JSON.stringify(currentWeek).length - 1)
+            changeWeek(newWeek);
+            generateChallenges();
+        }
+    }
+
+    const saveWeeklyReset = () => {
+        saveWeek();
+        saveChallenges();
+    }
+
+    useEffect(() => {
+        if (storedWeek === "2021-09-06T14:00:00.000Z") {
+            loadLevel();
+            loadWeek();
+            loadChallenges();
+        }
+        const interval = setInterval(() => {
+            updateWeeklyReset();
+            saveWeeklyReset();
+        }, 5000)
+        return () => clearInterval(interval)
+    }, [storedWeek ]);
 
     /**
      * View screen
@@ -210,9 +198,9 @@ const ChallengesScreen = () => {
             <View style={styles.container}>
                 <Text style={styles.level}> Level {level}</Text>
                 <Text style={styles.headings}> Challenges </Text>
-                <Button title="print stored week" onPress = {() => {printStoredWeek()}}/>
-                <Button title="generate challenges" onPress = {() => {generateChallenges()}}/>
-                <Button title="save challenges" onPress = {() => {saveChallenges()}}/>
+                <Text style={styles.level}> storedWeek = {JSON.stringify(storedWeek)} </Text>
+                <Button title="Level test" onPress = {() => {levelTo(1)}}/>
+                <Button title="save Week" onPress = {() => {saveWeek()}}/>
                 <View style={styles.breakline}></View> 
                 <View style={styles.challengeContainer}>
                     <Text style={styles.challengeText}> {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
