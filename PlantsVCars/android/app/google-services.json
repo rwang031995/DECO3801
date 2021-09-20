@@ -1,0 +1,40 @@
+  {
+  "project_info": {
+    "project_number": "90613998724",
+    "firebase_url": "https://plantsvcars-6ab45-default-rtdb.firebaseio.com",
+    "project_id": "plantsvcars-6ab45",
+    "storage_bucket": "plantsvcars-6ab45.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90613998724:android:0820c529c6751aa88e8ed1",
+        "android_client_info": {
+          "package_name": "com.plantsvcars"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "90613998724-b74qlmqlfpiqisp9r975pfll25glpr17.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAi6dmS8AGpYvYgAJWa4IZMqm1LmfGLqtI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "90613998724-b74qlmqlfpiqisp9r975pfll25glpr17.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

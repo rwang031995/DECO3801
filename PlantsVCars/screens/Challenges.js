@@ -20,9 +20,9 @@ const ChallengesScreen = () => {
     /**
      * save globally stored level. 
      */
-    const saveLevel = async(x) => {
+    const saveLevel = async() => {
         try {
-            await AsyncStorage.setItem("MyLevel", JSON.stringify(x));
+            await AsyncStorage.setItem("MyLevel", JSON.stringify(level));
         } catch (err) {
             console.log("save level error");
         }
@@ -42,15 +42,6 @@ const ChallengesScreen = () => {
         }
     }
 
-    /**
-     * Set current level to x and store into global.
-     */
-
-    const levelTo = (x) => {
-        setLevel(x);
-        saveLevel(x);
-    }
-
     //--------------------------------------------------------------------------------
 
     /**
@@ -58,18 +49,11 @@ const ChallengesScreen = () => {
      */
 
     /**
-     * Gives the start of the week of the current time.
-     */
-    const currentWeek = () => {
-        return moment().clone().startOf('isoWeek').add(3, 'days');
-    }
-
-    /**
      * save globally stored week. 
      */
     const saveWeek = async() => {
         try {
-            await AsyncStorage.setItem("currentWeek", JSON.stringify(currentWeek()));
+            await AsyncStorage.setItem("currentWeek", storedWeek);
         } catch (err) {
                 console.log("save week error");
         }
@@ -82,29 +66,13 @@ const ChallengesScreen = () => {
         try {
             let week = await AsyncStorage.getItem("currentWeek");
             if (week != null) {
-                changeWeek(JSON.parse(week));
+                changeWeek(week);
             }
         } catch (err) {
             console.log("load week error");
             
         }
     }
-
-    /**
-     * #FIXME, It rolls over but it repeatedly calls itself until storedWeek changes. 
-     */
-        const updateWeek = () => {
-            if (moment().clone().subtract(7, 'days').isSameOrAfter(storedWeek)) {
-                changeWeek(currentWeek());
-                generateChallenges();
-                console.log("hello");
-            }
-        }
-
-        const saveItems = () => {
-            saveWeek();
-            saveChallenges();
-        }
 
     //--------------------------------------------------------------------------------
 
@@ -155,36 +123,64 @@ const ChallengesScreen = () => {
     }
 
     //--------------------------------------------------------------------------------
-
+    
     /**
      * Variables for global storage using Async.
      */
-    const [level, setLevel] = useState(1);
-    const [chalComplete, setChalCompleted] = useState(false);
+    const [level, setLevel] = useState(2);
     const [challenges, setChallenges] = useState([    
         {challenge : "Walk to X once this Week", completed : false}, 
         {challenge : "Run to X once this Week", completed : false}, 
         {challenge : "Take a bus once this week", completed : false}, 
         {challenge : "Take the train once this week", completed : false}
     ]);
-    const [storedWeek, changeWeek] = useState(currentWeek());
-
-
-
+    const [storedWeek, changeWeek] = useState("2021-09-06T14:00:00.000Z");
     //--------------------------------------------------------------------------------
-
     /**
      * Load all the globally stored data upon opening page upon entering page.
      */
-     useEffect(() => {
-        loadLevel();
-        loadWeek();
-        loadChallenges();
+    const updateWeeklyReset = () => {
+        var currentWeek = moment().startOf('isoWeek').add(1,'days');
+        var previousWeek = moment(storedWeek); 
+        if (currentWeek.clone().subtract(7, 'days').isSameOrAfter(previousWeek)) {
+            var newWeek = JSON.stringify(currentWeek).substring(1, JSON.stringify(currentWeek).length - 1)
+            var challengesComplete = true;
+            for (var i = 0; i < challenges.length; i++) {
+                if (challenges[i].completed == false) {
+                    challengesComplete = false;
+                } 
+            }
+            generateChallenges();
+            if (challengesComplete && level < 4) {
+                setLevel(level + 1);
+            } else if (!challengesComplete && level > 1) {
+                setLevel(level - 1);
+            }
+            changeWeek(newWeek);
+        }
+    }
+
+    const saveWeeklyReset = () => {
+        saveWeek();
+        saveChallenges();
+        saveLevel();
+    }
+
+    const increaseLevel = () => {
+        setLevel(level + 1);
+    }
+    useEffect(() => {
+        if (storedWeek === "2021-09-06T14:00:00.000Z") {
+            loadLevel();
+            loadWeek();
+            loadChallenges();
+        }
         const interval = setInterval(() => {
-            updateWeek();
-            saveItems();
-        }, 10000)
-    }, []);
+            updateWeeklyReset();
+            saveWeeklyReset();
+        }, 5000)
+        return () => clearInterval(interval)
+    }, [storedWeek]);
 
     /**
      * View screen
@@ -193,10 +189,19 @@ const ChallengesScreen = () => {
         return (
             <View style={styles.container}>
                 <Text style={styles.level}> Level {level}</Text>
-                <Button title="Level test" onPress = {() => {levelTo(2)}}/>
-                <Button title="generate challenges" onPress = {() => {generateChallenges()}}/>
-                <Text> Challenge 1: {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
-                <Text> Bonus Challenges </Text>
+                <Text style={styles.headings}> Challenges </Text>
+                <Text style={styles.level}> storedWeek = {JSON.stringify(storedWeek)} </Text>
+                <Button title="inc lvl" onPress = {() => {increaseLevel()}}/>
+                <View style={styles.breakline}></View> 
+                <View style={styles.challengeContainer}>
+                    <Text style={styles.challengeText}> {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
+                    <Text style={styles.challengeText}> status: {JSON.stringify(challenges[0].completed)}</Text>
+                </View>
+                <View style={styles.challengeContainer}>
+                    <Text style={styles.challengeText}> {JSON.stringify(challenges[1].challenge).substring(1,JSON.stringify(challenges[1].challenge).length - 1)}</Text>
+                </View>
+
+                <Text style={styles.headings}> Bonus Challenges </Text>
             </View>
         )
     } else if (level == 2) {
@@ -204,9 +209,8 @@ const ChallengesScreen = () => {
             <View style={styles.container}>
                 <Text style={styles.level}> Level {level}</Text>
                 <Text style={styles.headings}> Challenges </Text>
-                <Button title="Level test" onPress = {() => {levelTo(1)}}/>
-                <Button title="generate challenges" onPress = {() => {generateChallenges()}}/>
-                <Button title="save challenges" onPress = {() => {saveChallenges()}}/>
+                <Text style={styles.level}> storedWeek = {JSON.stringify(storedWeek)} </Text>
+                <Button title="save Level" onPress = {() => {saveLevel()}}/>
                 <View style={styles.breakline}></View> 
                 <View style={styles.challengeContainer}>
                     <Text style={styles.challengeText}> {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
