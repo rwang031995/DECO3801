@@ -45,7 +45,7 @@ const ChallengesScreen = () => {
     //--------------------------------------------------------------------------------
 
     /**
-     * Code for current week and next week
+     * Code for current week and next week`127
      */
 
     /**

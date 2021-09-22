@@ -8,6 +8,19 @@ import PvCLeaderboard from './screens/Leaderboard';
 import MyGardenNav from './screens/garden/MyGarden'
 import ChallengesScreen from './screens/Challenges';
 import SettingsNav from "./screens/settings/Settings";
+import { auth, database } from './screens/settings/Firebase';
+
+
+database.ref('user/008').set(
+  {
+    name: "test",
+    age: 20
+  }
+).then(() => {
+    console.log("INSERTED!");
+  }).catch((error) => {
+    console.log(error);
+})
 
 const Tab = createBottomTabNavigator();
 
