@@ -1,309 +1,324 @@
 import React, {useEffect, useState} from "react";
-import {getStorage, setStorage, STORAGE_KEY} from "../settings/Storage";
+import {Button, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {questions} from "./BonusQuestionPool";
+import {getStorage, setStorage} from "../settings/Storage";
 
-import {
-  Button,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
-import {createStackNavigator} from "@react-navigation/stack";
+const NUM_OF_QUESTIONS = 3
 
-const Stack = createStackNavigator()
-
-const BonusChallengesButtons = ({navigation}) => {
-
-  const [answeredState, setAnsweredState] = useState([
-    false, false, false
-  ])
-  const [correctState, setCorrectState] = useState([
-    false, false, false
-  ])
-
-  useEffect(() => {
-    for (let i = 0; i < questions.length; i++) {
-      let storageKey = STORAGE_KEY.bonusChallenges[i]
-      getStorage(storageKey.answered, setAnsweredState)
-      getStorage(storageKey.correct, setCorrectState)
-    }
-  }, [])
-
-  return (
-    <ScrollView>
-      {questions.map(({question}) => (
-        <View key={question}>
-          <TouchableOpacity
-            key={question}
-            onPress={() => {
-              navigation.navigate(question, {question})
-            }}
-          >
-            <Text style={styles.question}>
-              {question}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ))}
-    </ScrollView>
-  )
+const STORAGE_KEYS = {
+  bonusChallengesScore: "Bonus challenges score",
+  bonusChallengesComplete: "Bonus Challenges Complete",
+  challengesReset: "Reset Challenges",
+  bonusChallengeQuestions: "Bonus Challenge Questions"
 }
 
-const BonusChallengesNav =() => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name={"BonusChallengesButton"}
-        component={BonusChallengesButtons}
-      />
-      {/*<Stack.Screen*/}
-      {/*  name={"BonusChallenges"}*/}
-      {/*  component={BonusChallenges}/>*/}
-      <Stack.Screen
-        name={questions[0].question}
-        children={() => (
-          <QuestionScreen
-            questionIndex={0}
-            key={questions[0].question}
-          />
-        )}
-      />
-      <Stack.Screen
-        name={questions[1].question}
-        children={() => (
-          <QuestionScreen
-            questionIndex={1}
-            key={questions[1].question}
-          />
-        )}
-      />
-      <Stack.Screen
-        name={questions[2].question}
-        children={() => (
-          <QuestionScreen
-            questionIndex={2}
-            key={questions[2].question}
-          />
-        )}
-      />
-    </Stack.Navigator>
-  )
+export const writeScore = (score) => {
+  setStorage(STORAGE_KEYS.bonusChallengesScore, score).then(r => {})
 }
 
-const QuestionScreen = ({questionIndex}) => {
+export const readScore = () => {
+  return getStorage(STORAGE_KEYS.bonusChallengesScore)
+}
 
-  const [correctState, setCorrectState] = useState(false)
-  const [answeredState, setAnsweredState] = useState(false)
+const readBonusChallengesComplete = () => {
+  return getStorage(STORAGE_KEYS.bonusChallengesComplete)
+}
 
-  // console.log(questionIndex)
+const writeBonusChallengesComplete = (bool) => {
+  setStorage(STORAGE_KEYS.bonusChallengesComplete, bool).then(r => {})
+}
 
-  const question= questions[questionIndex]
+const writeChallengesReset = (bool) => {
+  setStorage(STORAGE_KEYS.challengesReset, bool).then(r => {})
+  console.log(`Tried writing ${bool} to key ${STORAGE_KEYS.challengesReset}`)
+}
 
-  // console.log(question)
+const readChallengesReset = async () => {
+  let val = await getStorage(STORAGE_KEYS.challengesReset)
 
-  console.log(question.question)
+  console.log(`Read: ${val} from key ${STORAGE_KEYS.challengesReset}`)
+  return val === true || val == null;
+}
 
-  const handleAnswer = (correct) => {
+const writeBonusChallenges = (questions) => {
+  setStorage(STORAGE_KEYS.bonusChallengeQuestions, questions).then(r => {})
+  console.log(`Wrote to key ${STORAGE_KEYS.bonusChallengeQuestions}`)
+}
 
-    if (!answeredState) {
-      setCorrectState(
-        correctState => !!correct
-      )
-      setAnsweredState(answeredState => true)
+const readBonusChallenges = () => {
+  return getStorage(STORAGE_KEYS.bonusChallengeQuestions)
+}
+
+let currentQuestions = []
+
+const loadCurrentQuestions = () => {
+
+  const [resetChallenges, setResetChallenges] = useState(true)
+  // const [bonusChallenges, setBonusChallenges] = useState([])
+
+  const nums = new Set()
+
+  // writeChallengesReset(true)
+
+  console.log(`Reset challenges: ${resetChallenges}`)
+
+  if (resetChallenges) {
+    while(nums.size !== NUM_OF_QUESTIONS) {
+      nums.add(Math.floor(Math.random() * questions.length))
     }
-    console.log(`correct: ${correctState}`)
-    console.log(`answered: ${answeredState}`)
+
+    for (let i = 0; i < nums.size; i++) {
+      currentQuestions[i] = questions[Array.from(nums)[i]]
+      // console.log(questions[i])
+      // console.log(i)
+    }
+
+    writeBonusChallenges(currentQuestions)
+    writeChallengesReset(false)
+    // console.log("Randomising challenges")
+  } else {
+
+    // currentQuestions = readBonusChallenges()
+    console.log("Using loaded challenges")
   }
 
-  let storageKey = STORAGE_KEY.bonusChallenges[questionIndex]
+  console.log(currentQuestions)
+
+
+  // console.log("HERE")
+  // console.log(nums)
+  // console.log(currentQuestions)
 
   useEffect(() => {
-    console.log(storageKey)
-    setStorage(storageKey.answered, answeredState)
-    setStorage(storageKey.correct, correctState)
-  },[answeredState, correctState])
+    (async () => {
+      let val = await readChallengesReset()
+      setResetChallenges(val)
+    })()
 
-  useEffect(() => {
-    getStorage(storageKey.answered, setAnsweredState)
-    getStorage(storageKey.correct, setCorrectState)
-  })
-
-      return (
-        <View>
-          <Text
-            style={styles.question}
-          >
-            {question.question}
-          </Text>
-          <View
-            style={styles.buttonContainer}
-          >
-            {question.answers.map(answer => (
-              <Button
-                key={answer.id}
-                title={answer.text}
-                onPress={() => handleAnswer(answer.correct)}
-              />
-            ))}
-          </View>
-        </View>
-      )
+    if (resetChallenges === false) {
+      (async () => {
+        currentQuestions = await readBonusChallenges()
+      })()
+    }
+  }, [])
 }
 
+const QuesAnsPair = (props) => {
+  const [selected, setSelected] = useState({})
+  const [score, setScore] = useState({})
 
-const BonusChallengesComponent = ({questions, state, handleAnswer}) => {
+  const handleNext = async (selectedAns, achievedScore) => {
+    setSelected({...selected, [props.qIndex]: selectedAns})
+    setScore({...score, [props.qIndex]: achievedScore})
+    props.is_next()
 
-  const question = questions[state.activeQuestionIndex]
+    console.log(props.score)
+  }
 
-  console.log(state)
+  let finalScore
+  useEffect(() => {
+    let arr = Object.values(score)
+    let temp = 0
+    for (let i = 0; i < arr.length; i++) {
+      temp = temp + arr[i]
+    }
+
+    finalScore = temp
+    // console.log(finalScore)
+    props.getScore(finalScore)
+    props.get_selected(selected)
+  }, [score, props.qIndex])
 
   return (
-
-    <View>
-      <View>
-        <Text style={styles.question}>
-          {question.question}
+    <>
+      <View style={styles.questionContainer}>
+        <Text>
+          Score: {props.updatedScore}
         </Text>
+        <Text style={styles.questionIndex}>
+          Question {props.qIndex + 1}/{props.length}
+        </Text>
+        <Text style={styles.questionText}>
+          {props.question}
+        </Text>
+      </View>
+      {/*<View style={styles.selectedAnswerContainer}>*/}
+      {/*  <Text style={styles.selectedAnswer}>*/}
+      {/*    Selected Answer: {selected[props.qIndex] === undefined ?*/}
+      {/*    null : selected[props.qIndex]}*/}
+      {/*  </Text>*/}
+      {/*</View>*/}
+      <View style={styles.answersContainer}>
+        {
+          props.answers.map((answer, i) => {
+            return (
+              <TouchableOpacity
+                style={[styles.answer,
+                  selected[props.qIndex] === answer["text"] ?
+                    styles.highlightedAnswer : null
+                ]}
+                key={i}
+                onPress={handleNext.bind(this, answer["text"],
+                  answer["correct"] === true ? 1 : 0)}
+              >
+                <View>
+                  <Text style={styles.answerText}>
+                    {answer["text"]}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )
+          })
+        }
+      </View>
+    </>
+  )
+}
 
-        <View
-          style={styles.buttonContainer}
-        >
-          {question.answers.map(answer => (
-            <Button
-              key={answer.id}
-              title={answer.text}
-              onPress={() => handleAnswer(answer.correct)}
-            />
+const Quiz = (props) => {
+  const [qIndex, setQIndex] = useState(0);
+  const [showNext, setShowNext] = useState(false)
+  const [score, setScore] = useState(0)
+  const [selected, setSelected] = useState({})
+  const [updatedScore, setUpdateScore] = useState(0)
 
-          ))}
+  loadCurrentQuestions()
 
+  const handle_question = () => {
+    console.log(`Score: ${score}`)
+    writeScore(score)
+    writeBonusChallengesComplete(true)
+    setUpdateScore(updatedScore => score)
+    if (qIndex === currentQuestions.length - 1) {
+      props.navigation.navigate("Challenges", {score: score})
+      return
+    }
+    setQIndex(questionIndex => questionIndex + 1)
+    setShowNext(false)
+  }
+
+  const is_next = () => {
+    setShowNext(true)
+  }
+
+  const get_score = (score) => {
+    setScore(score)
+  }
+
+  const getSelected = (selected) => {
+    setSelected(selected)
+  }
+
+  return (
+    <View style={styles.screen}>
+      <QuesAnsPair
+        qIndex={qIndex}
+        question={currentQuestions[qIndex]["questionText"]}
+        answers={currentQuestions[qIndex]["answers"]}
+        is_next={is_next}
+        getScore={get_score}
+        length={currentQuestions.length}
+        get_selected={getSelected}
+        score={score}
+        updatedScore={updatedScore}
+      />
+      <View style={styles.buttonContainer}>
+        <View style={styles.backButton}>
+          {
+            showNext && qIndex > 0 || (qIndex > 0) ?
+              <Button
+                title="Back"
+                onPress={() => setQIndex((index) => index - 1)}
+              /> : null
+          }
+        </View>
+        <View style={styles.buttonContainer}>
+          {
+            showNext || selected[qIndex] !== undefined ?
+              <View>
+                <Button
+                  title={"confirm"}
+                  onPress={handle_question}/>
+              </View> : null
+          }
         </View>
       </View>
     </View>
   )
 }
 
-const BonusChallenges = ({navigation}) => {
-
-  const [state, setState] = useState({
-    correctCount: 0,
-    totalCount: questions.length,
-    activeQuestionIndex: 0,
-    answered: [false, false, false],
-    answerCorrect: [false, false, false]
-  })
-
-  const answer = (correct) => {
-    setState(
-      state => {
-        const nextState = {
-          totalCount: state.totalCount,
-          answered: true,
-        }
-
-        if (correct) {
-          nextState.correctCount = state.correctCount + 1;
-          nextState.answerCorrect = true;
-        } else {
-          nextState.answerCorrect = false;
-        }
-
-        const nextIndex = state.activeQuestionIndex + 1;
-
-        if (nextIndex >= state.totalCount) {
-          console.log("pop to top")
-          return navigation.pop
-        }
-
-        nextState.activeQuestionIndex = nextIndex
-
-        return nextState
-      }
-    )
-  }
-
-  // const nextQuestion = (nextState) => {
-  //   console.log("next Question")
-  //     setState(
-  //       state => {
-  //         const nextIndex = state.activeQuestionIndex + 1;
-  //
-  //         console.log(nextIndex)
-  //
-  //         if (nextIndex >= state.totalCount) {
-  //           return navigation.popToTop()
-  //         }
-  //
-  //         return {
-  //           activeQuestionIndex: nextIndex,
-  //           answered: false
-  //         }
-  //     })
-  // }
-
-  return (
-    <BonusChallengesComponent
-      questions={questions}
-      state={state}
-      handleAnswer={answer}
-    />
-  )
+const colors = {
+  primary: "black",
+  accent: "white",
+  accentSecondary: "white",
+  background: "white",
+  highlightedAnswer: "lightblue"
 }
 
-const questions = [
-
-  /* Questions:
-   https://learninglink.oup.com/access/content/wetherly_otter4e-student-resources/wetherly_otter4e-chapter-8-multiple-choice-questions
-   */
-
-  {
-    question: "Which of the following is not a greenhouse gas?",
-    answers: [
-      { id: "1", text: "Methane" },
-      { id: "2", text: "Hydrogen", correct: true },
-      { id: "3", text: "Carbon Dioxide" },
-      { id: "4", text: "Nitrous Oxide" }
-    ]
-  },
-  {
-    question: "What is the average yearly C02 emission in Australia?",
-    answers: [
-      { id: "1", text: "Methane" },
-      { id: "2", text: "Hydrogen", correct: true },
-      { id: "3", text: "Carbon Dioxide" },
-      { id: "4", text: "Nitrous Oxide" }
-    ]
-  },
-  {
-    question: "What is a greenhouse gas?",
-    answers: [
-      { id: "1", text: "Methane" },
-      { id: "2", text: "Hydrogen", correct: true },
-      { id: "3", text: "Carbon Dioxide" },
-      { id: "4", text: "Nitrous Oxide" }
-    ]
-  }
-]
 
 const styles = StyleSheet.create({
-  question: {
-    fontSize: 18
+  questionContainer: {
+    margin: 20,
+    backgroundColor: colors.accent,
+    padding: 15,
+    borderRadius: 40,
+    borderColor: colors.primary,
+    borderWidth: 2,
+    // minHeight: '20%'
   },
-  touchableOpacity: {
-    flex: 1
+  questionIndex: {
+    textAlign: 'center',
+    fontSize: 22,
+    marginBottom: 15,
+    fontWeight: 'bold',
+    color: colors.primary
   },
-  container: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    paddingTop: 20
+  questionText: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: colors.primary,
+  },
+  answersContainer: {
+    marginVertical: 20,
+    alignItems: 'center',
+  },
+  answer: {
+    backgroundColor: colors.accentSecondary,
+    padding: 10,
+    width: '80%',
+    marginVertical: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: colors.primary
+  },
+  highlightedAnswer: {
+    backgroundColor: colors.highlightedAnswer
+  },
+  answerText: {
+    fontSize: 14,
+  },
+  selectedAnswer: {
+    fontSize: 14,
+    color: colors.primary,
+  },
+  selectedAnswerContainer: {
+    marginVertical: 8,
+    alignItems: 'center',
   },
   buttonContainer: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 20,
-    justifyContent: "space-between"
+    justifyContent: "center"
+  },
+  backButton: {
+    flexDirection: "row",
+    marginRight: 10,
+  },
+  screen: {
+    backgroundColor: colors.background,
+    flex: 1
   }
+
 })
 
-export default BonusChallengesNav
+export default Quiz
