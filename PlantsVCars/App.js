@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Button, Image, ImageBackground} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,18 +9,20 @@ import MyGardenNav from './screens/garden/MyGarden'
 import ChallengesScreen from './screens/Challenges';
 import SettingsNav from "./screens/settings/Settings";
 import { auth, database } from './screens/settings/Firebase';
+import LoginScreen from './screens/settings/Login';
 
+// Adding to real time database code.
 
-database.ref('user/008').set(
-  {
-    name: "test",
-    age: 20
-  }
-).then(() => {
-    console.log("INSERTED!");
-  }).catch((error) => {
-    console.log(error);
-})
+// database.ref('user/008').set(
+//   {
+//     name: "test",
+//     age: 20
+//   }
+// ).then(() => {
+//     console.log("INSERTED!");
+//   }).catch((error) => {
+//     console.log(error);
+// })
 
 const Tab = createBottomTabNavigator();
 
@@ -110,6 +112,56 @@ const OurForest = (images) => {
 
 
 const App = () => {
+  
+  /**
+   * Login with email & password.
+   */
+  const [initializing, setInitializing] = useState(true);
+  const[user, setUser] = useState();
+
+  const onAuthStateChanged = (user) => {
+    setUser(user);
+    if (initializing) {
+      setInitializing(false);
+    }
+  }
+
+  useEffect(() => {
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+    return subscriber
+  }, [])
+
+  if (initializing) {
+    return null;
+  }
+
+  const createUser = () => {
+    auth.signInWithEmailAndPassword('someEm1il@gmail.com', 'somePassword!')
+    .then(() => {
+      console.log('User account has been created & signed in!')
+    })
+    .catch(error => {
+      if (error.code === 'auth/email-already-in-use') {
+        console.log("email already in use");
+      } 
+      if (error.code === 'auth/invalid-email') {
+        console.log("email invalid");
+      }
+      console.log(error);
+    })
+  }
+
+  const logoff = () => {
+    auth.signOut()
+    .then(() => console.log('User signed out!'));
+  }
+
+  if (!user) {
+    return (
+      <LoginScreen></LoginScreen>
+    )
+  }
+
   return (
     <NavigationContainer>
       <Tab.Navigator
