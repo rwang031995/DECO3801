@@ -135,6 +135,7 @@ const ChallengesScreen = () => {
         {challenge : "Take the train once this week", completed : false}
     ]);
     const [storedWeek, changeWeek] = useState("2021-09-06T14:00:00.000Z");
+
     //--------------------------------------------------------------------------------
     /**
      * Load all the globally stored data upon opening page upon entering page.
@@ -169,6 +170,7 @@ const ChallengesScreen = () => {
     const increaseLevel = () => {
         setLevel(level + 1);
     }
+    
     useEffect(() => {
         if (storedWeek === "2021-09-06T14:00:00.000Z") {
             loadLevel();

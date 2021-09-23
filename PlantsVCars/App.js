@@ -11,7 +11,7 @@ import SettingsNav from "./screens/settings/Settings";
 import { auth, database } from './screens/settings/Firebase';
 import LoginScreen from './screens/settings/Login';
 
-// Adding to real time database code.
+// Adding to real time database code.1
 
 // database.ref('user/008').set(
 //   {
@@ -135,8 +135,8 @@ const App = () => {
     return null;
   }
 
-  const createUser = () => {
-    auth.signInWithEmailAndPassword('someEm1il@gmail.com', 'somePassword!')
+  const createUser = (email, password) => {
+    auth.signInWithEmailAndPassword(email, password)
     .then(() => {
       console.log('User account has been created & signed in!')
     })

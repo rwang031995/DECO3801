@@ -15,6 +15,9 @@ const LoginScreen = () => {
                 placeholder='password'
                 secureTextEntry = {true}
             />
+            <Button
+                title = "Login"
+            />
         </View>
         
     )
@@ -37,7 +40,7 @@ const styles = StyleSheet.create({
     category: {
         fontSize: 30,
         paddingVertical: 15,
-    }
+    },
 })
 
 export default LoginScreen;
