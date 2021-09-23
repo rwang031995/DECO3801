@@ -62,6 +62,10 @@ const loadCurrentQuestions = () => {
 
   console.log(`Reset challenges: ${resetChallenges}`)
 
+  readChallengesReset().then(r => {
+    setResetChallenges(resetChallenges => r)
+  })
+
   if (resetChallenges) {
     while(nums.size !== NUM_OF_QUESTIONS) {
       nums.add(Math.floor(Math.random() * questions.length))
@@ -78,29 +82,31 @@ const loadCurrentQuestions = () => {
     // console.log("Randomising challenges")
   } else {
 
-    // currentQuestions = readBonusChallenges()
+    readBonusChallenges().then(r => {
+      currentQuestions = r
+    })
     console.log("Using loaded challenges")
   }
 
-  console.log(currentQuestions)
+  // console.log(currentQuestions)
 
 
   // console.log("HERE")
   // console.log(nums)
   // console.log(currentQuestions)
 
-  useEffect(() => {
-    (async () => {
-      let val = await readChallengesReset()
-      setResetChallenges(val)
-    })()
-
-    if (resetChallenges === false) {
-      (async () => {
-        currentQuestions = await readBonusChallenges()
-      })()
-    }
-  }, [])
+  // useEffect(() => {
+  //   (async () => {
+  //     let val = await readChallengesReset()
+  //     setResetChallenges(val)
+  //   })()
+  //
+  //   if (resetChallenges === false) {
+  //     (async () => {
+  //       currentQuestions = await readBonusChallenges()
+  //     })()
+  //   }
+  // }, [])
 }
 
 const QuesAnsPair = (props) => {
@@ -110,7 +116,7 @@ const QuesAnsPair = (props) => {
   const handleNext = async (selectedAns, achievedScore) => {
     setSelected({...selected, [props.qIndex]: selectedAns})
     setScore({...score, [props.qIndex]: achievedScore})
-    props.is_next()
+    props.isNext()
 
     console.log(props.score)
   }
@@ -176,7 +182,7 @@ const QuesAnsPair = (props) => {
 }
 
 const Quiz = (props) => {
-  const [qIndex, setQIndex] = useState(0);
+  const [qIndex, setQIndex] = useState(0)
   const [showNext, setShowNext] = useState(false)
   const [score, setScore] = useState(0)
   const [selected, setSelected] = useState({})
@@ -189,19 +195,19 @@ const Quiz = (props) => {
     writeScore(score)
     writeBonusChallengesComplete(true)
     setUpdateScore(updatedScore => score)
+    setQIndex(questionIndex => questionIndex + 1)
     if (qIndex === currentQuestions.length - 1) {
       props.navigation.navigate("Challenges", {score: score})
       return
     }
-    setQIndex(questionIndex => questionIndex + 1)
     setShowNext(false)
   }
 
-  const is_next = () => {
+  const isNext = () => {
     setShowNext(true)
   }
 
-  const get_score = (score) => {
+  const getScore = (score) => {
     setScore(score)
   }
 
@@ -209,14 +215,17 @@ const Quiz = (props) => {
     setSelected(selected)
   }
 
+  console.log(qIndex)
+
   return (
+    qIndex < currentQuestions.length ?
     <View style={styles.screen}>
       <QuesAnsPair
         qIndex={qIndex}
         question={currentQuestions[qIndex]["questionText"]}
         answers={currentQuestions[qIndex]["answers"]}
-        is_next={is_next}
-        getScore={get_score}
+        isNext={isNext}
+        getScore={getScore}
         length={currentQuestions.length}
         get_selected={getSelected}
         score={score}
@@ -232,18 +241,24 @@ const Quiz = (props) => {
               /> : null
           }
         </View>
-        <View style={styles.buttonContainer}>
+        <View>
           {
             showNext || selected[qIndex] !== undefined ?
-              <View>
+              <View style={styles.confirmButton}>
                 <Button
+                  color={colors.primary}
                   title={"confirm"}
                   onPress={handle_question}/>
               </View> : null
           }
         </View>
       </View>
-    </View>
+    </View> :
+      <View>
+        <Text>
+          Your score is: {score}
+        </Text>
+      </View>
   )
 }
 
@@ -285,10 +300,10 @@ const styles = StyleSheet.create({
   answer: {
     backgroundColor: colors.accentSecondary,
     padding: 10,
-    width: '80%',
+    width: '90%',
     marginVertical: 10,
     alignItems: 'center',
-    borderRadius: 5,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.primary
   },
@@ -310,9 +325,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center"
   },
+  confirmButton: {
+    justifyContent: "center",
+    backgroundColor: colors.primary,
+    color: colors.primary
+  },
   backButton: {
     flexDirection: "row",
     marginRight: 10,
+    color: colors.primary
   },
   screen: {
     backgroundColor: colors.background,
