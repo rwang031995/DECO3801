@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {img} from "../images/manifest"
+import {img} from "../../images/manifest"
 
 const isCompleted = ["RoseFlower", "TulipFlower"]
 

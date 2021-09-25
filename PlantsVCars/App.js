@@ -213,8 +213,8 @@ const App = () => {
             placeholder='password'
             secureTextEntry = {true}
             onChangeText = {text => setPassword(text)}
-            autoCapitalize = {false}
-            autoCompleteType = {false}
+            autoCapitalize = {"none"}
+            autoCompleteType = {"off"}
             autoCorrect = {false}
         />
         <Button
