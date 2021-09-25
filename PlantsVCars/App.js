@@ -6,7 +6,8 @@ import {img} from "./images/manifest";
 import { createStackNavigator } from '@react-navigation/stack';
 import PvCLeaderboard from './screens/Leaderboard';
 import MyGardenNav from './screens/garden/MyGarden'
-import ChallengesScreen from './screens/Challenges';
+import ChallengesScreen from './screens/challenges/Challenges';
+import BonusChallenges from "./screens/challenges/BonusChallenges";
 import SettingsNav from "./screens/settings/Settings";
 import { TextInput } from 'react-native-gesture-handler';
 import { auth } from './screens/settings/Firebase';
@@ -256,6 +257,7 @@ const App = () => {
         <Tab.Screen name="My Garden" component={MyGardenNav} />
         <Tab.Screen name="Our Forest" component={OurForest} />
         <Tab.Screen name={"Challenges"} component={ChallengesScreen} />
+        <Tab.Screen name={"Bonus Challenges"} component={BonusChallenges}/>
         <Tab.Screen name="Leaderboard" component={PvCLeaderboard} />
         <Tab.Screen name="Settings" component={SettingsNav} />
       </Tab.Navigator>
