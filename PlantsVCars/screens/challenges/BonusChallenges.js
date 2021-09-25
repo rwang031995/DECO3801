@@ -52,6 +52,10 @@ const readBonusChallenges = () => {
 let currentQuestions = []
 
 const loadCurrentQuestions = () => {
+  /**
+   * If the challenges need to be reset (i.e. next week or on startup) then
+   * new challenges are generated from a pool and saved to storage.
+   */
 
   const [resetChallenges, setResetChallenges] = useState(true)
   // const [bonusChallenges, setBonusChallenges] = useState([])
@@ -109,18 +113,35 @@ const loadCurrentQuestions = () => {
   // }, [])
 }
 
+/**
+ * Displays current question and the list of answers on the screen.
+ * Sends score back to the Quiz component to track score
+ *
+ * @param props - set of props from quiz component
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const QuesAnsPair = (props) => {
+  /**
+   */
   const [selected, setSelected] = useState({})
   const [score, setScore] = useState({})
 
+  /**
+   * Handles the next question to be displayed.
+   * @param selectedAns - The current answer selected
+   * @param achievedScore - The score of the selected answer
+   * @returns {Promise<void>}
+   */
   const handleNext = async (selectedAns, achievedScore) => {
     setSelected({...selected, [props.qIndex]: selectedAns})
     setScore({...score, [props.qIndex]: achievedScore})
-    props.isNext()
-
-    console.log(props.score)
+    props.setShowNext(true)
   }
 
+
+  // Add up all the scores in score state and write the final score to the
+  // quiz component
   let finalScore
   useEffect(() => {
     let arr = Object.values(score)
@@ -131,8 +152,8 @@ const QuesAnsPair = (props) => {
 
     finalScore = temp
     // console.log(finalScore)
-    props.getScore(finalScore)
-    props.get_selected(selected)
+    props.setScore(finalScore)
+    props.setSelected(selected)
   }, [score, props.qIndex])
 
   return (
@@ -142,10 +163,10 @@ const QuesAnsPair = (props) => {
           Score: {props.updatedScore}
         </Text>
         <Text style={styles.questionIndex}>
-          Question {props.qIndex + 1}/{props.length}
+          Question {props.qIndex + 1}/{props.numQuestions}
         </Text>
         <Text style={styles.questionText}>
-          {props.question}
+          {props.question["questionText"]}
         </Text>
       </View>
       {/*<View style={styles.selectedAnswerContainer}>*/}
@@ -156,7 +177,7 @@ const QuesAnsPair = (props) => {
       {/*</View>*/}
       <View style={styles.answersContainer}>
         {
-          props.answers.map((answer, i) => {
+          props.question["answers"].map((answer, i) => {
             return (
               <TouchableOpacity
                 style={[styles.answer,
@@ -181,6 +202,14 @@ const QuesAnsPair = (props) => {
   )
 }
 
+/**
+ * Quiz component for the bonus challenges. Handles getting the next
+ * question after confirming an answer.
+ *
+ * @param props - navigation
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const Quiz = (props) => {
   const [qIndex, setQIndex] = useState(0)
   const [showNext, setShowNext] = useState(false)
@@ -203,18 +232,6 @@ const Quiz = (props) => {
     setShowNext(false)
   }
 
-  const isNext = () => {
-    setShowNext(true)
-  }
-
-  const getScore = (score) => {
-    setScore(score)
-  }
-
-  const getSelected = (selected) => {
-    setSelected(selected)
-  }
-
   console.log(qIndex)
 
   return (
@@ -222,18 +239,18 @@ const Quiz = (props) => {
     <View style={styles.screen}>
       <QuesAnsPair
         qIndex={qIndex}
-        question={currentQuestions[qIndex]["questionText"]}
-        answers={currentQuestions[qIndex]["answers"]}
-        isNext={isNext}
-        getScore={getScore}
-        length={currentQuestions.length}
-        get_selected={getSelected}
-        score={score}
+        question={currentQuestions[qIndex]}
+        setShowNext={setShowNext}
+        setScore={setScore}
+        numQuestions={currentQuestions.length}
+        setSelected={setSelected}
         updatedScore={updatedScore}
       />
       <View style={styles.buttonContainer}>
         <View style={styles.backButton}>
           {
+            // Keep Back button on for easy testing. Will remove in final
+            // version
             showNext && qIndex > 0 || (qIndex > 0) ?
               <Button
                 title="Back"
