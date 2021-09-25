@@ -8,8 +8,8 @@ import PvCLeaderboard from './screens/Leaderboard';
 import MyGardenNav from './screens/garden/MyGarden'
 import ChallengesScreen from './screens/Challenges';
 import SettingsNav from "./screens/settings/Settings";
-import { auth, database } from './screens/settings/Firebase';
 import LoginScreen from './screens/settings/Login';
+
 
 // Adding to real time database code.1
 
@@ -110,53 +110,11 @@ const OurForest = (images) => {
     );
 }
 
+console.log(LoginScreen.getUser());
 
 const App = () => {
-  
-  /**
-   * Login with email & password.
-   */
-  const [initializing, setInitializing] = useState(true);
-  const[user, setUser] = useState();
 
-  const onAuthStateChanged = (user) => {
-    setUser(user);
-    if (initializing) {
-      setInitializing(false);
-    }
-  }
-
-  useEffect(() => {
-    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-    return subscriber
-  }, [])
-
-  if (initializing) {
-    return null;
-  }
-
-  const createUser = (email, password) => {
-    auth.signInWithEmailAndPassword(email, password)
-    .then(() => {
-      console.log('User account has been created & signed in!')
-    })
-    .catch(error => {
-      if (error.code === 'auth/email-already-in-use') {
-        console.log("email already in use");
-      } 
-      if (error.code === 'auth/invalid-email') {
-        console.log("email invalid");
-      }
-      console.log(error);
-    })
-  }
-
-  const logoff = () => {
-    auth.signOut()
-    .then(() => console.log('User signed out!'));
-  }
-
-  if (!user) {
+  if (1) {
     return (
       <LoginScreen></LoginScreen>
     )

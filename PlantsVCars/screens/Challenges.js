@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {img} from "../images/manifest"
+
+const isCompleted = ["RoseFlower", "TulipFlower"]
 
 const ChallengeOptions = [
-    {challenge : "Walk to X once this Week", completed : false}, 
-    {challenge : "Run to X once this Week", completed : false}, 
-    {challenge : "Take a bus once this week", completed : false}, 
-    {challenge : "Take the train once this week", completed : false}, 
-    {challenge : "This is a test example", completed : false}, 
+    {challenge : "Walk to X once this Week", completed : isCompleted[0]}, 
+    {challenge : "Run to X once this Week", completed : isCompleted[0]}, 
+    {challenge : "Take a bus once this week", completed : isCompleted[0]}, 
+    {challenge : "Take the train once this week", completed : isCompleted[0]}, 
+    {challenge : "This is a test example", completed : isCompleted[0]}, 
     ];
 
 const ChallengesScreen = () => {
@@ -129,10 +132,10 @@ const ChallengesScreen = () => {
      */
     const [level, setLevel] = useState(2);
     const [challenges, setChallenges] = useState([    
-        {challenge : "Walk to X once this Week", completed : false}, 
-        {challenge : "Run to X once this Week", completed : false}, 
-        {challenge : "Take a bus once this week", completed : false}, 
-        {challenge : "Take the train once this week", completed : false}
+        {challenge : "Walk to X once this Week", completed : isCompleted[0]}, 
+        {challenge : "Run to X once this Week", completed : isCompleted[0]}, 
+        {challenge : "Take a bus once this week", completed : isCompleted[0]}, 
+        {challenge : "Take the train once this week", completed : isCompleted[0]}
     ]);
     const [storedWeek, changeWeek] = useState("2021-09-06T14:00:00.000Z");
 
@@ -147,7 +150,7 @@ const ChallengesScreen = () => {
             var newWeek = JSON.stringify(currentWeek).substring(1, JSON.stringify(currentWeek).length - 1)
             var challengesComplete = true;
             for (var i = 0; i < challenges.length; i++) {
-                if (challenges[i].completed == false) {
+                if (challenges[i].completed == isCompleted[0]) {
                     challengesComplete = false;
                 } 
             }
@@ -197,10 +200,7 @@ const ChallengesScreen = () => {
                 <View style={styles.breakline}></View> 
                 <View style={styles.challengeContainer}>
                     <Text style={styles.challengeText}> {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
-                    <Text style={styles.challengeText}> status: {JSON.stringify(challenges[0].completed)}</Text>
-                </View>
-                <View style={styles.challengeContainer}>
-                    <Text style={styles.challengeText}> {JSON.stringify(challenges[1].challenge).substring(1,JSON.stringify(challenges[1].challenge).length - 1)}</Text>
+                    {img({name: challenges[0].completed, style: styles.plantTile})}
                 </View>
 
                 <Text style={styles.headings}> Bonus Challenges </Text>
@@ -216,10 +216,11 @@ const ChallengesScreen = () => {
                 <View style={styles.breakline}></View> 
                 <View style={styles.challengeContainer}>
                     <Text style={styles.challengeText}> {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
-                    <Text style={styles.challengeText}> status: {JSON.stringify(challenges[0].completed)}</Text>
+                    {img({name: challenges[0].completed, style: styles.plantTile})}
                 </View>
                 <View style={styles.challengeContainer}>
                     <Text style={styles.challengeText}> {JSON.stringify(challenges[1].challenge).substring(1,JSON.stringify(challenges[1].challenge).length - 1)}</Text>
+                    {img({name: challenges[0].completed, style: styles.plantTile})}
                 </View>
 
                 <Text style={styles.headings}> Bonus Challenges </Text>
@@ -268,7 +269,11 @@ const styles = StyleSheet.create({
         borderBottomColor: 'black',
         borderBottomWidth: 2,
         width: '100%',
-    }
+    }, plantTile: {
+        height: "50%",
+        width: "10%",
+        margin: "4%"
+    },
 })
 
 export default ChallengesScreen;
