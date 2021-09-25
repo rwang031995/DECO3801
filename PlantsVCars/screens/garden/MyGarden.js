@@ -168,15 +168,8 @@ const MyGarden = ({navigation}) => {
           {/*</ImageZoom>*/}
 
         </View>
-          
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "orange", width:"100%"}}>
-          <Text>
-            Inventory: {inventory.length === 0 ? "Empty" : inventory}
-          </Text>
-        </View>
-        {plantsInGround}
       </View> 
-      <View style={{ flex: 1, flexDirection: "row", backgroundColor: 'white', justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{ height:"17%", flexDirection: "row", backgroundColor: 'orange', justifyContent: 'center', flex:0}}>
         <Inventory/>
       </View>
     </View>

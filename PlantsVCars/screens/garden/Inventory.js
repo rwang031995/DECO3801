@@ -64,42 +64,36 @@ const Inventory = () => {
     return (
         <>
             <>
-                {img({name: "Water", style: styles.itemIcon})}
-                <Text>
-                    {water.quantity}
-                </Text>
-                <TouchableOpacity onPress={() => {
+                
+                <TouchableOpacity style={styles.elements} onPress={() => {
                     setWater({name: water.name, quantity: water.quantity + 1})
                 }}>
                     <Text>
-                        +++
+                        {water.quantity}
                     </Text>
+                    {img({name: "WaterOutlined", style:styles.itemIcon})}
                 </TouchableOpacity>
             </>
             <>
-                {img({name: "Sunlight", style: styles.itemIcon})}
-                <Text>
-                    {sun.quantity}
-                </Text>
-                <TouchableOpacity onPress={() => {
+                
+                <TouchableOpacity style={styles.elements} onPress={() => {
                     setSun({name: sun.name, quantity: sun.quantity + 1})
                 }}>
                     <Text>
-                        +++
+                        {sun.quantity}
                     </Text>
+                    {img({name: "SunlightOutlined", style:styles.itemIcon})}
                 </TouchableOpacity>
             </>
             <>
-                {img({name: "Fertiliser", style: styles.itemIcon})}
-                <Text>
-                    {fertilizer.quantity}
-                </Text>
-                <TouchableOpacity onPress={() => {
+                
+                <TouchableOpacity style={styles.elements} onPress={() => {
                     setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1})
                 }}>
                     <Text>
-                        +++
+                        {fertilizer.quantity}
                     </Text>
+                    {img({name: "FertiliserOutlined", style:styles.itemIcon})}
                 </TouchableOpacity>
             </>
         </>
@@ -144,11 +138,14 @@ const styles = StyleSheet.create({
     },
 
     itemIcon: {
-        flex: 1,
-        width: '200%',
-        height: '200%',
-        resizeMode: 'contain',
-        position: 'relative'
+        width: '80%',
+        height: '80%'
+    },
+
+    elements: {
+        width: '33%',
+        height: '100%',
+        padding: "5%"
     }
 })
 
