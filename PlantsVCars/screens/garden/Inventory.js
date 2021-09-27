@@ -20,9 +20,11 @@ const Inventory = () => {
     // startup (only run on first render) LOOP IT!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     // this will check if keys are already stored and if they are, just recieve them
     // otherwise, if key doesn't exist, store a new key with a default value
+    // ^^^ ABOVE IS KIND OF BROKEN WITH WIERD ERRORS LIKE UNDEFINED NAMES
     useEffect(() => {
         getItemData(ITEM_KEYS.itemWater).then( itemData => {
-            if (itemData == null) {
+            if (itemData != null) { // changed for current ersion due to errors
+                console.log("itemData for water: ", itemData)
                 const waterDefault = {name: "Water", quantity: 10}
                 setItemData(ITEM_KEYS.itemWater, waterDefault)
                 setWater(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
@@ -32,19 +34,19 @@ const Inventory = () => {
             }      
         });
         getItemData(ITEM_KEYS.itemSun).then( itemData => {
-            if (itemData == null) {
+            if (itemData != null) { // changed for current ersion due to errors
                 const sunDefault = {name: "Sun", quantity: 6}
                 setItemData(ITEM_KEYS.itemSun, sunDefault)
-                setSun(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
+                setSun(sunDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
             } else {
                 setSun(itemData)
             }    
         });
         getItemData(ITEM_KEYS.itemFertilizer).then( itemData => {
-            if (itemData == null) {
+            if (itemData != null) { // changed for current ersion due to errors
                 const fertilizerDefault = {name: "Fertilizer", quantity: 2}
                 setItemData(ITEM_KEYS.itemFertilizer, fertilizerDefault)
-                setFertilizer(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
+                setFertilizer(fertilizerDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
             } else {
                 setFertilizer(itemData)
             }    
