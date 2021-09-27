@@ -5,7 +5,15 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "ios": {
+        "infoPlist": {
+            "NSLocationAlwaysUsageDescription" : "Track your journeys and match them to bus routes!",
+            "UIBackgroundModes": [
+                "location",
+            ]
+        },
+    }
   },
   "name": "PlantsVCars"
 }
