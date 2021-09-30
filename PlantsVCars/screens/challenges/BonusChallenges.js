@@ -30,19 +30,19 @@ const writeBonusChallengesComplete = (bool) => {
 
 const writeChallengesReset = (bool) => {
   setStorage(STORAGE_KEYS.challengesReset, bool).then(r => {})
-  console.log(`Tried writing ${bool} to key ${STORAGE_KEYS.challengesReset}`)
+  // console.log(`Tried writing ${bool} to key ${STORAGE_KEYS.challengesReset}`)
 }
 
 const readChallengesReset = async () => {
   let val = await getStorage(STORAGE_KEYS.challengesReset)
 
-  console.log(`Read: ${val} from key ${STORAGE_KEYS.challengesReset}`)
+  // console.log(`Read: ${val} from key ${STORAGE_KEYS.challengesReset}`)
   return val === true || val == null;
 }
 
 const writeBonusChallenges = (questions) => {
   setStorage(STORAGE_KEYS.bonusChallengeQuestions, questions).then(r => {})
-  console.log(`Wrote to key ${STORAGE_KEYS.bonusChallengeQuestions}`)
+  // console.log(`Wrote to key ${STORAGE_KEYS.bonusChallengeQuestions}`)
 }
 
 const readBonusChallenges = () => {
@@ -62,9 +62,9 @@ const loadCurrentQuestions = () => {
 
   const nums = new Set()
 
-  // writeChallengesReset(true)
+  writeChallengesReset(true)
 
-  console.log(`Reset challenges: ${resetChallenges}`)
+  // console.log(`Reset challenges: ${resetChallenges}`)
 
   readChallengesReset().then(r => {
     setResetChallenges(resetChallenges => r)
@@ -89,7 +89,7 @@ const loadCurrentQuestions = () => {
     readBonusChallenges().then(r => {
       currentQuestions = r
     })
-    console.log("Using loaded challenges")
+    // console.log("Using loaded challenges")
   }
 
   // console.log(currentQuestions)
@@ -220,7 +220,7 @@ const Quiz = (props) => {
   loadCurrentQuestions()
 
   const handle_question = () => {
-    console.log(`Score: ${score}`)
+    // console.log(`Score: ${score}`)
     writeScore(score)
     writeBonusChallengesComplete(true)
     setUpdateScore(updatedScore => score)
@@ -232,7 +232,7 @@ const Quiz = (props) => {
     setShowNext(false)
   }
 
-  console.log(qIndex)
+  // console.log(qIndex)
 
   return (
     qIndex < currentQuestions.length ?

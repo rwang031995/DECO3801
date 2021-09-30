@@ -3,6 +3,20 @@ import { StyleSheet, View, Text, Button } from 'react-native';
 import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {img} from "../../images/manifest"
+import { createStackNavigator } from '@react-navigation/stack';
+import Quiz from './BonusChallenges';
+
+const Stack = createStackNavigator();
+
+const ChallengesScreenNav = () => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name = "My Challenges" component = {ChallengesScreen}
+                    options = {{headerShown: false}}/>
+            <Stack.Screen name = "My Quiz" component = {Quiz} />
+        </Stack.Navigator>
+    )
+}
 
 const isCompleted = ["RoseFlower", "TulipFlower"]
 
@@ -14,7 +28,7 @@ const ChallengeOptions = [
     {challenge : "This is a test example", completed : isCompleted[0]}, 
     ];
 
-const ChallengesScreen = () => {
+const ChallengesScreen = ({navigation}) => {
 
     /**
      * Leveling system.
@@ -101,18 +115,18 @@ const ChallengesScreen = () => {
     }
 
     /**
-     * save globally stored week. 
+     * save globally stored challenges. 
      */
     const saveChallenges = async() => {
         try {
             await AsyncStorage.setItem("weeklyChallenge", JSON.stringify(challenges));
         } catch (err) {
-                    console.log("save challenges error");
+            console.log("save challenges error");
         }
     }
         
     /**
-     * load globally stored week. 
+     * load globally stored challenges. 
      */
     const loadChallenges = async() => {
         try {
@@ -125,21 +139,61 @@ const ChallengesScreen = () => {
         }
     }
 
+    const takeQuiz = (navigation) => {
+        if (bonusChallenge == false) {
+            setQuiz();
+            saveQuiz();
+            navigation.navigate('My Quiz');
+            saveQuiz();
+        } else {
+            alert("Quiz has already been completed this week")
+        }
+        saveQuiz();
+    }
+
+    /**
+     * save globally stored quiz. 
+     */
+     const saveQuiz = async() => {
+        try {
+            await AsyncStorage.setItem("quizComplete", JSON.stringify(bonusChallenge));
+        } catch (err) {
+            console.log("save quiz error");
+        }
+    }
+        
+    /**
+     * load globally stored quiz. 
+     */
+    const loadQuiz = async() => {
+        try {
+            let quiz = await AsyncStorage.getItem("quizComplete");
+            if (quiz != null) {
+                setBonusChallenge(JSON.parse(quiz));
+            }
+        } catch (err) {
+            console.log("load quiz error");
+        }
+    }
+    
+
     //--------------------------------------------------------------------------------
     
     /**
      * Variables for global storage using Async.
      */
-    const [level, setLevel] = useState(2);
+    const [level, setLevel] = useState(1);
     const [challenges, setChallenges] = useState([    
         {challenge : "Walk to X once this Week", completed : isCompleted[0]}, 
         {challenge : "Run to X once this Week", completed : isCompleted[0]}, 
         {challenge : "Take a bus once this week", completed : isCompleted[0]}, 
         {challenge : "Take the train once this week", completed : isCompleted[0]}
     ]);
+    const [bonusChallenge, setBonusChallenge]  = useState(true);
     const [storedWeek, changeWeek] = useState("2021-09-06T14:00:00.000Z");
 
     //--------------------------------------------------------------------------------
+    
     /**
      * Load all the globally stored data upon opening page upon entering page.
      */
@@ -160,6 +214,7 @@ const ChallengesScreen = () => {
             } else if (!challengesComplete && level > 1) {
                 setLevel(level - 1);
             }
+            setBonusChallenge(false);
             changeWeek(newWeek);
         }
     }
@@ -168,22 +223,33 @@ const ChallengesScreen = () => {
         saveWeek();
         saveChallenges();
         saveLevel();
+        saveQuiz();
     }
 
     const increaseLevel = () => {
         setLevel(level + 1);
     }
-    
+
+    const setQuiz = () => {
+        if (bonusChallenge == false) {
+            setBonusChallenge(true);
+        } else {
+            setBonusChallenge(false);
+        }
+        console.log(bonusChallenge)
+    }
+
     useEffect(() => {
         if (storedWeek === "2021-09-06T14:00:00.000Z") {
             loadLevel();
             loadWeek();
             loadChallenges();
+            loadQuiz();
         }
         const interval = setInterval(() => {
             updateWeeklyReset();
             saveWeeklyReset();
-        }, 5000)
+        }, 1000)
         return () => clearInterval(interval)
     }, [storedWeek]);
 
@@ -196,14 +262,18 @@ const ChallengesScreen = () => {
                 <Text style={styles.level}> Level {level}</Text>
                 <Text style={styles.headings}> Challenges </Text>
                 <Text style={styles.level}> storedWeek = {JSON.stringify(storedWeek)} </Text>
-                <Button title="inc lvl" onPress = {() => {increaseLevel()}}/>
                 <View style={styles.breakline}></View> 
                 <View style={styles.challengeContainer}>
                     <Text style={styles.challengeText}> {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
                     {img({name: challenges[0].completed, style: styles.plantTile})}
                 </View>
-
                 <Text style={styles.headings}> Bonus Challenges </Text>
+                <View style={styles.breakline}></View> 
+                <View style={styles.challengeContainer}>
+                    <Text style={styles.challengeText}> Quiz Completion </Text>
+                    {img({name: challenges[0].completed, style: styles.plantTile})}
+                </View>
+                <Button title = "Take Quiz" onPress = {() => takeQuiz(navigation)}/>
             </View>
         )
     } else if (level == 2) {
@@ -212,7 +282,6 @@ const ChallengesScreen = () => {
                 <Text style={styles.level}> Level {level}</Text>
                 <Text style={styles.headings}> Challenges </Text>
                 <Text style={styles.level}> storedWeek = {JSON.stringify(storedWeek)} </Text>
-                <Button title="save Level" onPress = {() => {saveLevel()}}/>
                 <View style={styles.breakline}></View> 
                 <View style={styles.challengeContainer}>
                     <Text style={styles.challengeText}> {JSON.stringify(challenges[0].challenge).substring(1,JSON.stringify(challenges[0].challenge).length - 1)}</Text>
@@ -222,9 +291,14 @@ const ChallengesScreen = () => {
                     <Text style={styles.challengeText}> {JSON.stringify(challenges[1].challenge).substring(1,JSON.stringify(challenges[1].challenge).length - 1)}</Text>
                     {img({name: challenges[0].completed, style: styles.plantTile})}
                 </View>
-
                 <Text style={styles.headings}> Bonus Challenges </Text>
-            </View>
+                <View style={styles.breakline}></View> 
+                <View style={styles.challengeContainer}>
+                    <Text style={styles.challengeText}> Quiz Completion </Text>
+                    {img({name: challenges[0].completed, style: styles.plantTile})}
+                </View>
+                <Button title = "Take Quiz" onPress = {() => takeQuiz(navigation)}/>
+            </View>        
         )
     }
 }
@@ -249,6 +323,8 @@ const styles = StyleSheet.create({
     headings: {
         fontSize: 30,
         fontWeight: 'bold',
+        paddingTop: 15,
+        paddingBottom: 15,
     },
     challenges: {
         fontSize: 15,
@@ -276,4 +352,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default ChallengesScreen;
+export default ChallengesScreenNav;

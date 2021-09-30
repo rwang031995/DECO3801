@@ -3,11 +3,9 @@ import { StyleSheet, View, Text, Button, Image, ImageBackground} from 'react-nat
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {img} from "./images/manifest";
-import { createStackNavigator } from '@react-navigation/stack';
 import PvCLeaderboard from './screens/Leaderboard';
 import MyGardenNav from './screens/garden/MyGarden'
 import ChallengesScreen from './screens/challenges/Challenges';
-import BonusChallenges from "./screens/challenges/BonusChallenges";
 import SettingsNav from "./screens/settings/Settings";
 import { TextInput } from 'react-native-gesture-handler';
 import { auth } from './screens/settings/Firebase';
@@ -151,59 +149,46 @@ const App = () => {
   }
  
   const signIn = (email, password) => {
-    if (email == null) {
-      alert("Please enter an email");
-    } else if (password == null) {
-      alert("Please enter a password");
-    } else {
-      auth.signInWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log('logged in');
-      })
-      .catch(error => {
-        if (error.code === 'auth/user-not-found') {
-          alert("User not found");
-        }
-        if (error.code === 'auth/invalid-email') {
-          alert("Email is incorrect");
-        }
-        if (error.code === 'auth/wrong-password') {
-          alert("Incorrect password");
-        }
-        if (error.code === 'auth/user-disabled') {
-          alert("User has been disabled");
-        }
-        console.log(error);
-      })
-    }
-
+    auth.signInWithEmailAndPassword(email, password)
+    .then(() => {
+      console.log('logged in');
+    })
+    .catch(error => {
+      if (error.code === 'auth/user-not-found') {
+        alert("User not found");
+      }
+      if (error.code === 'auth/invalid-email') {
+        alert("Email is incorrect");
+      }
+      if (error.code === 'auth/wrong-password') {
+        alert("Incorrect password");
+      }
+      if (error.code === 'auth/user-disabled') {
+        alert("User has been disabled");
+      }
+      console.log(error);
+    })
   }
      
   const createUser = (email, password) => {
-    if (email == null) {
-      alert("Please enter an email");
-    } else if (password == null) {
-      alert("Please enter a password");
-    } else {
-      auth.createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log('User account has been created & signed in!')
-      })
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          console.log("email already in use");
-          alert("This email already has an account");
-        } 
-        if (error.code === 'auth/weak-password') {
-          alert("password is too weak");
-        }
-        if (error.code === 'auth/invalid-email') {
-          console.log("email invalid");
-          alert("Invalid email");
-        }
-        console.log(error);
-      })
-    }
+    auth.createUserWithEmailAndPassword(email, password)
+    .then(() => {
+      console.log('User account has been created & signed in!')
+    })
+    .catch(error => {
+      if (error.code === 'auth/email-already-in-use') {
+        console.log("email already in use");
+        alert("This email already has an account");
+      } 
+      if (error.code === 'auth/weak-password') {
+        alert("password is too weak");
+      }
+      if (error.code === 'auth/invalid-email') {
+        console.log("email invalid");
+        alert("Invalid email");
+      }
+      console.log(error);
+    })
   }
      
   // auth.signOut()
@@ -270,7 +255,6 @@ const App = () => {
         <Tab.Screen name="My Garden" component={MyGardenNav} />
         <Tab.Screen name="Our Forest" component={OurForest} />
         <Tab.Screen name={"Challenges"} component={ChallengesScreen} />
-        <Tab.Screen name={"Bonus Challenges"} component={BonusChallenges}/>
         <Tab.Screen name="Leaderboard" component={PvCLeaderboard} />
         <Tab.Screen name="Settings" component={SettingsNav} />
       </Tab.Navigator>
