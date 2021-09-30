@@ -151,46 +151,59 @@ const App = () => {
   }
  
   const signIn = (email, password) => {
-    auth.signInWithEmailAndPassword(email, password)
-    .then(() => {
-      console.log('logged in');
-    })
-    .catch(error => {
-      if (error.code === 'auth/user-not-found') {
-        alert("User not found");
-      }
-      if (error.code === 'auth/invalid-email') {
-        alert("Email is incorrect");
-      }
-      if (error.code === 'auth/wrong-password') {
-        alert("Incorrect password");
-      }
-      if (error.code === 'auth/user-disabled') {
-        alert("User has been disabled");
-      }
-      console.log(error);
-    })
+    if (email == null) {
+      alert("Please enter an email");
+    } else if (password == null) {
+      alert("Please enter a password");
+    } else {
+      auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        console.log('logged in');
+      })
+      .catch(error => {
+        if (error.code === 'auth/user-not-found') {
+          alert("User not found");
+        }
+        if (error.code === 'auth/invalid-email') {
+          alert("Email is incorrect");
+        }
+        if (error.code === 'auth/wrong-password') {
+          alert("Incorrect password");
+        }
+        if (error.code === 'auth/user-disabled') {
+          alert("User has been disabled");
+        }
+        console.log(error);
+      })
+    }
+
   }
      
   const createUser = (email, password) => {
-    auth.createUserWithEmailAndPassword(email, password)
-    .then(() => {
-      console.log('User account has been created & signed in!')
-    })
-    .catch(error => {
-      if (error.code === 'auth/email-already-in-use') {
-        console.log("email already in use");
-        alert("This email already has an account");
-      } 
-      if (error.code === 'auth/weak-password') {
-        alert("password is too weak");
-      }
-      if (error.code === 'auth/invalid-email') {
-        console.log("email invalid");
-        alert("Invalid email");
-      }
-      console.log(error);
-    })
+    if (email == null) {
+      alert("Please enter an email");
+    } else if (password == null) {
+      alert("Please enter a password");
+    } else {
+      auth.createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        console.log('User account has been created & signed in!')
+      })
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+          console.log("email already in use");
+          alert("This email already has an account");
+        } 
+        if (error.code === 'auth/weak-password') {
+          alert("password is too weak");
+        }
+        if (error.code === 'auth/invalid-email') {
+          console.log("email invalid");
+          alert("Invalid email");
+        }
+        console.log(error);
+      })
+    }
   }
      
   // auth.signOut()
