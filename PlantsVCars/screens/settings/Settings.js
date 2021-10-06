@@ -10,7 +10,10 @@ import pick from "react-native-web/dist/modules/pick";
 
 const Stack = createStackNavigator();
 
-const SettingsNav = () => {
+const SettingsNav = (props) => {
+
+  console.log("Settings nav userID: " + props.extraData.id)
+
   return (
     <Stack.Navigator>
       <Stack.Screen
