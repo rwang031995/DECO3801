@@ -12,14 +12,16 @@ const Stack = createStackNavigator();
 
 const SettingsNav = (props) => {
 
-  console.log("Settings nav userID: " + props.extraData.id)
+  const user = props.extraData
 
   return (
     <Stack.Navigator>
       <Stack.Screen
         name={"SettingsScreen"}
-        component={Settings}
-        options={{headerShown: false}}/>
+        // component={Settings}
+        options={{headerShown: false}}>
+        {props => <Settings {...props} extraData={user}/>}
+      </Stack.Screen>
       <Stack.Screen
         name={"Configure Transport"}
         component={ConfigureTransport}
@@ -177,10 +179,14 @@ const SettingsComponent = ({
 {/*}*/
 }
 
-const Settings = ({navigation}) => {
+const Settings = (props, {navigation}) => {
   const [date, setDate] = React.useState(new Date());
   const [age, setAge] = React.useState(new Date());
   const [popupVis, setPopupVis] = React.useState(false)
+
+  const userID = props.extraData.id
+
+  console.log("userID in SettingsNav: " + userID)
 
   const settingsOptions = [
     {

@@ -110,7 +110,7 @@ const OurForest = (images) => {
 export const HomeScreen = (props) => {
 
   const user = props.extraData
-  const userID = props.extraData.id
+  // const userID = props.extraData.id
 
   // console.log(props.extraData.id)
 

@@ -58,6 +58,8 @@ const App = () => {
 
   LogBox.ignoreLogs(["Setting a timer"])
 
+  // firebase.auth().signOut()
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'} screenOptions ={{headerShown: false}}>

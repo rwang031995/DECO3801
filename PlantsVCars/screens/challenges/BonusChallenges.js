@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   confirmButton: {
     justifyContent: "center",
     backgroundColor: colors.primary,
-    color: colors.primary
+    // color: colors.primary
   },
   backButton: {
     flexDirection: "row",
