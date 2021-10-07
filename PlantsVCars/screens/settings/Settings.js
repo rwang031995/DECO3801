@@ -179,14 +179,14 @@ const SettingsComponent = ({
 {/*}*/
 }
 
-const Settings = (props, {navigation}) => {
+const Settings = ({navigation}) => {
   const [date, setDate] = React.useState(new Date());
   const [age, setAge] = React.useState(new Date());
   const [popupVis, setPopupVis] = React.useState(false)
 
-  const userID = props.extraData.id
+  // const userID = props.extraData.id
 
-  console.log("userID in SettingsNav: " + userID)
+  // console.log("userID in SettingsNav: " + userID)
 
   const settingsOptions = [
     {
