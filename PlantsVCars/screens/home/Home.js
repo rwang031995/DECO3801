@@ -112,7 +112,7 @@ export const HomeScreen = (props) => {
   const user = props.extraData
   const userID = props.extraData.id
 
-  console.log(props.extraData.id)
+  // console.log(props.extraData.id)
 
   return (
     <Tab.Navigator
