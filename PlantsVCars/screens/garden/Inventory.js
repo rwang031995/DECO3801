@@ -11,11 +11,13 @@ const ITEM_KEYS = {
     itemFertilizer: "@key_Fertilizer"
 }
 
-const Inventory = () => {
+const Inventory = (props) => {
     // state declarations
     const [water, setWater] = useState({});
     const [sun, setSun] = useState({});
     const [fertilizer, setFertilizer] = useState({});
+
+    const [currency, setCurrency] = useState(0);
 
     // startup (only run on first render) LOOP IT!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     // this will check if keys are already stored and if they are, just recieve them
@@ -68,7 +70,8 @@ const Inventory = () => {
             <>
                 
                 <TouchableOpacity style={styles.elements} onPress={() => {
-                    setWater({name: water.name, quantity: water.quantity + 1})
+                    setWater({name: water.name, quantity: water.quantity + 1});
+                    props.setInteraction("Water");
                 }}>
                     <Text>
                         {water.quantity}
@@ -79,7 +82,8 @@ const Inventory = () => {
             <>
                 
                 <TouchableOpacity style={styles.elements} onPress={() => {
-                    setSun({name: sun.name, quantity: sun.quantity + 1})
+                    setSun({name: sun.name, quantity: sun.quantity + 1});
+                    props.setInteraction("Sun");
                 }}>
                     <Text>
                         {sun.quantity}
@@ -90,7 +94,8 @@ const Inventory = () => {
             <>
                 
                 <TouchableOpacity style={styles.elements} onPress={() => {
-                    setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1})
+                    setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1});
+                    props.setInteraction("Fertilizer");
                 }}>
                     <Text>
                         {fertilizer.quantity}
