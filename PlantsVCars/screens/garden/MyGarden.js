@@ -1,4 +1,4 @@
-import {Text, View, Button, Image, StyleSheet, Dimensions} from "react-native";
+import {Text, View, Button, Image, StyleSheet, Dimensions, TouchableOpacity} from "react-native";
 import React, {useState} from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from '@react-navigation/stack';
@@ -43,14 +43,19 @@ const styles = StyleSheet.create({
     height: "33%",
   },
   plantTile: {
-    height: "20%",
-    width: "20%",
-    margin: "4%"
+    height: "100%",
+    width: "100%",
   },
   overallBG: {
     height: windowHeight,
     width: windowWidth
-  }
+  },
+  hitBox: {
+    height: "33%",
+    width:"33%",
+    borderStyle: "solid"
+    
+  } 
 })
 
 const MyGarden = ({navigation}) => {
@@ -108,15 +113,27 @@ const MyGarden = ({navigation}) => {
   var plantsInGround = (
     // TODO: make this dynamic somehow
     <View style={{
-      flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "80%",
+      flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "60%",
       justifyContent: "space-around", position: 'absolute', top: '20%'
     }}>
-      {img({name: flowerSeating[0].name, style: styles.plantTile})}
-      {img({name: flowerSeating[1].name, style: styles.plantTile})}
-      {img({name: flowerSeating[2].name, style: styles.plantTile})}
-      {img({name: flowerSeating[3].name, style: styles.plantTile})}
-      {img({name: flowerSeating[4].name, style: styles.plantTile})}
-      {img({name: flowerSeating[5].name, style: styles.plantTile})}
+      <TouchableOpacity style={styles.hitBox}>
+        {img({name: flowerSeating[0].name, style: styles.plantTile})}
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.hitBox}>
+        {img({name: flowerSeating[1].name, style: styles.plantTile})}
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.hitBox}>
+        {img({name: flowerSeating[2].name, style: styles.plantTile})}
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.hitBox}>
+        {img({name: flowerSeating[3].name, style: styles.plantTile})}
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.hitBox}>
+        {img({name: flowerSeating[4].name, style: styles.plantTile})}
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.hitBox}>
+        {img({name: flowerSeating[5].name, style: styles.plantTile})}
+      </TouchableOpacity>
     </View>
   );
 
