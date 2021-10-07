@@ -8,6 +8,7 @@ import ImageZoom from 'react-native-image-pan-zoom'
 
 import Inventory from "./Inventory";
 import {img} from "../../images/manifest"
+import { useEffect } from "react/cjs/react.development";
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
 
 var date = new Date();
@@ -58,6 +59,14 @@ const styles = StyleSheet.create({
   } 
 })
 
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/////                                                                               /////
+/////                              GARDEN COMPONENT                                 /////
+/////                                                                               /////
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
 const MyGarden = ({navigation}) => {
   const [inventory, setInventory] = useState([]);
   const [flowerSeating, setFlowerSeating] = useState([
@@ -69,6 +78,7 @@ const MyGarden = ({navigation}) => {
     {name: "TulipFlower", health: 0}
   ]);
   const [gardenHealth, setGardenHealth] = useState(0);
+  const [interaction, setInteraction] = useState(0)
 
   /**
    * Changes the garden flower at index 'index' to flower with name 'newName'
@@ -137,6 +147,20 @@ const MyGarden = ({navigation}) => {
     </View>
   );
 
+  // when interaction is changed from child
+  useEffect(() => {
+    switch (interaction) {
+      case "Water":
+        console.log("Water pressed");
+        break;
+      case "Fertilizer":
+        console.log("Fertilizer pressed");
+        break;
+      case "Sun":
+        console.log("Sun pressed");
+    }
+  }, [interaction]) 
+
 
 
   return (
@@ -187,7 +211,7 @@ const MyGarden = ({navigation}) => {
         </View>
       </View> 
       <View style={{ height:"17%", flexDirection: "row", backgroundColor: 'orange', justifyContent: 'center', flex:0}}>
-        <Inventory/>
+        <Inventory setInteraction={setInteraction}/>
       </View>
     </View>
   );

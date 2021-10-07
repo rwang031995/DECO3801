@@ -11,18 +11,22 @@ const ITEM_KEYS = {
     itemFertilizer: "@key_Fertilizer"
 }
 
-const Inventory = () => {
+const Inventory = (props) => {
     // state declarations
     const [water, setWater] = useState({});
     const [sun, setSun] = useState({});
     const [fertilizer, setFertilizer] = useState({});
 
+    const [currency, setCurrency] = useState(0);
+
     // startup (only run on first render) LOOP IT!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     // this will check if keys are already stored and if they are, just recieve them
     // otherwise, if key doesn't exist, store a new key with a default value
+    // ^^^ ABOVE IS KIND OF BROKEN WITH WIERD ERRORS LIKE UNDEFINED NAMES
     useEffect(() => {
         getItemData(ITEM_KEYS.itemWater).then( itemData => {
-            if (itemData == null) {
+            if (itemData != null) { // changed for current ersion due to errors
+                console.log("itemData for water: ", itemData)
                 const waterDefault = {name: "Water", quantity: 10}
                 setItemData(ITEM_KEYS.itemWater, waterDefault)
                 setWater(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
@@ -32,19 +36,19 @@ const Inventory = () => {
             }      
         });
         getItemData(ITEM_KEYS.itemSun).then( itemData => {
-            if (itemData == null) {
+            if (itemData != null) { // changed for current ersion due to errors
                 const sunDefault = {name: "Sun", quantity: 6}
                 setItemData(ITEM_KEYS.itemSun, sunDefault)
-                setSun(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
+                setSun(sunDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
             } else {
                 setSun(itemData)
             }    
         });
         getItemData(ITEM_KEYS.itemFertilizer).then( itemData => {
-            if (itemData == null) {
+            if (itemData != null) { // changed for current ersion due to errors
                 const fertilizerDefault = {name: "Fertilizer", quantity: 2}
                 setItemData(ITEM_KEYS.itemFertilizer, fertilizerDefault)
-                setFertilizer(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
+                setFertilizer(fertilizerDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
             } else {
                 setFertilizer(itemData)
             }    
@@ -66,7 +70,8 @@ const Inventory = () => {
             <>
                 
                 <TouchableOpacity style={styles.elements} onPress={() => {
-                    setWater({name: water.name, quantity: water.quantity + 1})
+                    setWater({name: water.name, quantity: water.quantity + 1});
+                    props.setInteraction("Water");
                 }}>
                     <Text>
                         {water.quantity}
@@ -77,7 +82,8 @@ const Inventory = () => {
             <>
                 
                 <TouchableOpacity style={styles.elements} onPress={() => {
-                    setSun({name: sun.name, quantity: sun.quantity + 1})
+                    setSun({name: sun.name, quantity: sun.quantity + 1});
+                    props.setInteraction("Sun");
                 }}>
                     <Text>
                         {sun.quantity}
@@ -88,7 +94,8 @@ const Inventory = () => {
             <>
                 
                 <TouchableOpacity style={styles.elements} onPress={() => {
-                    setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1})
+                    setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1});
+                    props.setInteraction("Fertilizer");
                 }}>
                     <Text>
                         {fertilizer.quantity}
