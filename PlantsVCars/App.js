@@ -8,20 +8,6 @@ import {RegistrationScreen} from "./screens/login/Registration";
 import {HomeScreen} from "./screens/home/Home";
 import {firebase} from "./screens/settings/Firebase"
 
-
-// Adding to real time database code.1
-
-// database.ref('user/008').set(
-//   {
-//     name: "test",
-//     age: 20
-//   }
-// ).then(() => {
-//     console.log("INSERTED!");
-//   }).catch((error) => {
-//     console.log(error);
-// })
-
 const Stack = createStackNavigator()
 
 const App = () => {
@@ -49,6 +35,8 @@ const App = () => {
       }
     });
   }, []);
+
+  console.log(id);
 
   if (loading) {
     return(

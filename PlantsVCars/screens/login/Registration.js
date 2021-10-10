@@ -32,11 +32,11 @@ export const RegistrationScreen = ({navigation}) => {
           .doc(uid)
           .set(data)
           .then(() => {
-            navigation.navigate('Home', {user: data})
           })
           .catch((error) => {
             alert(error)
           });
+          navigation.navigate('Home', {user: data})
       })
       .catch((error) => {
         alert(error)
@@ -81,7 +81,7 @@ export const RegistrationScreen = ({navigation}) => {
         </TouchableOpacity>
         <View style={styles.footerView}>
           <Text style={styles.footerText}>
-            Already got an account?
+            Already got an account? <Text> </Text>
             <Text onPress={() => onFooterLinkPress()} style={styles.footerLink}>
               Log in
             </Text>
@@ -95,8 +95,8 @@ export const RegistrationScreen = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: "center"
-
+      alignItems: "center",
+      paddingTop: '20%'
     },
     keyboardView: {
       flex: 1,

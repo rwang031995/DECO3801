@@ -239,19 +239,19 @@ const ChallengesScreen = ({navigation}) => {
         console.log(bonusChallenge)
     }
 
-    // useEffect(() => {
-    //     if (storedWeek === "2021-09-06T14:00:00.000Z") r{
-    //         loadLevel();
-    //         loadWeek();
-    //         loadChallenges();
-    //         loadQuiz();
-    //     }
-    //     const interval = setInterval(() => {
-    //         updateWeeklyReset();
-    //         saveWeeklyReset();
-    //     }, 1000)
-    //     return () => clearInterval(interval)
-    // }, [storedWeek]);
+    useEffect(() => {
+        if (storedWeek === "2021-09-06T14:00:00.000Z") {
+            loadLevel();
+            loadWeek();
+            loadChallenges();
+            loadQuiz();
+        }
+        const interval = setInterval(() => {
+            updateWeeklyReset();
+            saveWeeklyReset();
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [storedWeek]);
 
 
 

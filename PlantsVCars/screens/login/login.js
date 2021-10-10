@@ -188,7 +188,7 @@ export const LoginPage = ({navigation}) => {
         </TouchableOpacity>
         <View style={styles.footerView}>
           <Text style={styles.footerText}>
-            Don't have an account?
+            Don't have an account? <Text></Text>
             <Text
               style={styles.footerLink}
               onPress={onFooterLinkPress}>
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     keyboardView: {
       flex: 1,
       width: "100%",
-      top: "20%"
+      paddingTop: "20%"
     },
     input: {
       height: 48,
