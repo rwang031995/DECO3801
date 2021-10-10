@@ -7,8 +7,10 @@ import {createStackNavigator} from "@react-navigation/stack";
 import {RegistrationScreen} from "./screens/login/Registration";
 import {HomeScreen} from "./screens/home/Home";
 import {firebase} from "./screens/settings/Firebase"
+import userId from './screens/home/userId';
 
 const Stack = createStackNavigator()
+
 
 const App = () => {
 
@@ -36,8 +38,6 @@ const App = () => {
     });
   }, []);
 
-  console.log(id);
-
   if (loading) {
     return(
       <></>
@@ -49,15 +49,17 @@ const App = () => {
   // firebase.auth().signOut()
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'} screenOptions ={{headerShown: false}}>
-        <Stack.Screen name={"Home"}>
-          {props => <HomeScreen {...props} extraData={user}/>}
-        </Stack.Screen>
-        <Stack.Screen name={"Login"} component={LoginPage}/>
-        <Stack.Screen name={"Registration"} component={RegistrationScreen}/>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <userId.Provider value={user.id}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'} screenOptions ={{headerShown: false}}>
+          <Stack.Screen name={"Home"}>
+            {props => <HomeScreen {...props} extraData={user}/>}
+          </Stack.Screen>
+          <Stack.Screen name={"Login"} component={LoginPage}/>
+          <Stack.Screen name={"Registration"} component={RegistrationScreen}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </userId.Provider>
   );
 }
 

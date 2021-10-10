@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {img} from "../../images/manifest"
 import { createStackNavigator } from '@react-navigation/stack';
 import Quiz from './BonusChallenges';
+import userId from '../home/userId';
 
 const Stack = createStackNavigator();
 
@@ -191,9 +192,10 @@ const ChallengesScreen = ({navigation}) => {
     ]);
     const [bonusChallenge, setBonusChallenge]  = useState(false);
     const [storedWeek, changeWeek] = useState("2021-09-06T14:00:00.000Z");
+    const uid = useContext(userId);
 
     //--------------------------------------------------------------------------------
-    
+
     /**
      * Load all the globally stored data upon opening page upon entering page.
      */
