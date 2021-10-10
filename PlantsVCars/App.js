@@ -44,23 +44,37 @@ const App = () => {
     )
   }
 
-  LogBox.ignoreLogs(["Setting a timer"])
-
   // firebase.auth().signOut()
 
-  return (
-    <userId.Provider value={user.id}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'} screenOptions ={{headerShown: false}}>
-          <Stack.Screen name={"Home"}>
-            {props => <HomeScreen {...props} extraData={user}/>}
-          </Stack.Screen>
-          <Stack.Screen name={"Login"} component={LoginPage}/>
-          <Stack.Screen name={"Registration"} component={RegistrationScreen}/>
-        </Stack.Navigator>
-      </NavigationContainer>
-    </userId.Provider>
-  );
+  LogBox.ignoreLogs(["Setting a timer"])
+
+  if (user == null) {
+    return (
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'} screenOptions ={{headerShown: false}}>
+            <Stack.Screen name={"Home"}>
+              {props => <HomeScreen {...props} extraData={user}/>}
+            </Stack.Screen>
+            <Stack.Screen name={"Login"} component={LoginPage}/>
+            <Stack.Screen name={"Registration"} component={RegistrationScreen}/>
+          </Stack.Navigator>
+        </NavigationContainer>
+    );
+  } else {
+    return (
+      <userId.Provider value={user.id}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'} screenOptions ={{headerShown: false}}>
+            <Stack.Screen name={"Home"}>
+              {props => <HomeScreen {...props} extraData={user}/>}
+            </Stack.Screen>
+            <Stack.Screen name={"Login"} component={LoginPage}/>
+            <Stack.Screen name={"Registration"} component={RegistrationScreen}/>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </userId.Provider>
+    )
+  }
 }
 
 export default App;

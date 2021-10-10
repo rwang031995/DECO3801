@@ -6,6 +6,8 @@ import {img} from "../../images/manifest"
 import { createStackNavigator } from '@react-navigation/stack';
 import Quiz from './BonusChallenges';
 import userId from '../home/userId';
+import {firebase} from "../settings/Firebase"
+import { set } from 'react-native-reanimated';
 
 const Stack = createStackNavigator();
 
@@ -35,29 +37,47 @@ const ChallengesScreen = ({navigation}) => {
      * Leveling system.
      */
 
+    // /**
+    //  * save globally stored level. 
+    //  */
+    // const saveLevel = async() => {
+    //     try {
+    //         await AsyncStorage.setItem("MyLevel", JSON.stringify(level));
+    //     } catch (err) {
+    //         console.log("save level error");
+    //     }
+    // }
+
+    // /**
+    //  * load globally stored level. 
+    //  */
+    // const loadLevel = async() => {
+    //     try {
+    //         let ourLevel = await AsyncStorage.getItem("MyLevel");
+    //         if (ourLevel != null) {
+    //             setLevel(JSON.parse(ourLevel));
+    //         }
+    //     } catch (err) {
+    //         console.log("load level error");
+    //     }
+    // }
+
     /**
      * save globally stored level. 
      */
     const saveLevel = async() => {
-        try {
-            await AsyncStorage.setItem("MyLevel", JSON.stringify(level));
-        } catch (err) {
-            console.log("save level error");
-        }
+        firebase.firestore().collection("users").doc(uid).update({
+            level: level,
+        })
     }
 
     /**
      * load globally stored level. 
      */
     const loadLevel = async() => {
-        try {
-            let ourLevel = await AsyncStorage.getItem("MyLevel");
-            if (ourLevel != null) {
-                setLevel(JSON.parse(ourLevel));
-            }
-        } catch (err) {
-            console.log("load level error");
-        }
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+            setLevel(doc.data().level);
+        })
     }
 
     //--------------------------------------------------------------------------------
@@ -119,25 +139,18 @@ const ChallengesScreen = ({navigation}) => {
      * save globally stored challenges. 
      */
     const saveChallenges = async() => {
-        try {
-            await AsyncStorage.setItem("weeklyChallenge", JSON.stringify(challenges));
-        } catch (err) {
-            console.log("save challenges error");
-        }
+        firebase.firestore().collection("users").doc(uid).update({
+            challenges: challenges,
+        })
     }
         
     /**
      * load globally stored challenges. 
      */
     const loadChallenges = async() => {
-        try {
-            let weeklyChallenges = await AsyncStorage.getItem("weeklyChallenge");
-            if (weeklyChallenges != null) {
-                setChallenges(JSON.parse(weeklyChallenges));
-            }
-        } catch (err) {
-            console.log("load challenges error");
-        }
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+            setChallenges(doc.data().challenges);
+        })
     }
 
     const takeQuiz = (navigation) => {
@@ -156,25 +169,18 @@ const ChallengesScreen = ({navigation}) => {
      * save globally stored quiz. 
      */
      const saveQuiz = async() => {
-        try {
-            await AsyncStorage.setItem("quizComplete", JSON.stringify(bonusChallenge));
-        } catch (err) {
-            console.log("save quiz error");
-        }
+        firebase.firestore().collection("users").doc(uid).update({
+            bonusChallenge: bonusChallenge,
+        })
     }
         
     /**
      * load globally stored quiz. 
      */
     const loadQuiz = async() => {
-        try {
-            let quiz = await AsyncStorage.getItem("quizComplete");
-            if (quiz != null) {
-                setBonusChallenge(JSON.parse(quiz));
-            }
-        } catch (err) {
-            console.log("load quiz error");
-        }
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+            setBonusChallenge(doc.data().bonusChallenge);
+        })
     }
     
 
@@ -193,7 +199,6 @@ const ChallengesScreen = ({navigation}) => {
     const [bonusChallenge, setBonusChallenge]  = useState(false);
     const [storedWeek, changeWeek] = useState("2021-09-06T14:00:00.000Z");
     const uid = useContext(userId);
-
     //--------------------------------------------------------------------------------
 
     /**
@@ -228,10 +233,6 @@ const ChallengesScreen = ({navigation}) => {
         saveQuiz();
     }
 
-    const increaseLevel = () => {
-        setLevel(level + 1);
-    }
-
     const setQuiz = () => {
         if (bonusChallenge == false) {
             setBonusChallenge(true);
@@ -254,7 +255,6 @@ const ChallengesScreen = ({navigation}) => {
         }, 1000)
         return () => clearInterval(interval)
     }, [storedWeek]);
-
 
 
     /**

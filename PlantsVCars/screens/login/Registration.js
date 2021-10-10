@@ -5,6 +5,7 @@ import {Text, View} from "react-native";
 import {firebase} from "../settings/Firebase";
 
 export const RegistrationScreen = ({navigation}) => {
+  const isCompleted = ["RoseFlower", "TulipFlower"]
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -26,6 +27,14 @@ export const RegistrationScreen = ({navigation}) => {
         const data = {
           id: uid,
           email,
+          level: 1,
+          challenges: [
+            {challenge : "Walk to X once this Week", completed : isCompleted[0]}, 
+            {challenge : "Run to X once this Week", completed : isCompleted[0]}, 
+            {challenge : "Take a bus once this week", completed : isCompleted[0]}, 
+            {challenge : "Take the train once this week", completed : isCompleted[0]}
+          ],
+          bonusChallenges: false,
         };
         const usersRef = firebase.firestore().collection('users')
         usersRef
