@@ -27,14 +27,15 @@ export const RegistrationScreen = ({navigation}) => {
         const data = {
           id: uid,
           email,
-          level: 1,
+          level: 2,
           challenges: [
             {challenge : "Walk to X once this Week", completed : isCompleted[0]}, 
             {challenge : "Run to X once this Week", completed : isCompleted[0]}, 
             {challenge : "Take a bus once this week", completed : isCompleted[0]}, 
             {challenge : "Take the train once this week", completed : isCompleted[0]}
           ],
-          bonusChallenges: false,
+          bonusChallenge: false,
+          currentWeek: "2021-09-06T14:00:00.000Z",
         };
         const usersRef = firebase.firestore().collection('users')
         usersRef

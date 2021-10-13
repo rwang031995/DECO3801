@@ -90,26 +90,18 @@ const ChallengesScreen = ({navigation}) => {
      * save globally stored week. 
      */
     const saveWeek = async() => {
-        try {
-            await AsyncStorage.setItem("currentWeek", storedWeek);
-        } catch (err) {
-                console.log("save week error");
-        }
+        firebase.firestore().collection("users").doc(uid).update({
+            currentWeek: storedWeek,
+        })
     }
     
     /**
      * load globally stored week. 
      */
     const loadWeek = async() => {
-        try {
-            let week = await AsyncStorage.getItem("currentWeek");
-            if (week != null) {
-                changeWeek(week);
-            }
-        } catch (err) {
-            console.log("load week error");
-            
-        }
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+            changeWeek(doc.data().currentWeek);
+        })
     }
 
     //--------------------------------------------------------------------------------
@@ -155,34 +147,20 @@ const ChallengesScreen = ({navigation}) => {
 
     const takeQuiz = (navigation) => {
         if (bonusChallenge == false) {
-            setQuiz();
-            saveQuiz();
+            firebase.firestore().collection("users").doc(uid).update({
+                bonusChallenge: true
+            })
             navigation.navigate('My Quiz');
-            saveQuiz();
         } else {
             alert("Quiz has already been completed this week")
         }
-        saveQuiz();
     }
 
-    /**
-     * save globally stored quiz. 
-     */
-     const saveQuiz = async() => {
-        firebase.firestore().collection("users").doc(uid).update({
-            bonusChallenge: bonusChallenge,
-        })
-    }
-        
-    /**
-     * load globally stored quiz. 
-     */
     const loadQuiz = async() => {
         firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
             setBonusChallenge(doc.data().bonusChallenge);
         })
     }
-    
 
     //--------------------------------------------------------------------------------
     
@@ -190,13 +168,13 @@ const ChallengesScreen = ({navigation}) => {
      * Variables for global storage using Async.
      */
     const [level, setLevel] = useState(1);
+    const [bonusChallenge, setBonusChallenge] = useState(false);
     const [challenges, setChallenges] = useState([    
         {challenge : "Walk to X once this Week", completed : isCompleted[0]}, 
         {challenge : "Run to X once this Week", completed : isCompleted[0]}, 
         {challenge : "Take a bus once this week", completed : isCompleted[0]}, 
         {challenge : "Take the train once this week", completed : isCompleted[0]}
     ]);
-    const [bonusChallenge, setBonusChallenge]  = useState(false);
     const [storedWeek, changeWeek] = useState("2021-09-06T14:00:00.000Z");
     const uid = useContext(userId);
     //--------------------------------------------------------------------------------
@@ -221,7 +199,9 @@ const ChallengesScreen = ({navigation}) => {
             } else if (!challengesComplete && level > 1) {
                 setLevel(level - 1);
             }
-            setBonusChallenge(false);
+            firebase.firestore().collection("users").doc(uid).update({
+                bonusChallenge: false,
+            })
             changeWeek(newWeek);
         }
     }
@@ -230,16 +210,6 @@ const ChallengesScreen = ({navigation}) => {
         saveWeek();
         saveChallenges();
         saveLevel();
-        saveQuiz();
-    }
-
-    const setQuiz = () => {
-        if (bonusChallenge == false) {
-            setBonusChallenge(true);
-        } else {
-            setBonusChallenge(false);
-        }
-        console.log(bonusChallenge)
     }
 
     useEffect(() => {
