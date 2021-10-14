@@ -1,4 +1,4 @@
-import {Text, View, Button, Image, StyleSheet, Dimensions, TouchableOpacity} from "react-native";
+import {Text, View, Button, Image, StyleSheet, Dimensions} from "react-native";
 import React, {useState} from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from '@react-navigation/stack';
@@ -8,7 +8,6 @@ import ImageZoom from 'react-native-image-pan-zoom'
 
 import Inventory from "./Inventory";
 import {img} from "../../images/manifest"
-import { useEffect } from "react/cjs/react.development";
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
 
 var date = new Date();
@@ -44,28 +43,15 @@ const styles = StyleSheet.create({
     height: "33%",
   },
   plantTile: {
-    height: "100%",
-    width: "100%",
+    height: "20%",
+    width: "20%",
+    margin: "4%"
   },
   overallBG: {
     height: windowHeight,
     width: windowWidth
-  },
-  hitBox: {
-    height: "33%",
-    width:"33%",
-    borderStyle: "solid"
-    
-  } 
+  }
 })
-
-
-/////////////////////////////////////////////////////////////////////////////////////////
-/////                                                                               /////
-/////                              GARDEN COMPONENT                                 /////
-/////                                                                               /////
-/////////////////////////////////////////////////////////////////////////////////////////
-
 
 const MyGarden = ({navigation}) => {
   const [inventory, setInventory] = useState([]);
@@ -78,7 +64,6 @@ const MyGarden = ({navigation}) => {
     {name: "TulipFlower", health: 0}
   ]);
   const [gardenHealth, setGardenHealth] = useState(0);
-  const [interaction, setInteraction] = useState(0)
 
   /**
    * Changes the garden flower at index 'index' to flower with name 'newName'
@@ -100,34 +85,6 @@ const MyGarden = ({navigation}) => {
       newFlower,
       ...flowerSeating.slice(index + 1)
     ]);
-  }
-
-  const useOnFlower = (index) => {
-    switch (interaction) {
-      case "Water":
-        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // water adds 5 health
-        setFlowerSeating([
-          ...flowerSeating.slice(0, index),
-          modifiedFlower,
-          ...flowerSeating.slice(index + 1)
-        ])
-        break;
-      case "Fertilizer":
-        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 2} // fertiliser adds 2 health (maybe this provides a modifier instead?)
-        setFlowerSeating([
-          ...flowerSeating.slice(0, index),
-          modifiedFlower,
-          ...flowerSeating.slice(index + 1)
-        ])
-        break;
-      case "Sun":
-        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // sun adds 5 health
-        setFlowerSeating([
-          ...flowerSeating.slice(0, index),
-          modifiedFlower,
-          ...flowerSeating.slice(index + 1)
-        ])
-    }
   }
   
   var seasonBG = (
@@ -151,43 +108,17 @@ const MyGarden = ({navigation}) => {
   var plantsInGround = (
     // TODO: make this dynamic somehow
     <View style={{
-      flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "60%",
+      flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "80%",
       justifyContent: "space-around", position: 'absolute', top: '20%'
     }}>
-      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(0)}>
-        {img({name: flowerSeating[0].name, style: styles.plantTile})}
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(1)}>
-        {img({name: flowerSeating[1].name, style: styles.plantTile})}
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(2)}>
-        {img({name: flowerSeating[2].name, style: styles.plantTile})}
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(3)}>
-        {img({name: flowerSeating[3].name, style: styles.plantTile})}
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(4)}>
-        {img({name: flowerSeating[4].name, style: styles.plantTile})}
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(5)}>
-        {img({name: flowerSeating[5].name, style: styles.plantTile})}
-      </TouchableOpacity>
+      {img({name: flowerSeating[0].name, style: styles.plantTile})}
+      {img({name: flowerSeating[1].name, style: styles.plantTile})}
+      {img({name: flowerSeating[2].name, style: styles.plantTile})}
+      {img({name: flowerSeating[3].name, style: styles.plantTile})}
+      {img({name: flowerSeating[4].name, style: styles.plantTile})}
+      {img({name: flowerSeating[5].name, style: styles.plantTile})}
     </View>
   );
-
-  // when interaction is changed from child
-  useEffect(() => {
-    switch (interaction) {
-      case "Water":
-        console.log("Water pressed");
-        break;
-      case "Fertilizer":
-        console.log("Fertilizer pressed");
-        break;
-      case "Sun":
-        console.log("Sun pressed");
-    }
-  }, [interaction]) 
 
 
 

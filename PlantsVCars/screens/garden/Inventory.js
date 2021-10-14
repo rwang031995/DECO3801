@@ -11,22 +11,18 @@ const ITEM_KEYS = {
     itemFertilizer: "@key_Fertilizer"
 }
 
-const Inventory = (props) => {
+const Inventory = () => {
     // state declarations
     const [water, setWater] = useState({});
     const [sun, setSun] = useState({});
     const [fertilizer, setFertilizer] = useState({});
 
-    const [currency, setCurrency] = useState(0);
-
     // startup (only run on first render) LOOP IT!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     // this will check if keys are already stored and if they are, just recieve them
     // otherwise, if key doesn't exist, store a new key with a default value
-    // ^^^ ABOVE IS KIND OF BROKEN WITH WIERD ERRORS LIKE UNDEFINED NAMES
     useEffect(() => {
         getItemData(ITEM_KEYS.itemWater).then( itemData => {
-            if (itemData != null) { // changed for current ersion due to errors
-                console.log("itemData for water: ", itemData)
+            if (itemData == null) {
                 const waterDefault = {name: "Water", quantity: 10}
                 setItemData(ITEM_KEYS.itemWater, waterDefault)
                 setWater(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
@@ -36,19 +32,19 @@ const Inventory = (props) => {
             }      
         });
         getItemData(ITEM_KEYS.itemSun).then( itemData => {
-            if (itemData != null) { // changed for current ersion due to errors
+            if (itemData == null) {
                 const sunDefault = {name: "Sun", quantity: 6}
                 setItemData(ITEM_KEYS.itemSun, sunDefault)
-                setSun(sunDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
+                setSun(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
             } else {
                 setSun(itemData)
             }    
         });
         getItemData(ITEM_KEYS.itemFertilizer).then( itemData => {
-            if (itemData != null) { // changed for current ersion due to errors
+            if (itemData == null) {
                 const fertilizerDefault = {name: "Fertilizer", quantity: 2}
                 setItemData(ITEM_KEYS.itemFertilizer, fertilizerDefault)
-                setFertilizer(fertilizerDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
+                setFertilizer(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
             } else {
                 setFertilizer(itemData)
             }    
@@ -67,42 +63,47 @@ const Inventory = (props) => {
     // visual
     return (
         <>
-            <>
-                
-                <TouchableOpacity style={styles.elements} onPress={() => {
-                    setWater({name: water.name, quantity: water.quantity + 1});
-                    props.setInteraction("Water");
+            <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
+                {img({name: "Water", style: styles.itemIcon})}
+                <Text>
+                    {water.quantity}
+                </Text>
+                <TouchableOpacity style={styles.button} onPress={() => {
+                    setWater({name: water.name, quantity: water.quantity + 1})
                 }}>
                     <Text>
-                        {water.quantity}
+                        +++
                     </Text>
-                    {img({name: "WaterOutlined", style:styles.itemIcon})}
                 </TouchableOpacity>
-            </>
-            <>
-                
-                <TouchableOpacity style={styles.elements} onPress={() => {
-                    setSun({name: sun.name, quantity: sun.quantity + 1});
-                    props.setInteraction("Sun");
+            </View>
+
+            <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
+                {img({name: "Sunlight", style: styles.itemIcon})}
+                <Text>
+                    {sun.quantity}
+                </Text>
+                <TouchableOpacity style={styles.button} onPress={() => {
+                    setSun({name: sun.name, quantity: sun.quantity + 1})
                 }}>
                     <Text>
-                        {sun.quantity}
+                        +++
                     </Text>
-                    {img({name: "SunlightOutlined", style:styles.itemIcon})}
                 </TouchableOpacity>
-            </>
-            <>
-                
-                <TouchableOpacity style={styles.elements} onPress={() => {
-                    setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1});
-                    props.setInteraction("Fertilizer");
+            </View>
+            
+            <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
+                {img({name: "Fertiliser", style: styles.itemIcon})}
+                <Text>
+                    {fertilizer.quantity}
+                </Text>
+                <TouchableOpacity style={styles.button} onPress={() => {
+                    setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1})
                 }}>
                     <Text>
-                        {fertilizer.quantity}
+                        +++
                     </Text>
-                    {img({name: "FertiliserOutlined", style:styles.itemIcon})}
                 </TouchableOpacity>
-            </>
+            </View>
         </>
     );
 }
@@ -138,6 +139,7 @@ const styles = StyleSheet.create({
     button: {
         alignItems: "center",
         backgroundColor: "#DDDDDD",
+        borderRadius: 5,
         padding: 4,
     },
     buttonText: {
@@ -145,15 +147,12 @@ const styles = StyleSheet.create({
     },
 
     itemIcon: {
-        width: '80%',
-        height: '80%'
+        flex: 1,
+        width: '200%',
+        height: '200%',
+        resizeMode: 'contain',
+        position: 'relative'
     },
-
-    elements: {
-        width: '33%',
-        height: '100%',
-        padding: "5%"
-    }
 })
 
 export default Inventory;
