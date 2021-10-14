@@ -109,7 +109,7 @@ const MyGarden = ({navigation}) => {
         setFlowerSeating([
           ...flowerSeating.slice(0, index),
           modifiedFlower,
-          ...flowerSeating.slize(index + 1)
+          ...flowerSeating.slice(index + 1)
         ])
         break;
       case "Fertilizer":
@@ -117,7 +117,7 @@ const MyGarden = ({navigation}) => {
         setFlowerSeating([
           ...flowerSeating.slice(0, index),
           modifiedFlower,
-          ...flowerSeating.slize(index + 1)
+          ...flowerSeating.slice(index + 1)
         ])
         break;
       case "Sun":
@@ -125,7 +125,7 @@ const MyGarden = ({navigation}) => {
         setFlowerSeating([
           ...flowerSeating.slice(0, index),
           modifiedFlower,
-          ...flowerSeating.slize(index + 1)
+          ...flowerSeating.slice(index + 1)
         ])
     }
   }
