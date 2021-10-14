@@ -101,6 +101,34 @@ const MyGarden = ({navigation}) => {
       ...flowerSeating.slice(index + 1)
     ]);
   }
+
+  const useOnFlower = (index) => {
+    switch (interaction) {
+      case "Water":
+        let modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // water adds 5 health
+        setFlowerSeating([
+          ...flowerSeating.slice(0, index),
+          modifiedFlower,
+          ...flowerSeating.slize(index + 1)
+        ])
+        break;
+      case "Fertilizer":
+        let modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 2} // water adds 2 health (maybe this provides a modifier instead?)
+        setFlowerSeating([
+          ...flowerSeating.slice(0, index),
+          modifiedFlower,
+          ...flowerSeating.slize(index + 1)
+        ])
+        break;
+      case "Sun":
+        let modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // water adds 5 health
+        setFlowerSeating([
+          ...flowerSeating.slice(0, index),
+          modifiedFlower,
+          ...flowerSeating.slize(index + 1)
+        ])
+    }
+  }
   
   var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -126,22 +154,22 @@ const MyGarden = ({navigation}) => {
       flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "60%",
       justifyContent: "space-around", position: 'absolute', top: '20%'
     }}>
-      <TouchableOpacity style={styles.hitBox}>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(0)}>
         {img({name: flowerSeating[0].name, style: styles.plantTile})}
       </TouchableOpacity>
-      <TouchableOpacity style={styles.hitBox}>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(1)}>
         {img({name: flowerSeating[1].name, style: styles.plantTile})}
       </TouchableOpacity>
-      <TouchableOpacity style={styles.hitBox}>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(2)}>
         {img({name: flowerSeating[2].name, style: styles.plantTile})}
       </TouchableOpacity>
-      <TouchableOpacity style={styles.hitBox}>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(3)}>
         {img({name: flowerSeating[3].name, style: styles.plantTile})}
       </TouchableOpacity>
-      <TouchableOpacity style={styles.hitBox}>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(4)}>
         {img({name: flowerSeating[4].name, style: styles.plantTile})}
       </TouchableOpacity>
-      <TouchableOpacity style={styles.hitBox}>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(5)}>
         {img({name: flowerSeating[5].name, style: styles.plantTile})}
       </TouchableOpacity>
     </View>
