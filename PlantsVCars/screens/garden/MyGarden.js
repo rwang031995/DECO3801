@@ -105,7 +105,7 @@ const MyGarden = ({navigation}) => {
   const useOnFlower = (index) => {
     switch (interaction) {
       case "Water":
-        let modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // water adds 5 health
+        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // water adds 5 health
         setFlowerSeating([
           ...flowerSeating.slice(0, index),
           modifiedFlower,
@@ -113,7 +113,7 @@ const MyGarden = ({navigation}) => {
         ])
         break;
       case "Fertilizer":
-        let modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 2} // fertiliser adds 2 health (maybe this provides a modifier instead?)
+        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 2} // fertiliser adds 2 health (maybe this provides a modifier instead?)
         setFlowerSeating([
           ...flowerSeating.slice(0, index),
           modifiedFlower,
@@ -121,7 +121,7 @@ const MyGarden = ({navigation}) => {
         ])
         break;
       case "Sun":
-        let modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // sun adds 5 health
+        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // sun adds 5 health
         setFlowerSeating([
           ...flowerSeating.slice(0, index),
           modifiedFlower,
