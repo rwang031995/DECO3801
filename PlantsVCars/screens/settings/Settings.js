@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {getSettings, setSetting, STORAGE_KEY} from "./Storage"
+import {getSetting, setSetting, STORAGE_KEY} from "./Storage"
 
 import {ScrollView, Switch, Text, TouchableOpacity, View} from "react-native";
 import {StyleSheet} from "react-native";
@@ -10,13 +10,18 @@ import pick from "react-native-web/dist/modules/pick";
 
 const Stack = createStackNavigator();
 
-const SettingsNav = () => {
+const SettingsNav = (props) => {
+
+  const user = props.extraData
+
   return (
     <Stack.Navigator>
       <Stack.Screen
         name={"SettingsScreen"}
-        component={Settings}
-        options={{headerShown: false}}/>
+        // component={Settings}
+        options={{headerShown: false}}>
+        {props => <Settings {...props} extraData={user}/>}
+      </Stack.Screen>
       <Stack.Screen
         name={"Configure Transport"}
         component={ConfigureTransport}
@@ -68,6 +73,14 @@ const ConfigureTransport = () => {
     },
   ];
 
+  /* Get settings from internal storage */
+  useEffect(() => {
+    getSetting(STORAGE_KEY.hasBicycle, setHasBicycle)
+    getSetting(STORAGE_KEY.hasScooter, setHasScooter)
+    getSetting(STORAGE_KEY.hasBus, setHasBus)
+    getSetting(STORAGE_KEY.hasTrain, setHasTrain)
+  }, [])
+
   /* Set settings in internal storage */
   useEffect(() => {
     setSetting(STORAGE_KEY.hasBicycle, hasBicycle)
@@ -75,14 +88,6 @@ const ConfigureTransport = () => {
     setSetting(STORAGE_KEY.hasBus, hasBus)
     setSetting(STORAGE_KEY.hasTrain, hasTrain)
   }, [hasBicycle, hasScooter, hasBus, hasTrain])
-
-  /* Get settings from internal storage */
-  useEffect(() => {
-    getSettings(STORAGE_KEY.hasBicycle, setHasBicycle)
-    getSettings(STORAGE_KEY.hasScooter, setHasScooter)
-    getSettings(STORAGE_KEY.hasBus, setHasBus)
-    getSettings(STORAGE_KEY.hasTrain, setHasTrain)
-  }, [])
 
   return <SettingsComponent settingsOptions={settingsOptions}/>
 }
@@ -179,6 +184,10 @@ const Settings = ({navigation}) => {
   const [age, setAge] = React.useState(new Date());
   const [popupVis, setPopupVis] = React.useState(false)
 
+  // const userID = props.extraData.id
+
+  // console.log("userID in SettingsNav: " + userID)
+
   const settingsOptions = [
     {
       title: "My Age",
@@ -209,7 +218,7 @@ const Settings = ({navigation}) => {
       setDate: () => setDate(),
 
       onPress: () => {
-        setSetting(STORAGE_KEY.age, age)
+        setStorage(STORAGE_KEY.age, age)
         setPopupVis(false)
       }
     }
