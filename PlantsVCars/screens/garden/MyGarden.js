@@ -86,25 +86,6 @@ const MyGarden = ({navigation}) => {
       ...flowerSeating.slice(index + 1)
     ]);
   }
-  
-  var seasonBG = (
-    <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-        {img({name: season+"-top", style: styles.bgTile})}
-        {img({name: season+"-duck", style: styles.bgTile})}
-        {img({name: season+"-top", style: styles.bgTile})}
-
-        {img({name: season, style: styles.bgTile})}
-        {img({name: season, style: styles.bgTile})}
-        {img({name: season, style: styles.bgTile})}
-
-        {img({name: season, style: styles.bgTile})}
-        {img({name: season, style: styles.bgTile})}
-        {img({name: season, style: styles.bgTile})}
-        {img({name: season, style: styles.bgTile})}
-        {img({name: season, style: styles.bgTile})}
-        {img({name: season, style: styles.bgTile})}
-    </View>
-  );
 
   var plantsInGround = (
     // TODO: make this dynamic somehow
@@ -148,7 +129,7 @@ const MyGarden = ({navigation}) => {
                     imageHeight={windowHeight}
                     minScale={1}
           >
-            {img({name: season+"-bg", style: styles.overallBG})}
+            {img({name: season+"-bg-animated", style: styles.overallBG})}
             <View style={{position:"absolute", height:"100%", width:"100%"}}>
               {plantsInGround}
             </View>
