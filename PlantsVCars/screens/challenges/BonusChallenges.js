@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {Button, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+  Alert,
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
 import {questions} from "./BonusQuestionPool";
 import {getStorage, setStorage} from "../settings/Storage";
 
@@ -58,7 +65,7 @@ const loadCurrentQuestions = () => {
    */
 
   const [resetChallenges, setResetChallenges] = useState(true)
-  // const [bonusChallenges, setBonusChallenges] = useState([])
+  const [bonusChallenges, setBonusChallenges] = useState([])
 
   const nums = new Set()
 
@@ -137,6 +144,7 @@ const QuesAnsPair = (props) => {
     setSelected({...selected, [props.qIndex]: selectedAns})
     setScore({...score, [props.qIndex]: achievedScore})
     props.setShowNext(true)
+    // props.handle_question()
   }
 
 
@@ -216,8 +224,47 @@ const Quiz = (props) => {
   const [score, setScore] = useState(0)
   const [selected, setSelected] = useState({})
   const [updatedScore, setUpdateScore] = useState(0)
+  const [myQuestions, setMyQuestions] = useState([])
+  const [resetChallenges, setResetChallenges] = useState(true)
 
-  loadCurrentQuestions()
+  // if (!questionsLoaded) {
+  //   loadCurrentQuestions()
+  //   setMyQuestions(questions => questions.concat(currentQuestions))
+  //   setQuestionsLoaded(true)
+  //   console.log(myQuestions)
+  // }
+
+  // writeChallengesReset(true)
+  // readChallengesReset().then(r => {
+  //   setResetChallenges(resetChallenges => r)
+  // })
+
+  // console.log(resetChallenges)
+
+  const loadQuestions = () => {
+
+    const nums = new Set()
+
+    while(nums.size !== NUM_OF_QUESTIONS) {
+      nums.add(Math.floor(Math.random() * NUM_OF_QUESTIONS))
+    }
+
+    // console.log(nums.size)
+
+    for (let i = 0; i < nums.size; i++) {
+      console.log(questions[Array.from(nums)[i]])
+      setMyQuestions(myQuestions => [...myQuestions, questions[Array.from(nums)[i]]])
+    }
+
+    // writeBonusChallenges(myQuestions)
+    // writeChallengesReset(false)
+  }
+
+  if (myQuestions.length !== 3) {
+    loadQuestions()
+  }
+
+  // console.log(myQuestions)
 
   const handle_question = () => {
     // console.log(`Score: ${score}`)
@@ -225,45 +272,66 @@ const Quiz = (props) => {
     writeBonusChallengesComplete(true)
     setUpdateScore(updatedScore => score)
     setQIndex(questionIndex => questionIndex + 1)
-    if (qIndex === currentQuestions.length - 1) {
+    if (qIndex === myQuestions.length - 1) {
       props.navigation.navigate("Challenges", {score: score})
       return
     }
     setShowNext(false)
   }
 
-  // console.log(qIndex)
+  useEffect(() => {
+    console.log(qIndex, myQuestions.length)
+    props.navigation.addListener("beforeRemove", (e) => {
+      if (qIndex >= myQuestions.length - 1) {
+        return
+      }
+      console.log(qIndex)
+
+      e.preventDefault()
+
+      Alert.alert(
+        "Are you sure you want to quit?",
+        "You will lose all progress for this week's bonus challenges!",
+        [
+          {text: "Finish the quiz!", style: "cancel", onPress: () => {}},
+          {
+            text: "Leave", style: "destructive", onPress: () => props.navigation.dispatch(e.data.action),
+          }
+        ]
+      )
+    })
+  },[props.navigation, qIndex])
 
   return (
-    qIndex < currentQuestions.length ?
+    qIndex < myQuestions.length ?
     <View style={styles.screen}>
       <QuesAnsPair
         qIndex={qIndex}
-        question={currentQuestions[qIndex]}
+        question={myQuestions[qIndex]}
         setShowNext={setShowNext}
         setScore={setScore}
-        numQuestions={currentQuestions.length}
+        numQuestions={myQuestions.length}
         setSelected={setSelected}
         updatedScore={updatedScore}
+        handle_question={handle_question}
       />
       <View style={styles.buttonContainer}>
-        <View style={styles.backButton}>
-          {
-            // Keep Back button on for easy testing. Will remove in final
-            // version
-            showNext && qIndex > 0 || (qIndex > 0) ?
-              <Button
-                title="Back"
-                onPress={() => setQIndex((index) => index - 1)}
-              /> : null
-          }
-        </View>
+        {/*<View style={styles.backButton}>*/}
+        {/*  {*/}
+        {/*    // Keep Back button on for easy testing. Will remove in final*/}
+        {/*    // version*/}
+        {/*    showNext && qIndex > 0 || (qIndex > 0) ?*/}
+        {/*      <Button*/}
+        {/*        title="Back"*/}
+        {/*        onPress={() => setQIndex((index) => index - 1)}*/}
+        {/*      /> : null*/}
+        {/*  }*/}
+        {/*</View>*/}
         <View>
           {
             showNext || selected[qIndex] !== undefined ?
               <View style={styles.confirmButton}>
                 <Button
-                  color={colors.primary}
                   title={"confirm"}
                   onPress={handle_question}/>
               </View> : null
@@ -272,7 +340,7 @@ const Quiz = (props) => {
       </View>
     </View> :
       <View>
-        <Text>
+        <Text style={styles.questionText}>
           Your score is: {score}
         </Text>
       </View>
@@ -353,6 +421,10 @@ const styles = StyleSheet.create({
     color: colors.primary
   },
   screen: {
+    backgroundColor: colors.background,
+    flex: 1
+  },
+  scorePage:{
     backgroundColor: colors.background,
     flex: 1
   }
