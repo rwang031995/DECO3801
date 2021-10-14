@@ -1,4 +1,4 @@
-import {Text, View, Button, Image, StyleSheet, Dimensions, TouchableOpacity} from "react-native";
+import {Text, View, Button, Image, StyleSheet, Dimensions, TouchableOpacity, ImageBackground} from "react-native";
 import React, {useState} from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from '@react-navigation/stack';
@@ -44,8 +44,10 @@ const styles = StyleSheet.create({
     height: "33%",
   },
   plantTile: {
-    height: "100%",
-    width: "100%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    height: "80%",
+    width: "80%",
   },
   overallBG: {
     height: windowHeight,
@@ -55,8 +57,7 @@ const styles = StyleSheet.create({
     height: "33%",
     width:"33%",
     borderStyle: "solid"
-    
-  } 
+  }
 })
 
 
@@ -191,23 +192,26 @@ const MyGarden = ({navigation}) => {
 
 
 
-  return (
-    <View style={{flex: 1}}>
+  return (  
+    <View style={{flex: 1}}>  
       <View style={{
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: "orange"
       }}>
-        <View style={{ alignItems: 'center', backgroundColor: "darkorange"}}>
-          <Button
-            title = "My Collection"
-            onPress = { () => navigation.navigate("My Collection")}
-          />
-        </View>
-        <View>
-            <Text> garden health is {gardenHealth} </Text>
-        </View>
+          <ImageBackground source={require('../../images/bg/table.png')} style={{flex:1, width:"100%", height:"100%"}}>   
+          <View style={{ alignItems: 'center'}}>
+            <Button
+              title = "My Collection"
+              onPress = { () => navigation.navigate("My Collection")}
+            />
+
+            <View style={{marginTop: "2%"}}>
+              <Text> garden health is {gardenHealth} </Text>
+            </View>
+          </View>
+          </ImageBackground>
         <View style={{flex: 6, backgroundColor: "lightgreen"}}>
 
           <ImageZoom cropWidth={windowWidth}
@@ -238,10 +242,13 @@ const MyGarden = ({navigation}) => {
 
         </View>
       </View> 
-      <View style={{ height:"17%", flexDirection: "row", backgroundColor: 'orange', justifyContent: 'center', flex:0}}>
-        <Inventory setInteraction={setInteraction}/>
-      </View>
+        <View style={{ height:"18%", justifyContent: 'center'}}>
+        <ImageBackground source={require('../../images/bg/table.png')} style={{width:"100%", height:"100%", flexDirection:"row"}} resizeMode="stretch">    
+            <Inventory setInteraction={setInteraction} />
+        </ImageBackground>
+        </View>
     </View>
+  
   );
 }
 
