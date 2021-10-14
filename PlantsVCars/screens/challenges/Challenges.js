@@ -37,33 +37,8 @@ const ChallengesScreen = ({navigation}) => {
      * Leveling system.
      */
 
-    // /**
-    //  * save globally stored level. 
-    //  */
-    // const saveLevel = async() => {
-    //     try {
-    //         await AsyncStorage.setItem("MyLevel", JSON.stringify(level));
-    //     } catch (err) {
-    //         console.log("save level error");
-    //     }
-    // }
-
-    // /**
-    //  * load globally stored level. 
-    //  */
-    // const loadLevel = async() => {
-    //     try {
-    //         let ourLevel = await AsyncStorage.getItem("MyLevel");
-    //         if (ourLevel != null) {
-    //             setLevel(JSON.parse(ourLevel));
-    //         }
-    //     } catch (err) {
-    //         console.log("load level error");
-    //     }
-    // }
-
     /**
-     * save globally stored level. 
+     * save databased stored level. 
      */
     const saveLevel = async() => {
         firebase.firestore().collection("users").doc(uid).update({
@@ -72,7 +47,7 @@ const ChallengesScreen = ({navigation}) => {
     }
 
     /**
-     * load globally stored level. 
+     * load database stored level. 
      */
     const loadLevel = async() => {
         firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
@@ -87,7 +62,7 @@ const ChallengesScreen = ({navigation}) => {
      */
 
     /**
-     * save globally stored week. 
+     * save database stored week. 
      */
     const saveWeek = async() => {
         firebase.firestore().collection("users").doc(uid).update({
@@ -96,7 +71,7 @@ const ChallengesScreen = ({navigation}) => {
     }
     
     /**
-     * load globally stored week. 
+     * load database stored week. 
      */
     const loadWeek = async() => {
         firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
@@ -128,7 +103,7 @@ const ChallengesScreen = ({navigation}) => {
     }
 
     /**
-     * save globally stored challenges. 
+     * save database stored challenges. 
      */
     const saveChallenges = async() => {
         firebase.firestore().collection("users").doc(uid).update({
@@ -137,7 +112,7 @@ const ChallengesScreen = ({navigation}) => {
     }
         
     /**
-     * load globally stored challenges. 
+     * load database stored challenges. 
      */
     const loadChallenges = async() => {
         firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
@@ -145,6 +120,9 @@ const ChallengesScreen = ({navigation}) => {
         })
     }
 
+    /**
+     * Set state when quiz is taken and send state to database.
+     */
     const takeQuiz = (navigation) => {
         if (bonusChallenge == false) {
             firebase.firestore().collection("users").doc(uid).update({
@@ -156,6 +134,9 @@ const ChallengesScreen = ({navigation}) => {
         }
     }
 
+    /**
+     * Load state for quiz taken from database.
+     */
     const loadQuiz = async() => {
         firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
             setBonusChallenge(doc.data().bonusChallenge);
@@ -212,6 +193,9 @@ const ChallengesScreen = ({navigation}) => {
         saveLevel();
     }
 
+    /**
+     * Handles time update for loading database items and weekly reset.
+     */
     useEffect(() => {
         if (storedWeek === "2021-09-06T14:00:00.000Z") {
             loadLevel();
