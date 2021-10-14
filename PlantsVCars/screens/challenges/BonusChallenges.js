@@ -225,7 +225,6 @@ const Quiz = (props) => {
   const [selected, setSelected] = useState({})
   const [updatedScore, setUpdateScore] = useState(0)
   const [myQuestions, setMyQuestions] = useState([])
-  const [resetChallenges, setResetChallenges] = useState(true)
 
   // if (!questionsLoaded) {
   //   loadCurrentQuestions()
@@ -271,7 +270,7 @@ const Quiz = (props) => {
     writeScore(score)
     writeBonusChallengesComplete(true)
     setUpdateScore(updatedScore => score)
-    setQIndex(questionIndex => questionIndex + 1)
+    setQIndex(qIndex => qIndex + 1)
     if (qIndex === myQuestions.length - 1) {
       props.navigation.navigate("Challenges", {score: score})
       return
