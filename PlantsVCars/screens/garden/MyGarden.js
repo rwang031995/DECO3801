@@ -220,7 +220,7 @@ const MyGarden = ({navigation}) => {
                     imageHeight={windowHeight}
                     minScale={1}
           >
-            {img({name: season+"-bg", style: styles.overallBG})}
+            {img({name: season+"-bg-animated", style: styles.overallBG})}
             <View style={{position:"absolute", height:"100%", width:"100%"}}>
               {plantsInGround}
             </View>
