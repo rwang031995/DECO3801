@@ -27,97 +27,8 @@ export const readScore = () => {
   return getStorage(STORAGE_KEYS.bonusChallengesScore)
 }
 
-const readBonusChallengesComplete = () => {
-  return getStorage(STORAGE_KEYS.bonusChallengesComplete)
-}
-
 const writeBonusChallengesComplete = (bool) => {
   setStorage(STORAGE_KEYS.bonusChallengesComplete, bool).then(r => {})
-}
-
-const writeChallengesReset = (bool) => {
-  setStorage(STORAGE_KEYS.challengesReset, bool).then(r => {})
-  // console.log(`Tried writing ${bool} to key ${STORAGE_KEYS.challengesReset}`)
-}
-
-const readChallengesReset = async () => {
-  let val = await getStorage(STORAGE_KEYS.challengesReset)
-
-  // console.log(`Read: ${val} from key ${STORAGE_KEYS.challengesReset}`)
-  return val === true || val == null;
-}
-
-const writeBonusChallenges = (questions) => {
-  setStorage(STORAGE_KEYS.bonusChallengeQuestions, questions).then(r => {})
-  // console.log(`Wrote to key ${STORAGE_KEYS.bonusChallengeQuestions}`)
-}
-
-const readBonusChallenges = () => {
-  return getStorage(STORAGE_KEYS.bonusChallengeQuestions)
-}
-
-let currentQuestions = []
-
-const loadCurrentQuestions = () => {
-  /**
-   * If the challenges need to be reset (i.e. next week or on startup) then
-   * new challenges are generated from a pool and saved to storage.
-   */
-
-  const [resetChallenges, setResetChallenges] = useState(true)
-  const [bonusChallenges, setBonusChallenges] = useState([])
-
-  const nums = new Set()
-
-  writeChallengesReset(true)
-
-  // console.log(`Reset challenges: ${resetChallenges}`)
-
-  readChallengesReset().then(r => {
-    setResetChallenges(resetChallenges => r)
-  })
-
-  if (resetChallenges) {
-    while(nums.size !== NUM_OF_QUESTIONS) {
-      nums.add(Math.floor(Math.random() * questions.length))
-    }
-
-    for (let i = 0; i < nums.size; i++) {
-      currentQuestions[i] = questions[Array.from(nums)[i]]
-      // console.log(questions[i])
-      // console.log(i)
-    }
-
-    writeBonusChallenges(currentQuestions)
-    writeChallengesReset(false)
-    // console.log("Randomising challenges")
-  } else {
-
-    readBonusChallenges().then(r => {
-      currentQuestions = r
-    })
-    // console.log("Using loaded challenges")
-  }
-
-  // console.log(currentQuestions)
-
-
-  // console.log("HERE")
-  // console.log(nums)
-  // console.log(currentQuestions)
-
-  // useEffect(() => {
-  //   (async () => {
-  //     let val = await readChallengesReset()
-  //     setResetChallenges(val)
-  //   })()
-  //
-  //   if (resetChallenges === false) {
-  //     (async () => {
-  //       currentQuestions = await readBonusChallenges()
-  //     })()
-  //   }
-  // }, [])
 }
 
 /**
@@ -144,7 +55,6 @@ const QuesAnsPair = (props) => {
     setSelected({...selected, [props.qIndex]: selectedAns})
     setScore({...score, [props.qIndex]: achievedScore})
     props.setShowNext(true)
-    // props.handle_question()
   }
 
 
@@ -226,37 +136,26 @@ const Quiz = (props) => {
   const [updatedScore, setUpdateScore] = useState(0)
   const [myQuestions, setMyQuestions] = useState([])
 
-  // if (!questionsLoaded) {
-  //   loadCurrentQuestions()
-  //   setMyQuestions(questions => questions.concat(currentQuestions))
-  //   setQuestionsLoaded(true)
-  //   console.log(myQuestions)
-  // }
-
-  // writeChallengesReset(true)
-  // readChallengesReset().then(r => {
-  //   setResetChallenges(resetChallenges => r)
-  // })
-
-  // console.log(resetChallenges)
-
   const loadQuestions = () => {
 
     const nums = new Set()
+    let arr = []
 
     while(nums.size !== NUM_OF_QUESTIONS) {
-      nums.add(Math.floor(Math.random() * NUM_OF_QUESTIONS))
+      nums.add(Math.floor(Math.random() * questions.length))
     }
 
-    // console.log(nums.size)
+    // console.log(nums)
 
     for (let i = 0; i < nums.size; i++) {
-      console.log(questions[Array.from(nums)[i]])
-      setMyQuestions(myQuestions => [...myQuestions, questions[Array.from(nums)[i]]])
+      // console.log(questions[Array.from(nums)[i]])
+      arr.push(questions[Array.from(nums)[i]])
     }
 
-    // writeBonusChallenges(myQuestions)
-    // writeChallengesReset(false)
+    console.log(arr)
+
+    setMyQuestions(myQuestions => arr)
+
   }
 
   if (myQuestions.length !== 3) {
@@ -284,6 +183,7 @@ const Quiz = (props) => {
       if (qIndex >= myQuestions.length - 1) {
         return
       }
+
       console.log(qIndex)
 
       e.preventDefault()
