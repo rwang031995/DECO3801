@@ -36,6 +36,12 @@ export const RegistrationScreen = ({navigation}) => {
           ],
           bonusChallenge: false,
           currentWeek: "2021-09-06T14:00:00.000Z",
+          settings: {
+            hasBicycle: false,
+            hasBus: false,
+            hasScooter: false,
+            hasTrain: false
+          }
         };
         const usersRef = firebase.firestore().collection('users')
         usersRef
@@ -46,6 +52,7 @@ export const RegistrationScreen = ({navigation}) => {
           .catch((error) => {
             alert(error)
           });
+
           navigation.navigate('Home', {user: data})
       })
       .catch((error) => {

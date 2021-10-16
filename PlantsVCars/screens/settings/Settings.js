@@ -1,26 +1,29 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {getSetting, setSetting, STORAGE_KEY} from "./Storage"
 
-import {ScrollView, Switch, Text, TouchableOpacity, View} from "react-native";
-import {StyleSheet} from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
 import {createStackNavigator} from "@react-navigation/stack";
 import DatePicker from "react-native-date-picker";
-import {Modal} from "react-native";
-import pick from "react-native-web/dist/modules/pick";
+import {firebase} from "./Firebase";
+import userId from "../home/userId";
 
 const Stack = createStackNavigator();
 
 const SettingsNav = (props) => {
 
-  const user = props.extraData
-
   return (
     <Stack.Navigator>
       <Stack.Screen
         name={"SettingsScreen"}
-        // component={Settings}
+        component={Settings}
         options={{headerShown: false}}>
-        {props => <Settings {...props} extraData={user}/>}
       </Stack.Screen>
       <Stack.Screen
         name={"Configure Transport"}
@@ -30,21 +33,13 @@ const SettingsNav = (props) => {
   )
 }
 
-function useToggle(initialVal = false) {
-  const [value, setValue] = React.useState(initialVal);
-
-  const toggle = React.useCallback(() => {
-    setValue(v => !v);
-  }, []);
-
-  return [value, toggle];
-}
-
 const ConfigureTransport = () => {
   const [hasBicycle, setHasBicycle] = React.useState(false);
   const [hasScooter, setHasScooter] = React.useState(false);
   const [hasBus, setHasBus] = React.useState(false);
   const [hasTrain, setHasTrain] = React.useState(false);
+
+  const uid = useContext(userId)
 
   const settingsOptions = [
     {
@@ -54,16 +49,16 @@ const ConfigureTransport = () => {
       onPress: () => setHasBicycle(hasBicycle => !hasBicycle)
     },
     {
-      title: "Scooter",
-      subtitle: "Do you have a scooter?",
-      toggle: hasScooter,
-      onPress: () => setHasScooter(hasScooter => !hasScooter)
-    },
-    {
       title: "Bus",
       subtitle: "Do you have access to a bus?",
       toggle: hasBus,
       onPress: () => setHasBus(hasBus => !hasBus)
+    },
+    {
+      title: "Scooter",
+      subtitle: "Do you have a scooter?",
+      toggle: hasScooter,
+      onPress: () => setHasScooter(hasScooter => !hasScooter)
     },
     {
       title: "Train",
@@ -73,48 +68,48 @@ const ConfigureTransport = () => {
     },
   ];
 
+  const saveSettings = async () => {
+    await firebase.firestore().collection("users").doc(uid).update(
+      {
+        settings: {
+          hasBicycle: hasBicycle,
+          hasBus: hasBus,
+          hasScooter: hasScooter,
+          hasTrain: hasTrain
+        }
+      }
+    )
+  }
+
+  const loadSettings = async () => {
+    firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+      setHasBicycle(doc.data().settings.hasBicycle);
+      setHasBus(doc.data().settings.hasBus);
+      setHasScooter(doc.data().settings.hasScooter);
+      setHasTrain(doc.data().settings.hasTrain)
+    })
+  }
+
   /* Get settings from internal storage */
   useEffect(() => {
-    getSetting(STORAGE_KEY.hasBicycle, setHasBicycle)
-    getSetting(STORAGE_KEY.hasScooter, setHasScooter)
-    getSetting(STORAGE_KEY.hasBus, setHasBus)
-    getSetting(STORAGE_KEY.hasTrain, setHasTrain)
+    loadSettings()
+    console.log("LOADING SETTINGS")
   }, [])
 
   /* Set settings in internal storage */
   useEffect(() => {
-    setSetting(STORAGE_KEY.hasBicycle, hasBicycle)
-    setSetting(STORAGE_KEY.hasScooter, hasScooter)
-    setSetting(STORAGE_KEY.hasBus, hasBus)
-    setSetting(STORAGE_KEY.hasTrain, hasTrain)
-  }, [hasBicycle, hasScooter, hasBus, hasTrain])
+    saveSettings()
+    console.log("SAVING SETTINGS")
+  }, [[hasBicycle, hasScooter, hasBus, hasTrain]])
 
   return <SettingsComponent settingsOptions={settingsOptions}/>
 }
 
-const pick_date = () => {
-  const [data, setDate] = useState(new Date())
-
-  return <DatePicker date={date} onDateChange={setDate}/>
-}
-
 const SettingsComponent = ({
                              settingsOptions,
-                             popupVis,
-                             setPopupVis,
-                             pickDate
                            }) => {
   return (
     <>
-      {/*<Modal visible={popupVis} transparent={true}>*/}
-      {/*    <View>*/}
-      {/*        {pickDate.map(({name, date, setDate, onPress}) => (*/}
-      {/*        <View key={name}>*/}
-      {/*            <DatePicker date={date} onDateChange={setDate}/>*/}
-      {/*        </View>*/}
-      {/*        ))}*/}
-      {/*    </View>*/}
-      {/*</Modal>*/}
 
 
       <ScrollView>
@@ -156,37 +151,10 @@ const SettingsComponent = ({
   )
 }
 
-{/*function wrapperComponent() {*/
-}
-{/*    return (*/
-}
-{/*        <View>*/
-}
-{/*            <Modal>*/
-}
-{/*                <View style={{ flex:1}}>*/
-}
-{/*                    /!*<DatePicker date={date} onDateChange={setDate}/>*!/*/
-}
-{/*                </View>*/
-}
-{/*            </Modal>*/
-}
-{/*        </View>*/
-}
-{/*    )*/
-}
-{/*}*/
-}
-
 const Settings = ({navigation}) => {
   const [date, setDate] = React.useState(new Date());
   const [age, setAge] = React.useState(new Date());
   const [popupVis, setPopupVis] = React.useState(false)
-
-  // const userID = props.extraData.id
-
-  // console.log("userID in SettingsNav: " + userID)
 
   const settingsOptions = [
     {

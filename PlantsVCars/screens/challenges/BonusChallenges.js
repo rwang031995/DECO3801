@@ -20,7 +20,8 @@ const STORAGE_KEYS = {
 }
 
 export const writeScore = (score) => {
-  setStorage(STORAGE_KEYS.bonusChallengesScore, score).then(r => {})
+  setStorage(STORAGE_KEYS.bonusChallengesScore, score).then(r => {
+  })
 }
 
 export const readScore = () => {
@@ -28,7 +29,8 @@ export const readScore = () => {
 }
 
 const writeBonusChallengesComplete = (bool) => {
-  setStorage(STORAGE_KEYS.bonusChallengesComplete, bool).then(r => {})
+  setStorage(STORAGE_KEYS.bonusChallengesComplete, bool).then(r => {
+  })
 }
 
 /**
@@ -141,7 +143,7 @@ const Quiz = (props) => {
     const nums = new Set()
     let arr = []
 
-    while(nums.size !== NUM_OF_QUESTIONS) {
+    while (nums.size !== NUM_OF_QUESTIONS) {
       nums.add(Math.floor(Math.random() * questions.length))
     }
 
@@ -192,52 +194,57 @@ const Quiz = (props) => {
         "Are you sure you want to quit?",
         "You will lose all progress for this week's bonus challenges!",
         [
-          {text: "Finish the quiz!", style: "cancel", onPress: () => {}},
           {
-            text: "Leave", style: "destructive", onPress: () => props.navigation.dispatch(e.data.action),
+            text: "Finish the quiz!", style: "cancel", onPress: () => {
+            }
+          },
+          {
+            text: "Leave",
+            style: "destructive",
+            onPress: () => props.navigation.dispatch(e.data.action),
           }
         ]
       )
     })
-  },[props.navigation, qIndex])
+  }, [props.navigation, qIndex])
 
   return (
     qIndex < myQuestions.length ?
-    <View style={styles.screen}>
-      <QuesAnsPair
-        qIndex={qIndex}
-        question={myQuestions[qIndex]}
-        setShowNext={setShowNext}
-        setScore={setScore}
-        numQuestions={myQuestions.length}
-        setSelected={setSelected}
-        updatedScore={updatedScore}
-        handle_question={handle_question}
-      />
-      <View style={styles.buttonContainer}>
-        {/*<View style={styles.backButton}>*/}
-        {/*  {*/}
-        {/*    // Keep Back button on for easy testing. Will remove in final*/}
-        {/*    // version*/}
-        {/*    showNext && qIndex > 0 || (qIndex > 0) ?*/}
-        {/*      <Button*/}
-        {/*        title="Back"*/}
-        {/*        onPress={() => setQIndex((index) => index - 1)}*/}
-        {/*      /> : null*/}
-        {/*  }*/}
-        {/*</View>*/}
-        <View>
-          {
-            showNext || selected[qIndex] !== undefined ?
-              <View style={styles.confirmButton}>
-                <Button
-                  title={"confirm"}
-                  onPress={handle_question}/>
-              </View> : null
-          }
+      <View style={styles.screen}>
+        <QuesAnsPair
+          qIndex={qIndex}
+          question={myQuestions[qIndex]}
+          setShowNext={setShowNext}
+          setScore={setScore}
+          numQuestions={myQuestions.length}
+          setSelected={setSelected}
+          updatedScore={updatedScore}
+          handle_question={handle_question}
+        />
+        <View style={styles.buttonContainer}>
+          {/*<View style={styles.backButton}>*/}
+          {/*  {*/}
+          {/*    // Keep Back button on for easy testing. Will remove in final*/}
+          {/*    // version*/}
+          {/*    showNext && qIndex > 0 || (qIndex > 0) ?*/}
+          {/*      <Button*/}
+          {/*        title="Back"*/}
+          {/*        onPress={() => setQIndex((index) => index - 1)}*/}
+          {/*      /> : null*/}
+          {/*  }*/}
+          {/*</View>*/}
+          <View>
+            {
+              showNext || selected[qIndex] !== undefined ?
+                <View style={styles.confirmButton}>
+                  <Button
+                    title={"confirm"}
+                    onPress={handle_question}/>
+                </View> : null
+            }
+          </View>
         </View>
-      </View>
-    </View> :
+      </View> :
       <View>
         <Text style={styles.questionText}>
           Your score is: {score}
@@ -323,7 +330,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     flex: 1
   },
-  scorePage:{
+  scorePage: {
     backgroundColor: colors.background,
     flex: 1
   }
