@@ -7,12 +7,18 @@
       "**/*"
     ],
     "ios": {
-        "infoPlist": {
-            "NSLocationAlwaysUsageDescription" : "Track your journeys and match them to bus routes!",
-            "UIBackgroundModes": [
-                "location",
-            ]
-        },
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Track your journeys and match them to bus routes!",
+        "NSLocationAlwaysUsageDescription": "Track your journeys and match them to bus routes!",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Track your journeys and match them to bus routes!",
+        "UIBackgroundModes": [
+          "location"
+        ]
+      },
+      "bundleIdentifier": "au.edu.uq.deco3801.maskedbandits"
+    },
+    "android": {
+      "package": "au.edu.uq.deco3801.maskedbandits"
     }
   },
   "name": "PlantsVCars"

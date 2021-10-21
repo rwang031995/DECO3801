@@ -151,33 +151,30 @@ const _App = () => {
 export default class App extends React.Component {
   state = {
     isReady: false,
-    dbResult: null,
   };
 
   render() {
-    if (!this.state.isReady) {
-      return (
-        <AppLoading
-          startAsync={this._runAsyncSetup}
-          onFinish={() => this.setState({ isReady: true })}
-          onError={console.warn}
-        />
-      ); }
+    if (!this.state.isReady) {        
+        return (
+            <AppLoading
+              startAsync={this._runAsyncSetup}
+              onFinish={() => this.setState({ isReady: true })}
+              onError={console.warn}
+            />
+        ); }
     
-    const db = SQLite.openDatabase('shapes.db');
-
-    // ok so this is presently an infinite loop, yikes
-    if (this.state.dbResult == null){
-        Geography.dbQuery(db, 
-            "SELECT name FROM sqlite_master WHERE type IN ('table','view');", [],
-            (t, r) => {this.setState({dbResult: r})}
-        );
-    }
+    // last minute synchronous setup code
     
-    Geography.dbQuery(db, "SELECT count(*) FROM RouteShapes WHERE route = ?;", ['BRGY'], 
-        (t, r) => {console.log(t, r)}); // should be 1621 as of September 2021 dataset
+//     console.log("DB!", Geography.gtfs_db)
+//     
+//     Geography.dbQuery(Geography.gtfs_db, "SELECT * FROM sqlite_master;", [],
+//         (t, r) => {console.log(t, r)},
+//         (t, e) => {console.log(t, e)});
     
-    console.log()
+    Geography.dbQuery(Geography.gtfs_db, "SELECT * FROM Stops WHERE stop_id = ?;", [4641],
+        (t, r) => {console.log(t, r)},
+        (t, e) => {console.log(t, e)});
+    
     
     return <_App />;
   }
@@ -185,9 +182,12 @@ export default class App extends React.Component {
   async _runAsyncSetup() {
     await Location.requestForegroundPermissionsAsync();
     await Location.requestBackgroundPermissionsAsync();
-  
+    
+    await Geography.prepareShapesDb();
+        
+    await Geography.prepareStops();
+        
     return Promise.all([
-        Geography.prepareShapesDb(require('./assets/shapesdb.sqlite')),
         Location.startLocationUpdatesAsync(Geography.LOCATION_UPDATES_TASK, 
             {accuracy: Location.LocationAccuracy.Balanced}),
         ]);
