@@ -1,4 +1,4 @@
-import {Text, View, Button, Image, StyleSheet, Dimensions, TouchableOpacity, ImageBackground} from "react-native";
+import {Text, View, Button, Image, StyleSheet, Dimensions, TouchableOpacity, ImageBackground, Alert} from "react-native";
 import React, {useState} from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from '@react-navigation/stack';
@@ -79,7 +79,8 @@ const MyGarden = ({navigation}) => {
     {name: "TulipFlower", health: 0}
   ]);
   const [gardenHealth, setGardenHealth] = useState(0);
-  const [interaction, setInteraction] = useState(0)
+  const [interaction, setInteraction] = useState(0);
+  const [healthModifier, setHealthModifier] = useState(1);
 
   /**
    * Changes the garden flower at index 'index' to flower with name 'newName'
@@ -106,28 +107,21 @@ const MyGarden = ({navigation}) => {
   const useOnFlower = (index) => {
     switch (interaction) {
       case "Water":
-        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // water adds 5 health
-        setFlowerSeating([
-          ...flowerSeating.slice(0, index),
-          modifiedFlower,
-          ...flowerSeating.slice(index + 1)
-        ])
+        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
         break;
       case "Fertilizer":
-        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 2} // fertiliser adds 2 health (maybe this provides a modifier instead?)
-        setFlowerSeating([
-          ...flowerSeating.slice(0, index),
-          modifiedFlower,
-          ...flowerSeating.slice(index + 1)
-        ])
+        setHealthModifier(2);
         break;
       case "Sun":
-        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // sun adds 5 health
-        setFlowerSeating([
-          ...flowerSeating.slice(0, index),
-          modifiedFlower,
-          ...flowerSeating.slice(index + 1)
-        ])
+        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
+      default:
+        Alert.alert(
+          "Buy a Resource First",
+          "Buy a resource by tapping one below.",
+          [
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+        );
     }
   }
   
