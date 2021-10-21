@@ -3,6 +3,10 @@ import React from 'react';
 import {Image, ImageBackground} from 'react-native';
 
 var IMG = {};
+IMG["Autumn-bg-animated"] = require("./bg/autumn/autumn-bg-animated.gif");
+IMG["Spring-bg-animated"] = require("./bg/spring/spring-bg-animated.gif");
+IMG["Summer-bg-animated"] = require("./bg/summer/summer-bg-animated.gif");
+IMG["Winter-bg-animated"] = require("./bg/winter/winter-bg-animated.gif");
 IMG["Waves-in-Sea"] = require("./sub/Waves-in-Sea.jpg");
 IMG["Ben"] = require("./ben.png");
 IMG["Testflower"] = require("./testflower.png");
