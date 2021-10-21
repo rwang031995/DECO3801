@@ -6,6 +6,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Quiz from './BonusChallenges';
 import userId from '../home/userId';
 import {firebase} from "../settings/Firebase"
+import { AppLoading } from "expo"
+import { useFonts, PressStart2P_400Regular} from "@expo-google-fonts/press-start-2p"
 
 const Stack = createStackNavigator();
 
@@ -146,6 +148,9 @@ const ChallengesScreen = ({navigation}) => {
   /**
    * Variables for global storage using Async.
    */
+  let [fontsLoaded, error] = useFonts({
+    PressStart2P_400Regular
+  })
   const [level, setLevel] = useState(1);
   const [bonusChallenge, setBonusChallenge] = useState(false);
   const [challenges, setChallenges] = useState([
@@ -212,13 +217,13 @@ const ChallengesScreen = ({navigation}) => {
   /**
    * View screen
    */
+
+
   if (level === 1) {
     return (
       <View style={styles.container}>
         <Text style={styles.level}> Level {level}</Text>
         <Text style={styles.headings}> Challenges </Text>
-        <Text style={styles.level}> storedWeek
-          = {JSON.stringify(storedWeek)} </Text>
         <View style={styles.breakline}/>
         <View style={styles.challengeContainer}>
           <Text
@@ -239,8 +244,6 @@ const ChallengesScreen = ({navigation}) => {
       <View style={styles.container}>
         <Text style={styles.level}> Level {level}</Text>
         <Text style={styles.headings}> Challenges </Text>
-        <Text style={styles.level}> storedWeek
-          = {JSON.stringify(storedWeek)} </Text>
         <View style={styles.breakline}/>
         <View style={styles.challengeContainer}>
           <Text
@@ -278,10 +281,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   level: {
+    fontFamily: "PressStart2P_400Regular",
+    fontWeight: 'bold',
     fontSize: 20,
     fontWeight: 'bold',
   },
   headings: {
+    fontFamily: "PressStart2P_400Regular",
     fontSize: 30,
     fontWeight: 'bold',
     paddingTop: 15,
@@ -298,7 +304,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   challengeText: {
-    fontSize: 20,
+    fontFamily: "PressStart2P_400Regular",
+    fontSize: 10,
     paddingTop: 15,
     paddingBottom: 15,
   },
