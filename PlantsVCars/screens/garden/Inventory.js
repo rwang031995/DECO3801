@@ -73,10 +73,7 @@ const Inventory = (props) => {
                     setWater({name: water.name, quantity: water.quantity + 1});
                     props.setInteraction("Water");
                 }}>
-                    <Text>
-                        {water.quantity}
-                    </Text>
-                    {img({name: "WaterOutlined", style:styles.itemIcon})}
+                    {img({name: "Water", style:styles.itemIcon})}
                 </TouchableOpacity>
             </>
             <>
@@ -85,10 +82,7 @@ const Inventory = (props) => {
                     setSun({name: sun.name, quantity: sun.quantity + 1});
                     props.setInteraction("Sun");
                 }}>
-                    <Text>
-                        {sun.quantity}
-                    </Text>
-                    {img({name: "SunlightOutlined", style:styles.itemIcon})}
+                    {img({name: "Sunlight", style:styles.itemIcon})}
                 </TouchableOpacity>
             </>
             <>
@@ -97,10 +91,16 @@ const Inventory = (props) => {
                     setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1});
                     props.setInteraction("Fertilizer");
                 }}>
-                    <Text>
-                        {fertilizer.quantity}
-                    </Text>
-                    {img({name: "FertiliserOutlined", style:styles.itemIcon})}
+                    {img({name: "Fertiliser", style:styles.itemIcon})}
+                </TouchableOpacity>
+            </>
+            <>
+                
+                <TouchableOpacity style={styles.elements} onPress={() => {
+                    setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1});
+                    props.setInteraction("Shovel");
+                }}>
+                    {img({name: "Shovel", style:styles.itemIcon})}
                 </TouchableOpacity>
             </>
         </>
@@ -145,14 +145,17 @@ const styles = StyleSheet.create({
     },
 
     itemIcon: {
-        width: '80%',
-        height: '80%'
+        justifyContent: "center",
+        width: "70%",
+        height: "70%",
+        marginLeft: "auto",
+        marginRight: "auto"
     },
 
     elements: {
-        width: '33%',
+        justifyContent: "center",
+        width: '25%',
         height: '100%',
-        padding: "5%"
     }
 })
 
