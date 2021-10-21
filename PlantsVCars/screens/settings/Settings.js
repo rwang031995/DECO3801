@@ -13,6 +13,7 @@ import {createStackNavigator} from "@react-navigation/stack";
 import DatePicker from "react-native-date-picker";
 import {firebase} from "./Firebase";
 import userId from "../home/userId";
+import {has} from "react-native/Libraries/Blob/BlobRegistry";
 
 const Stack = createStackNavigator();
 
@@ -39,7 +40,9 @@ const ConfigureTransport = () => {
   const [hasBus, setHasBus] = React.useState(false);
   const [hasTrain, setHasTrain] = React.useState(false);
 
+  const settingsRef = firebase.firestore().collection("settings")
   const uid = useContext(userId)
+  const db = firebase.firestore()
 
   const settingsOptions = [
     {
@@ -92,22 +95,33 @@ const ConfigureTransport = () => {
 
   /* Get settings from internal storage */
   useEffect(() => {
-    loadSettings()
-    console.log("LOADING SETTINGS")
+    db.collection("users")
+      .doc(uid)
+      .onSnapshot(doc => {
+
+        setHasBicycle(doc.data().settings.hasBicycle)
+    } )
+    console.log("Settings loaded")
   }, [])
 
   /* Set settings in internal storage */
   useEffect(() => {
-    saveSettings()
-    console.log("SAVING SETTINGS")
-  }, [[hasBicycle, hasScooter, hasBus, hasTrain]])
+    db.collection("users").doc(uid).update({
+      settings: {
+        hasBicycle: hasBicycle,
+        hasBus: hasBus,
+        hasScooter: hasScooter,
+        hasTrain: hasTrain
+      }
+    }).then(function() {
+      console.log("Settings saved")
+    })
+  }, [hasBicycle, hasScooter, hasBus, hasTrain])
 
   return <SettingsComponent settingsOptions={settingsOptions}/>
 }
 
-const SettingsComponent = ({
-                             settingsOptions,
-                           }) => {
+const SettingsComponent = ({settingsOptions,}) => {
   return (
     <>
 
@@ -158,13 +172,6 @@ const Settings = ({navigation}) => {
 
   const settingsOptions = [
     {
-      title: "My Age",
-      subtitle: "Configure your date of birth",
-      onPress: () => {
-        setPopupVis(true)
-      }
-    },
-    {
       title: "My Transport",
       subtitle: "Configure your available transport",
       onPress: () => {
@@ -179,25 +186,11 @@ const Settings = ({navigation}) => {
     },
   ];
 
-  const pickDate = [
-    {
-      name: "Pick Date",
-      date: {date},
-      setDate: () => setDate(),
-
-      onPress: () => {
-        setStorage(STORAGE_KEY.age, age)
-        setPopupVis(false)
-      }
-    }
-  ]
-
   return (
     <SettingsComponent
       settingsOptions={settingsOptions}
       popupVis={popupVis}
       setPopupVis={setPopupVis}
-      pickDate={pickDate}
     />)
 }
 
