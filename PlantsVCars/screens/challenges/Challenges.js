@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, View, Dimensions, ImageBackground} from 'react-native';
 import moment from 'moment';
 import {img} from "../../images/manifest"
 import {createStackNavigator} from '@react-navigation/stack';
@@ -8,6 +8,9 @@ import userId from '../home/userId';
 import {firebase} from "../settings/Firebase"
 
 const Stack = createStackNavigator();
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const ChallengesScreenNav = () => {
   return (
@@ -214,6 +217,7 @@ const ChallengesScreen = ({navigation}) => {
    */
   if (level === 1) {
     return (
+      <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
       <View style={styles.container}>
         <Text style={styles.level}> Level {level}</Text>
         <Text style={styles.headings}> Challenges </Text>
@@ -225,17 +229,24 @@ const ChallengesScreen = ({navigation}) => {
             style={styles.challengeText}> {JSON.stringify(challenges[0].challenge).substring(1, JSON.stringify(challenges[0].challenge).length - 1)}</Text>
           {img({name: challenges[0].completed, style: styles.plantTile})}
         </View>
+        <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
         <Text style={styles.headings}> Bonus Challenges </Text>
-        <View style={styles.breakline}/>
+        
+               
         <View style={styles.challengeContainer}>
           <Text style={styles.challengeText}> Quiz Completion </Text>
           {img({name: challenges[0].completed, style: styles.plantTile})}
         </View>
+        </ImageBackground>
         <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
+        
       </View>
+    
+      </ImageBackground>
     )
   } else if (level === 2) {
     return (
+      <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
       <View style={styles.container}>
         <Text style={styles.level}> Level {level}</Text>
         <Text style={styles.headings}> Challenges </Text>
@@ -260,6 +271,7 @@ const ChallengesScreen = ({navigation}) => {
         </View>
         <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
       </View>
+      </ImageBackground>
     )
   }
 }
@@ -273,7 +285,6 @@ const ChallengesScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightblue',
     textAlign: 'right',
     alignItems: 'center',
   },
@@ -299,18 +310,21 @@ const styles = StyleSheet.create({
   },
   challengeText: {
     fontSize: 20,
-    paddingTop: 15,
-    paddingBottom: 15,
+    paddingTop: 50,
+    paddingBottom: 50,
   },
   breakline: {
-    borderBottomColor: 'black',
-    borderBottomWidth: 2,
+    //borderBottomColor: 'black',
+    //borderBottomWidth: 2,
     width: '100%',
   }, plantTile: {
     height: "50%",
     width: "10%",
     margin: "4%"
-  },
+  },  overallBG: {
+    height: windowHeight,
+    width: windowWidth
+  }
 })
 
 export default ChallengesScreenNav;
