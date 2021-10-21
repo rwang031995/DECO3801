@@ -114,6 +114,7 @@ const MyGarden = ({navigation}) => {
         break;
       case "Sun":
         changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
+        break;
       default:
         Alert.alert(
           "Buy a Resource First",
