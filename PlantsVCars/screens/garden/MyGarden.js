@@ -1,7 +1,10 @@
 import {Text, View, Button, Image, StyleSheet, Dimensions, TouchableOpacity, ImageBackground, Alert} from "react-native";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from '@react-navigation/stack';
+import userId from '../home/userId';
+import {firebase} from "../settings/Firebase"
+
 
 //RETRIEVED FROM https://morioh.com/p/e42eec224939
 import ImageZoom from 'react-native-image-pan-zoom'
@@ -67,9 +70,7 @@ const styles = StyleSheet.create({
 /////                                                                               /////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-
 const MyGarden = ({navigation}) => {
-  const [inventory, setInventory] = useState([]);
   const [flowerSeating, setFlowerSeating] = useState([
     {name: "DandelionFlower", health: 0},
     {name: "RoseFlower", health: 0},
@@ -81,13 +82,13 @@ const MyGarden = ({navigation}) => {
   const [gardenHealth, setGardenHealth] = useState(0);
   const [interaction, setInteraction] = useState(0);
   const [healthModifier, setHealthModifier] = useState(1);
+  const [currency, setCurrency] = useState(100);
+  const uid = useContext(userId);
 
   /**
    * Changes the garden flower at index 'index' to flower with name 'newName'
    * and sets its health to 'newHealth'.
    */
-
-  
 
   const changeFlower = (index, newName, newHealth) => {
     let newFlower = {name: newName, health: newHealth}
@@ -119,6 +120,33 @@ const MyGarden = ({navigation}) => {
         );
     }
   }
+
+    /**
+   * Database functions for flowers and currency
+   */
+     const loadFlowers = async () => {
+      if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+          setFlowerSeating(doc.data().flowers);
+        })
+      }
+    }
+  
+    const loadCurrency = async () => {
+      if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+          setCurrency(doc.data().currency);
+        })
+      }
+    }
+  
+    useEffect(() => {
+      loadFlowers();
+      loadCurrency();
+    }, [])
+  
+    console.log(currency);
+  
   
   var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>

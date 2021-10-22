@@ -7,13 +7,13 @@ import "@firebase/firestore"
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDHUYYfX5uqLLREOMpZofXDZQOlyM46Ms8",
-    authDomain: "plantsvcars-17913.firebaseapp.com",
-    projectId: "plantsvcars-17913",
-    storageBucket: "plantsvcars-17913.appspot.com",
-    messagingSenderId: "430978613166",
-    appId: "1:430978613166:web:197b9abe9889fc170b123f",
-    measurementId: "G-KK5KYD3GS0"
+    apiKey: "AIzaSyCR5WDI8njkxgAJ67fZbhLx07gO6dy0eK0",
+    authDomain: "plantsva-429e2.firebaseapp.com",
+    projectId: "plantsva-429e2",
+    storageBucket: "plantsva-429e2.appspot.com",
+    messagingSenderId: "1001065166477",
+    appId: "1:1001065166477:web:9968b8cf3e3ed9668114c4",
+    measurementId: "G-5EZJFLMLTE"
 };
    
 // const firebaseConfig = {

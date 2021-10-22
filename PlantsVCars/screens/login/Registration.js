@@ -28,12 +28,22 @@ export const RegistrationScreen = ({navigation}) => {
         const data = {
           id: uid,
           email,
+          currency: 100,
+          flowers: [
+            {name: "DandelionFlower", health: 0},
+            {name: "RoseFlower", health: 0},
+            {name: "OrchidFlower", health:0},
+            {name: "RoseFlower", health: 0},
+            {name: "OrchidFlower", health: 0},
+            {name: "TulipFlower", health: 0}
+          ],
           level: 1,
           challenges: [
-            {challenge : "Walk to X once this Week", completed : isCompleted[0]}, 
-            {challenge : "Run to X once this Week", completed : isCompleted[0]}, 
-            {challenge : "Take a bus once this week", completed : isCompleted[0]}, 
-            {challenge : "Take the train once this week", completed : isCompleted[0]}
+            {challenge: "Walk to work once this Week", completed: isCompleted[0], mode: "walk"},
+            {challenge: "Take the bus to work once this week", completed: isCompleted[0], mode: "bus"},
+            {challenge: "Take the train once this week", completed: isCompleted[0], mode: "train"},
+            {challenge: "Ride a bike to work once this week", completed: isCompleted[0], mode: "bike"},
+            {challenge: "Ride a scooter to work once this week", completed: isCompleted[0], mode: "scooter"},
           ],
           bonusChallenge: false,
           currentWeek: "2021-09-06T14:00:00.000Z",
@@ -43,15 +53,6 @@ export const RegistrationScreen = ({navigation}) => {
             hasScooter: false,
             hasTrain: false
           },
-          currency: 100,
-          flowers: [
-            {name: "DandelionFlower", health: 0},
-            {name: "RoseFlower", health: 0},
-            {name: "OrchidFlower", health:0},
-            {name: "RoseFlower", health: 0},
-            {name: "OrchidFlower", health: 0},
-            {name: "TulipFlower", health: 0}
-          ]
         };
         const usersRef = firebase.firestore().collection('users')
         usersRef
