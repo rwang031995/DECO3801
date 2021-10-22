@@ -71,9 +71,9 @@ const styles = StyleSheet.create({
 const MyGarden = ({navigation}) => {
   const [inventory, setInventory] = useState([]);
   const [flowerSeating, setFlowerSeating] = useState([
-    {name: "DandelionFlower", health: 50},
-    {name: "RoseFlower", health: 50},
-    {name: "OrchidFlower", health:50},
+    {name: "DandelionFlower", health: 0},
+    {name: "RoseFlower", health: 0},
+    {name: "OrchidFlower", health:0},
     {name: "RoseFlower", health: 0},
     {name: "OrchidFlower", health: 0},
     {name: "TulipFlower", health: 0}
@@ -87,13 +87,7 @@ const MyGarden = ({navigation}) => {
    * and sets its health to 'newHealth'.
    */
 
-  const getGardenHealth = () => {
-    var totalHealth = 0;
-    for (let i = 0; i < flowerSeating.length; i++) {
-      totalHealth = totalHealth + flowerSeating[i].health;
-    }
-    setGardenHealth(totalHealth/flowerSeating.length);
-  }
+  
 
   const changeFlower = (index, newName, newHealth) => {
     let newFlower = {name: newName, health: newHealth}
@@ -185,8 +179,6 @@ const MyGarden = ({navigation}) => {
     }
   }, [interaction]) 
 
-
-
   return (  
     <View style={{flex: 1}}>  
       <View style={{
@@ -243,7 +235,6 @@ const MyGarden = ({navigation}) => {
         </ImageBackground>
         </View>
     </View>
-  
   );
 }
 
