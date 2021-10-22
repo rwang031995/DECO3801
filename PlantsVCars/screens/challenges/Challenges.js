@@ -1,11 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, StyleSheet, Text, View, Dimensions, ImageBackground} from 'react-native';
+import {Button, StyleSheet, Text, View, Dimensions, ImageBackground, LogBox} from 'react-native';
 import moment from 'moment';
 import {img} from "../../images/manifest"
 import {createStackNavigator} from '@react-navigation/stack';
 import Quiz from './BonusChallenges';
 import userId from '../home/userId';
 import {firebase} from "../settings/Firebase"
+
+LogBox.ignoreAllLogs();
 
 const Stack = createStackNavigator();
 
@@ -199,8 +201,11 @@ const ChallengesScreen = ({navigation}) => {
    */
   useEffect(() => {
     if (storedWeek === "2021-09-06T14:00:00.000Z") {
-      var currentWeek = moment().startOf('isoWeek').add(1, 'days');
-      changeWeek(currentWeek);
+      var thisWeek = moment().startOf('isoWeek').add(1, 'days');
+      changeWeek(thisWeek);
+      firebase.firestore().collection("users").doc(uid).update({
+        currentWeek: JSON.stringify(thisWeek)
+      })
       loadLevel();
       loadWeek();
       loadChallenges();
@@ -209,7 +214,7 @@ const ChallengesScreen = ({navigation}) => {
     const interval = setInterval(() => {
       updateWeeklyReset();
       saveWeeklyReset();
-    }, 1000)
+    }, 500)
     return () => clearInterval(interval)
   }, [storedWeek]);
 
@@ -231,11 +236,16 @@ const ChallengesScreen = ({navigation}) => {
           </View>
           <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
           <View style={styles.container}>
-            <Text style={styles.headings2}> Bonus Challenges </Text> 
+            <Text style={styles.headings2}> Bonus Challenges </Text>
+            {bonusChallenge ? 
             <View style={styles.challengeContainer}>
               <Text style={styles.challengeText2}> Quiz Completion: </Text>
-              {img({name: challenges[0].completed, style: styles.plantTile})}
-            </View>
+              {img({name: isCompleted[1], style: styles.plantTile})}
+            </View> :
+            <View style={styles.challengeContainer}>
+              <Text style={styles.challengeText2}> Quiz Completion: </Text>
+              {img({name: isCompleted[0], style: styles.plantTile})}
+            </View>}
           </View>
           </ImageBackground>
           <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
@@ -263,10 +273,15 @@ const ChallengesScreen = ({navigation}) => {
           <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
           <View style={styles.container}>
             <Text style={styles.headings2}> Bonus Challenges </Text> 
+            {bonusChallenge ? 
             <View style={styles.challengeContainer}>
               <Text style={styles.challengeText2}> Quiz Completion: </Text>
-              {img({name: challenges[0].completed, style: styles.plantTile})}
-            </View>
+              {img({name: isCompleted[1], style: styles.plantTile})}
+            </View> :
+            <View style={styles.challengeContainer}>
+              <Text style={styles.challengeText2}> Quiz Completion: </Text>
+              {img({name: isCompleted[0], style: styles.plantTile})}
+            </View>}
           </View>
           </ImageBackground>
           <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
@@ -300,10 +315,15 @@ const ChallengesScreen = ({navigation}) => {
           <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
           <View style={styles.container}>
             <Text style={styles.headings2}> Bonus Challenges </Text> 
+            {bonusChallenge ? 
             <View style={styles.challengeContainer}>
               <Text style={styles.challengeText2}> Quiz Completion: </Text>
-              {img({name: challenges[0].completed, style: styles.plantTile})}
-            </View>
+              {img({name: isCompleted[1], style: styles.plantTile})}
+            </View> :
+            <View style={styles.challengeContainer}>
+              <Text style={styles.challengeText2}> Quiz Completion: </Text>
+              {img({name: isCompleted[0], style: styles.plantTile})}
+            </View>}
           </View>
           </ImageBackground>
           <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>

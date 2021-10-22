@@ -42,7 +42,16 @@ export const RegistrationScreen = ({navigation}) => {
             hasBus: false,
             hasScooter: false,
             hasTrain: false
-          }
+          },
+          currency: 100,
+          flowers: [
+            {name: "DandelionFlower", health: 0},
+            {name: "RoseFlower", health: 0},
+            {name: "OrchidFlower", health:0},
+            {name: "RoseFlower", health: 0},
+            {name: "OrchidFlower", health: 0},
+            {name: "TulipFlower", health: 0}
+          ]
         };
         const usersRef = firebase.firestore().collection('users')
         usersRef
