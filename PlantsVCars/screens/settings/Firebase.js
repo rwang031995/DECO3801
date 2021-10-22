@@ -6,27 +6,26 @@ import "@firebase/firestore"
  */
 
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyDFRSuBssDX7_VN2czC2Itd6psF-lRRqDY",
-//   authDomain: "plantsvcars-6ab45.firebaseapp.com",
-//   databaseURL: "https://plantsvcars-6ab45-default-rtdb.firebaseio.com",
-//   projectId: "plantsvcars-6ab45",
-//   storageBucket: "plantsvcars-6ab45.appspot.com",
-//   messagingSenderId: "90613998724",
-//   appId: "1:90613998724:web:276ec830951bcbc48e8ed1",
-//   measurementId: "G-693KFN0ZNZ"
-// };
-   
 const firebaseConfig = {
- apiKey: "AIzaSyDpXBMJkITPHT0zqfe_pOA8XgXP7ba7_UE",
- authDomain: "plantsvscars-26ad0.firebaseapp.com",
- databaseURL: "https://plantsvscars-26ad0-default-rtdb.firebaseio.com",
- projectId: "plantsvscars-26ad0",
- storageBucket: "plantsvscars-26ad0.appspot.com",
- messagingSenderId: "857742504179",
- appId: "1:857742504179:web:eae1227c852f29a3f44786",
- measurementId: "G-WRPQE0R2B5"
+    apiKey: "AIzaSyDHUYYfX5uqLLREOMpZofXDZQOlyM46Ms8",
+    authDomain: "plantsvcars-17913.firebaseapp.com",
+    projectId: "plantsvcars-17913",
+    storageBucket: "plantsvcars-17913.appspot.com",
+    messagingSenderId: "430978613166",
+    appId: "1:430978613166:web:197b9abe9889fc170b123f",
+    measurementId: "G-KK5KYD3GS0"
 };
+   
+// const firebaseConfig = {
+//  apiKey: "AIzaSyDpXBMJkITPHT0zqfe_pOA8XgXP7ba7_UE",
+//  authDomain: "plantsvscars-26ad0.firebaseapp.com",
+//  databaseURL: "https://plantsvscars-26ad0-default-rtdb.firebaseio.com",
+//  projectId: "plantsvscars-26ad0",
+//  storageBucket: "plantsvscars-26ad0.appspot.com",
+//  messagingSenderId: "857742504179",
+//  appId: "1:857742504179:web:eae1227c852f29a3f44786",
+//  measurementId: "G-WRPQE0R2B5"
+// };
 
 if (!firebase.apps.length) {
  firebase.initializeApp(firebaseConfig)

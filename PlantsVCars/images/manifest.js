@@ -50,6 +50,8 @@ IMG["LeaderboardIcon"] = require("./icons/LeaderboardIcon.png");
 IMG["MyGardenIcon"] = require("./icons/MyGardenIcon.png");
 IMG["OurForestIcon"] = require("./icons/OurForestIcon.png");
 IMG["SettingsIcon"] = require("./icons/SettingsIcon.png");
+IMG["cross"] = require("./icons/cross.png");
+IMG["tick"] = require("./icons/tick.png");
 
 const img = (props) => {
     var realprops = props ;

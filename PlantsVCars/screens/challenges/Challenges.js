@@ -22,14 +22,14 @@ const ChallengesScreenNav = () => {
   )
 }
 
-const isCompleted = ["RoseFlower", "TulipFlower"]
+const isCompleted = ["cross", "tick"]
 
 const ChallengeOptions = [
-  {challenge: "Walk to X once this Week", completed: isCompleted[0]},
-  {challenge: "Run to X once this Week", completed: isCompleted[0]},
-  {challenge: "Take a bus once this week", completed: isCompleted[0]},
+  {challenge: "Walk to work twice this Week", completed: isCompleted[0]},
+  {challenge: "Take a bus to work once this week", completed: isCompleted[0]},
   {challenge: "Take the train once this week", completed: isCompleted[0]},
-  {challenge: "This is a test example", completed: isCompleted[0]},
+  {challenge: "Ride a bike to work twice this week", completed: isCompleted[0]},
+  {challenge: "Ride a scooter to work once this week", completed: isCompleted[0]},
 ];
 
 const ChallengesScreen = ({navigation}) => {
@@ -199,6 +199,8 @@ const ChallengesScreen = ({navigation}) => {
    */
   useEffect(() => {
     if (storedWeek === "2021-09-06T14:00:00.000Z") {
+      var currentWeek = moment().startOf('isoWeek').add(1, 'days');
+      changeWeek(currentWeek);
       loadLevel();
       loadWeek();
       loadChallenges();
@@ -218,59 +220,94 @@ const ChallengesScreen = ({navigation}) => {
   if (level === 1) {
     return (
       <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
-      <View style={styles.container}>
-        <Text style={styles.level}> Level {level}</Text>
-        <Text style={styles.headings}> Challenges </Text>
-        <Text style={styles.level}> storedWeek
-          = {JSON.stringify(storedWeek)} </Text>
-        <View style={styles.breakline}/>
-        <View style={styles.challengeContainer}>
-          <Text
-            style={styles.challengeText}> {JSON.stringify(challenges[0].challenge).substring(1, JSON.stringify(challenges[0].challenge).length - 1)}</Text>
-          {img({name: challenges[0].completed, style: styles.plantTile})}
+        <View style={styles.container}>
+          <Text style={styles.level}> Level {level}</Text>
+          <Text style={styles.headings1}> Challenges </Text>
+          <View style={styles.challengeContainer}>
+            <Text
+              style={styles.challengeText1}> {JSON.stringify(challenges[0].challenge).substring(1, JSON.stringify(challenges[0].challenge).length - 1)}
+            </Text>
+            {img({name: challenges[0].completed, style: styles.plantTile})}
+          </View>
+          <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
+          <View style={styles.container}>
+            <Text style={styles.headings2}> Bonus Challenges </Text> 
+            <View style={styles.challengeContainer}>
+              <Text style={styles.challengeText2}> Quiz Completion: </Text>
+              {img({name: challenges[0].completed, style: styles.plantTile})}
+            </View>
+          </View>
+          </ImageBackground>
+          <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
         </View>
-        <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
-        <Text style={styles.headings}> Bonus Challenges </Text>
-        
-               
-        <View style={styles.challengeContainer}>
-          <Text style={styles.challengeText}> Quiz Completion </Text>
-          {img({name: challenges[0].completed, style: styles.plantTile})}
-        </View>
-        </ImageBackground>
-        <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
-        
-      </View>
-    
       </ImageBackground>
     )
   } else if (level === 2) {
     return (
       <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
-      <View style={styles.container}>
-        <Text style={styles.level}> Level {level}</Text>
-        <Text style={styles.headings}> Challenges </Text>
-        <Text style={styles.level}> storedWeek
-          = {JSON.stringify(storedWeek)} </Text>
-        <View style={styles.breakline}/>
-        <View style={styles.challengeContainer}>
-          <Text
-            style={styles.challengeText}> {JSON.stringify(challenges[0].challenge).substring(1, JSON.stringify(challenges[0].challenge).length - 1)}</Text>
-          {img({name: challenges[0].completed, style: styles.plantTile})}
+        <View style={styles.container}>
+          <Text style={styles.level}> Level {level}</Text>
+          <Text style={styles.headings1}> Challenges </Text>
+          <View style={styles.challengeContainer}>
+            <Text
+              style={styles.challengeText1}> {JSON.stringify(challenges[0].challenge).substring(1, JSON.stringify(challenges[0].challenge).length - 1)}
+            </Text>
+            {img({name: challenges[0].completed, style: styles.plantTile})}
+          </View>
+          <View style={styles.challengeContainer}>
+            <Text
+              style={styles.challengeText1}> {JSON.stringify(challenges[1].challenge).substring(1, JSON.stringify(challenges[1].challenge).length - 1)}
+            </Text>
+            {img({name: challenges[1].completed, style: styles.plantTile})}
+          </View>
+          <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
+          <View style={styles.container}>
+            <Text style={styles.headings2}> Bonus Challenges </Text> 
+            <View style={styles.challengeContainer}>
+              <Text style={styles.challengeText2}> Quiz Completion: </Text>
+              {img({name: challenges[0].completed, style: styles.plantTile})}
+            </View>
+          </View>
+          </ImageBackground>
+          <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
         </View>
-        <View style={styles.challengeContainer}>
-          <Text
-            style={styles.challengeText}> {JSON.stringify(challenges[1].challenge).substring(1, JSON.stringify(challenges[1].challenge).length - 1)}</Text>
-          {img({name: challenges[0].completed, style: styles.plantTile})}
+      </ImageBackground>
+    )
+  } else if (level === 3) {
+    return (
+      <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
+        <View style={styles.container}>
+          <Text style={styles.level}> Level {level}</Text>
+          <Text style={styles.headings1}> Challenges </Text>
+          <View style={styles.challengeContainer}>
+            <Text
+              style={styles.challengeText1}> {JSON.stringify(challenges[0].challenge).substring(1, JSON.stringify(challenges[0].challenge).length - 1)}
+            </Text>
+            {img({name: challenges[0].completed, style: styles.plantTile})}
+          </View>
+          <View style={styles.challengeContainer}>
+            <Text
+              style={styles.challengeText1}> {JSON.stringify(challenges[1].challenge).substring(1, JSON.stringify(challenges[1].challenge).length - 1)}
+            </Text>
+            {img({name: challenges[1].completed, style: styles.plantTile})}
+          </View>
+          <View style={styles.challengeContainer}>
+            <Text
+              style={styles.challengeText1}> {JSON.stringify(challenges[2].challenge).substring(1, JSON.stringify(challenges[2].challenge).length - 1)}
+            </Text>
+            {img({name: challenges[2].completed, style: styles.plantTile})}
+          </View>
+          <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
+          <View style={styles.container}>
+            <Text style={styles.headings2}> Bonus Challenges </Text> 
+            <View style={styles.challengeContainer}>
+              <Text style={styles.challengeText2}> Quiz Completion: </Text>
+              {img({name: challenges[0].completed, style: styles.plantTile})}
+            </View>
+          </View>
+          </ImageBackground>
+          <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
         </View>
-        <Text style={styles.headings}> Bonus Challenges </Text>
-        <View style={styles.breakline}/>
-        <View style={styles.challengeContainer}>
-          <Text style={styles.challengeText}> Quiz Completion </Text>
-          {img({name: challenges[0].completed, style: styles.plantTile})}
-        </View>
-        <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
-      </View>
       </ImageBackground>
     )
   }
@@ -284,17 +321,31 @@ const ChallengesScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'rgba(255,255,255,0.4)',
     flex: 1,
+    opacity: 1,
     textAlign: 'right',
     alignItems: 'center',
   },
   level: {
-    fontSize: 20,
+    fontFamily: 'PressStart2P',
+    fontSize: 15,
+    color: 'darkgreen',
+    paddingTop: 15,
     fontWeight: 'bold',
   },
-  headings: {
+  headings1: {
+    fontFamily: 'PressStart2P',
     fontSize: 30,
     fontWeight: 'bold',
+    color: 'darkgreen',
+    paddingTop: 15,
+    paddingBottom: 15,
+  }, headings2: {
+    fontFamily: 'PressStart2P',
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: 'maroon',
     paddingTop: 15,
     paddingBottom: 15,
   },
@@ -304,23 +355,26 @@ const styles = StyleSheet.create({
   challengeContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    borderBottomColor: 'black',
-    borderBottomWidth: 2,
-    width: '100%',
+    width: '70%',
   },
-  challengeText: {
-    fontSize: 20,
-    paddingTop: 50,
-    paddingBottom: 50,
-  },
-  breakline: {
-    //borderBottomColor: 'black',
-    //borderBottomWidth: 2,
-    width: '100%',
+  challengeText1: {
+    fontFamily: 'PressStart2P',
+    fontSize: 15,
+    color: 'darkgreen',
+    paddingTop: 20,
+    paddingBottom: 20,
+  }, challengeText2: {
+    fontFamily: 'PressStart2P',
+    fontSize: 15,
+    color: 'maroon',
+    paddingTop: 20,
+    paddingBottom: 20,
   }, plantTile: {
-    height: "50%",
-    width: "10%",
-    margin: "4%"
+    marginTop: 15,
+    height: "8%",
+    width: "8%",
+    margin: "4%",
+    aspectRatio: 1,
   },  overallBG: {
     height: windowHeight,
     width: windowWidth

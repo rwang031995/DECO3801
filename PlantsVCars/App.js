@@ -8,12 +8,14 @@ import {RegistrationScreen} from "./screens/login/Registration";
 import {HomeScreen} from "./screens/home/Home";
 import {firebase} from "./screens/settings/Firebase"
 import userId from './screens/home/userId';
+import * as Font from 'expo-font'
+import AppLoading from 'expo-app-loading'
 
 const Stack = createStackNavigator()
 
 
-const App = () => {
 
+const App = () => {
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState(null)
 
@@ -37,6 +39,10 @@ const App = () => {
       }
     });
   }, []);
+
+  let [fontsLoaded] = Font.useFonts({
+    'PressStart2P': require('./assets/fonts/PressStart2P-Regular.ttf')
+  });
 
   if (loading) {
     return(
