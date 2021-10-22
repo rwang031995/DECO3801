@@ -6,6 +6,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Quiz from './BonusChallenges';
 import userId from '../home/userId';
 import {firebase} from "../settings/Firebase"
+import * as Font from "expo-font"
+import AppLoading from 'expo-app-loading'
 
 
 const Stack = createStackNavigator();
@@ -34,7 +36,6 @@ const ChallengeOptions = [
 ];
 
 const ChallengesScreen = ({navigation}) => {
-
   /**
    * Leveling system.
    */
@@ -217,7 +218,6 @@ const ChallengesScreen = ({navigation}) => {
    * View screen
    */
 
-
   if (level === 1) {
     return (
       <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
@@ -288,13 +288,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   level: {
-    fontFamily: "PressStart2P_400Regular",
+    fontFamily: "PressStart2P",
     fontWeight: 'bold',
     fontSize: 20,
     fontWeight: 'bold',
   },
   headings: {
-    fontFamily: "PressStart2P_400Regular",
+    fontFamily: "PressStart2P",
     fontSize: 30,
     fontWeight: 'bold',
     paddingTop: 15,
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   challengeText: {
-    fontFamily: "PressStart2P_400Regular",
+    fontFamily: "PressStart2P",
     fontSize: 10,
     paddingTop: 15,
     paddingBottom: 15,
