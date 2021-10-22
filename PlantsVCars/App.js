@@ -9,7 +9,6 @@ import {HomeScreen} from "./screens/home/Home";
 import {firebase} from "./screens/settings/Firebase"
 import userId from './screens/home/userId';
 import * as Font from 'expo-font'
-import AppLoading from 'expo-app-loading'
 
 const Stack = createStackNavigator()
 
@@ -49,8 +48,6 @@ const App = () => {
       <></>
     )
   }
-
-  // firebase.auth().signOut()
 
   LogBox.ignoreLogs(["Setting a timer"])
 

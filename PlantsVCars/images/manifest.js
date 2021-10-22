@@ -51,6 +51,7 @@ IMG["ChallengesIcon"] = require("./icons/ChallengesIcon.png");
 IMG["SettingsIcon"] = require("./icons/SettingsIcon.png");
 IMG["cross"] = require("./icons/cross.png");
 IMG["tick"] = require("./icons/tick.png");
+IMG["logo"] = require("./icons/logo.png");
 
 const img = (props) => {
     var realprops = props ;

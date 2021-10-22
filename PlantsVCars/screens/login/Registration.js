@@ -1,7 +1,8 @@
 import React, {useState} from "react";
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
-import {StyleSheet, TextInput, TouchableOpacity} from "react-native";
+import {StyleSheet, TextInput, TouchableOpacity, ImageBackground} from "react-native";
 import {Text, View} from "react-native";
+import {img} from "../../images/manifest"
 import {firebase} from "../settings/Firebase";
 
 export const RegistrationScreen = ({navigation}) => {
@@ -61,51 +62,56 @@ export const RegistrationScreen = ({navigation}) => {
   }
 
   return (
-    <View style={styles.container}>
-      <KeyboardAwareScrollView style={styles.keyboardView}>
-        <TextInput
-          style={styles.input}
-          placeholder={"Email"}
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          secureTextEntry
-          placeholder='Password'
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          secureTextEntry
-          placeholder='Confirm Password'
-          onChangeText={(text) => setConfirmPassword(text)}
-          value={confirmPassword}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => onRegisterPress()}>
-          <Text style={styles.buttonTitle}>
-            Create Account
-          </Text>
-        </TouchableOpacity>
-        <View style={styles.footerView}>
-          <Text style={styles.footerText}>
-            Already got an account? <Text> </Text>
-            <Text onPress={() => onFooterLinkPress()} style={styles.footerLink}>
-              Log in
+    <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
+      <View style={styles.logocontainer}>
+        {img({name: 'logo', style: styles.logo})}
+      </View>
+      <View style={styles.container}>
+        <KeyboardAwareScrollView style={styles.keyboardView}>
+          <TextInput
+            style={styles.input}
+            placeholder={"Email"}
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+            underlineColorAndroid="transparent"
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            secureTextEntry
+            placeholder='Password'
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            underlineColorAndroid="transparent"
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            secureTextEntry
+            placeholder='Confirm Password'
+            onChangeText={(text) => setConfirmPassword(text)}
+            value={confirmPassword}
+            underlineColorAndroid="transparent"
+            autoCapitalize="none"
+          />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => onRegisterPress()}>
+            <Text style={styles.buttonTitle}>
+              Create Account
             </Text>
-          </Text>
-        </View>
-      </KeyboardAwareScrollView>
-    </View>
+          </TouchableOpacity>
+          <View style={styles.footerView}>
+            <Text style={styles.footerText}>
+              Already got an account? <Text> </Text>
+              <Text onPress={() => onFooterLinkPress()} style={styles.footerLink}>
+                Log in
+              </Text>
+            </Text>
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
+    </ImageBackground>
   )
 }
 
@@ -129,9 +135,19 @@ const styles = StyleSheet.create({
       marginLeft: 30,
       marginRight: 30,
       paddingLeft: 16
+    },logocontainer: {
+      position: 'absolute',
+      top: 270,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
+    logo: {
+      width: '100%',
+      resizeMode: 'contain'
     },
     button: {
-      backgroundColor: '#788eec',
+      backgroundColor: 'darkgreen',
       marginLeft: 30,
       marginRight: 30,
       marginTop: 20,
@@ -141,8 +157,9 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
     },
     buttonTitle: {
-      color: 'white',
-      fontSize: 16,
+      fontFamily: 'PressStart2P',
+      color: 'darkorange',
+      fontSize: 18,
       fontWeight: "bold"
     },
     footerView: {
@@ -151,13 +168,15 @@ const styles = StyleSheet.create({
       marginTop: 20
     },
     footerText: {
-      fontSize: 16,
-      color: '#2e2e2d'
+      fontFamily: 'PressStart2P',
+      width: '80%',
+      fontSize: 18,
+      color: 'darkgreen'
     },
     footerLink: {
-      color: "#788eec",
+      color: "darkorange",
       fontWeight: "bold",
       fontSize: 16
-    },
+    }
   }
 )
