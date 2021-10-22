@@ -184,6 +184,13 @@ const Settings = ({navigation}) => {
         setPopupVis(true)
       }
     },
+    {
+      title: "Sign Out",
+      onPress: () => {
+        firebase.auth().signOut().then(),
+        navigation.navigate("Login")
+      }
+    }
   ];
 
   return (
@@ -213,7 +220,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   switch: {
-    // justifyContent: "flex-end"
     paddingTop: 40,
     marginLeft: "auto"
   }
