@@ -6,8 +6,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Quiz from './BonusChallenges';
 import userId from '../home/userId';
 import {firebase} from "../settings/Firebase"
-import { AppLoading } from "expo"
-import { useFonts, PressStart2P_400Regular} from "@expo-google-fonts/press-start-2p"
+
 
 const Stack = createStackNavigator();
 
@@ -151,9 +150,6 @@ const ChallengesScreen = ({navigation}) => {
   /**
    * Variables for global storage using Async.
    */
-  let [fontsLoaded, error] = useFonts({
-    PressStart2P_400Regular
-  })
   const [level, setLevel] = useState(1);
   const [bonusChallenge, setBonusChallenge] = useState(false);
   const [challenges, setChallenges] = useState([
