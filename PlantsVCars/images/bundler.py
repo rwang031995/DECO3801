@@ -72,7 +72,7 @@ if __name__ == "__main__":
             
     parser.add_argument('--source_dir', dest='source_dir',
                     action='store', default=source_dir,
-                    help="The directory containing the source files")
+                    help="The directory containing the source files (default: "+source_dir+')')
 
     parser.add_argument('--manifest', dest='manifest', help="where to put the manifest file (default: ./manifest.js)",
                     action='store', default=os.path.join(source_dir, "manifest.js"))

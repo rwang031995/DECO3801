@@ -7,6 +7,8 @@ import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import React from "react";
 import {img} from "../../images/manifest";
 import {firebase} from "../settings/Firebase"
+import JourneyScreen from '../journey/MakeJourney'
+
 
 const Tab = createBottomTabNavigator();
 
@@ -70,8 +72,6 @@ var images = [
   {name: "Waves-in-Sea", style: styles.tinyLogo},
 ];
 
-console.log(images[0])
-
 var i0 = images[0]
 var i1 = images[1]
 var i2 = images[2]
@@ -120,8 +120,8 @@ export const HomeScreen = (props) => {
           if (route.name === 'My Garden') {
             image = require('../../images/icons/MyGardenIcon.png')
           }
-          if (route.name === 'Our Forest') {
-            image = require('../../images/icons/OurForestIcon.png')
+          if (route.name === 'Journey') {
+            image = require('../../images/icons/WalkingIcon.png')
           }
           if (route.name === 'Settings') {
             image = require('../../images/icons/SettingsIcon.png')
@@ -139,7 +139,7 @@ export const HomeScreen = (props) => {
       })
       }>
       <Tab.Screen name={"My Garden"} component={MyGardenNav}/>
-      <Tab.Screen name={"Our Forest"} component={OurForest}/>
+      <Tab.Screen name={"Journey"} component={JourneyScreen}/>
       <Tab.Screen name={"Challenges"} component={ChallengesScreen}/>
       <Tab.Screen name={"Leaderboard"} component={PvCLeaderboard}/>
       <Tab.Screen name={"Settings"}>
