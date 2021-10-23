@@ -11,6 +11,10 @@ import React, {useState} from "react";
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import {firebase} from "../settings/Firebase"
 
+/***
+ * Code adapted from https://www.freecodecamp.org/news/react-native-firebase-tutorial/
+ */
+
 export const LoginPage = ({navigation}) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -35,7 +39,7 @@ export const LoginPage = ({navigation}) => {
               return;
             }
             const user = firestoreDocument.data()
-            navigation.navigate('Home', {user})
+            navigation.navigate('My Garden')
           })
           .catch(error => {
             alert(error)

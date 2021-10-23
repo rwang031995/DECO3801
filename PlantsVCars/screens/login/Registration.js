@@ -5,6 +5,10 @@ import {Text, View} from "react-native";
 import {img} from "../../images/manifest"
 import {firebase} from "../settings/Firebase";
 
+/***
+ * Code adapted from https://www.freecodecamp.org/news/react-native-firebase-tutorial/
+ */
+
 export const RegistrationScreen = ({navigation}) => {
   const isCompleted = ["cross", "tick"]
   const [email, setEmail] = useState("")

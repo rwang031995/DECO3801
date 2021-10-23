@@ -142,9 +142,7 @@ export const HomeScreen = (props) => {
       {/*<Tab.Screen name={"Our Forest"} component={OurForest}/>*/}
       <Tab.Screen name={"Challenges"} component={ChallengesScreen}/>
       <Tab.Screen name={"Leaderboard"} component={PvCLeaderboard}/>
-      <Tab.Screen name={"Settings"}>
-        {props => <SettingsNav {...props} extraData={user}/>}
-      </Tab.Screen>
+      <Tab.Screen name={"Settings"} component={SettingsNav}/>
     </Tab.Navigator>
   )
 }

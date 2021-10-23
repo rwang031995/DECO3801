@@ -1,6 +1,7 @@
 import React, {useContext, useEffect} from "react";
 
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Switch,
@@ -140,9 +141,6 @@ const SettingsComponent = ({settingsOptions,}) => {
 }
 
 const Settings = ({navigation}) => {
-  const [date, setDate] = React.useState(new Date());
-  const [age, setAge] = React.useState(new Date());
-  const [popupVis, setPopupVis] = React.useState(false)
 
   const settingsOptions = [
     {
@@ -153,25 +151,47 @@ const Settings = ({navigation}) => {
       }
     },
     {
-      title: "About ",
-      onPress: () => {
-        setPopupVis(true)
-      }
+      title: "Sign Out",
+      onPress: () =>
+        Alert.alert(
+          "We'll miss you!",
+          "Are you sure you want to sign out?",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+            },
+            {
+              text: "OK",
+              onPress: () =>
+                [
+                  () => console.log("Logged out"),
+                  firebase.auth().signOut().then(
+                    navigation.navigate("Login")
+                  ),
+                  () => Alert.alert(
+                    "Signed out successfully."
+                  )
+                ]
+            }
+          ]
+        )
     },
     {
-      title: "Sign Out",
+      title: "About ",
       onPress: () => {
-        firebase.auth().signOut().then(),
-          navigation.navigate("Login")
+        Alert.alert(
+          "Created with love by \"The Masked Bandits\" DECO3801 team",
+          ""
+        )
       }
-    }
+    },
   ];
 
   return (
     <SettingsComponent
       settingsOptions={settingsOptions}
-      popupVis={popupVis}
-      setPopupVis={setPopupVis}
     />)
 }
 
