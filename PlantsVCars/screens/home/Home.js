@@ -120,9 +120,9 @@ export const HomeScreen = (props) => {
           if (route.name === 'My Garden') {
             image = require('../../images/icons/MyGardenIcon.png')
           }
-          if (route.name === 'Our Forest') {
-            image = require('../../images/icons/OurForestIcon.png')
-          }
+          // if (route.name === 'Our Forest') {
+          //   image = require('../../images/icons/OurForestIcon.png')
+          // }
           if (route.name === 'Settings') {
             image = require('../../images/icons/SettingsIcon.png')
           }
@@ -139,7 +139,7 @@ export const HomeScreen = (props) => {
       })
       }>
       <Tab.Screen name={"My Garden"} component={MyGardenNav}/>
-      <Tab.Screen name={"Our Forest"} component={OurForest}/>
+      {/*<Tab.Screen name={"Our Forest"} component={OurForest}/>*/}
       <Tab.Screen name={"Challenges"} component={ChallengesScreen}/>
       <Tab.Screen name={"Leaderboard"} component={PvCLeaderboard}/>
       <Tab.Screen name={"Settings"}>

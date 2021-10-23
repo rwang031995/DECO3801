@@ -137,11 +137,13 @@ const ChallengesScreen = ({navigation}) => {
    * Set state when quiz is taken and send state to database.
    */
   const takeQuiz = (navigation) => {
+    console.log(`Bonus Challenges Complete: ${bonusChallenge}`)
     if (bonusChallenge === false) {
       firebase.firestore().collection("users").doc(uid).update({
         bonusChallenge: true
-      })
+      }).then()
       navigation.navigate('My Quiz');
+      console.log("Navigating to bonus challenges")
     } else {
       alert("Quiz has already been completed this week")
     }
@@ -240,7 +242,7 @@ const ChallengesScreen = ({navigation}) => {
    */
   if (level === 1) {
     return (
-      <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
+      <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}>
         <View style={styles.container}>
           <Text style={styles.level}> Level {level}</Text>
           <Text style={styles.headings1}> Challenges </Text>
@@ -253,7 +255,8 @@ const ChallengesScreen = ({navigation}) => {
           <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
           <View style={styles.container}>
             <Text style={styles.headings2}> Bonus Challenges </Text>
-            {bonusChallenge ? 
+            <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
+            {bonusChallenge ?
             <View style={styles.challengeContainer}>
               <Text style={styles.challengeText2}> Quiz Completion: </Text>
               {img({name: isCompleted[1], style: styles.plantTile})}
@@ -264,13 +267,12 @@ const ChallengesScreen = ({navigation}) => {
             </View>}
           </View>
           </ImageBackground>
-          <Button title="Take Quiz" onPress={() => completeChallenge("walk")}/>
         </View>
       </ImageBackground>
     )
   } else if (level === 2) {
     return (
-      <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
+      <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}>
         <View style={styles.container}>
           <Text style={styles.level}> Level {level}</Text>
           <Text style={styles.headings1}> Challenges </Text>
@@ -288,8 +290,9 @@ const ChallengesScreen = ({navigation}) => {
           </View>
           <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
           <View style={styles.container}>
-            <Text style={styles.headings2}> Bonus Challenges </Text> 
-            {bonusChallenge ? 
+            <Text style={styles.headings2}> Bonus Challenges </Text>
+            <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
+            {bonusChallenge ?
             <View style={styles.challengeContainer}>
               <Text style={styles.challengeText2}> Quiz Completion: </Text>
               {img({name: isCompleted[1], style: styles.plantTile})}
@@ -300,13 +303,12 @@ const ChallengesScreen = ({navigation}) => {
             </View>}
           </View>
           </ImageBackground>
-          <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
         </View>
       </ImageBackground>
     )
   } else if (level === 3) {
     return (
-      <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
+      <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}>
         <View style={styles.container}>
           <Text style={styles.level}> Level {level}</Text>
           <Text style={styles.headings1}> Challenges </Text>
@@ -330,8 +332,9 @@ const ChallengesScreen = ({navigation}) => {
           </View>
           <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
           <View style={styles.container}>
-            <Text style={styles.headings2}> Bonus Challenges </Text> 
-            {bonusChallenge ? 
+            <Text style={styles.headings2}> Bonus Challenges </Text>
+            <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
+            {bonusChallenge ?
             <View style={styles.challengeContainer}>
               <Text style={styles.challengeText2}> Quiz Completion: </Text>
               {img({name: isCompleted[1], style: styles.plantTile})}
@@ -342,11 +345,23 @@ const ChallengesScreen = ({navigation}) => {
             </View>}
           </View>
           </ImageBackground>
-          <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
         </View>
       </ImageBackground>
     )
   }
+  // return (
+  //   <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}>
+  //     <View style={styles.container}>
+  //       <Text style={styles.level}> Level {level}</Text>
+  //       <Text style={styles.headings1}> Challenges </Text>
+  //       {challenges.map(({challenge, completed}) => (
+  //         <View style={styles.challengeContainer}>
+  //           <Text
+  //             style={styles.challengeText1}> {JSON.stringify(challenge).substring(1, JSON.stringify(challenge).length - 1)}
+  //           </Text>
+  //           {img({name: completed, style: styles.plantTile})}
+  //         </View>
+  //       ))}
 }
 
 //--------------------------------------------------------------------------------

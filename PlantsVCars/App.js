@@ -43,7 +43,7 @@ const App = () => {
     'PressStart2P': require('./assets/fonts/PressStart2P-Regular.ttf')
   });
 
-  if (loading) {
+  if (loading || !fontsLoaded) {
     return(
       <></>
     )
