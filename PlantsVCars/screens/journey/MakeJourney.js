@@ -15,9 +15,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-around',
-    flexDirection: "column"
-    
+    justifyContent: 'space-evenly',
+    flexDirection: "column",
+    width: "100%",
+    height: "100%",
   },
   icon: {
     width: 20,
@@ -50,11 +51,14 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 12,
     justifyContent: 'center',
+    textAlign: 'center',
+    textAlignVertical: 'center',
     marginLeft: "auto",
     marginRight: "auto",
     fontFamily: 'PressStart2P',
     color: 'white',
     fontWeight: "bold",
+    lineHeight: 18,
     paddingRight: 12,
     paddingLeft: 12,
   },
@@ -115,14 +119,28 @@ function timeParse(start, end){
     return out;
 }
 
+function distanceFormat(distance) {
+    let out = "";
+    let d = Math.abs(distance)
+    if (d > 1000) {
+        return Math.round(d / 10)/100 + " km";
+    } else {
+        return Math.round(d) + " m";
+    }
+
+}
+
 function imageNameSelect(mode){
     switch (mode) {
+        case "bus":
+        case "train":
         case "public":
             return "PublicTransportIcon";
-            break;
+        case "bike":
+        case "scooter":
         case "active":
             return "ActiveTransportIcon";
-            break;
+        case "walk":
         default:
            return "WalkingIcon"; 
     }
@@ -157,21 +175,23 @@ async function currentPositionAsync(){
     }
 }
 
+function testLocationAtPT(location){
+    // TODO
+    return true;
+}
+
 const Stack = createStackNavigator();
 
-const JourneyScreen = ({ navigation, route }) => {
+const JourneyScreen = ({ navigation}) => {
         React.useLayoutEffect(() => {
             navigation.setOptions({
-                title: "Make a Journey",
-                tabBarLabel: "Journey",
+                headerShown: false,
             })
         }, []);
 
   return (
-      <Stack.Navigator 
-        screenOptions={{headerShown: false}}
-      >
-        <Stack.Screen name="Start Journey" component={JourneyStartScreen}/>
+      <Stack.Navigator>
+        <Stack.Screen name="Make a Journey" component={JourneyStartScreen}/>
         <Stack.Screen name="Challenge Completed" component={ChallengeCompletedScreen}/>
       </Stack.Navigator>
   );
@@ -200,8 +220,8 @@ const JourneyStartScreen = ({ navigation }) => {
         let result = null;
         for (let i = 0; i < challenges.length; i++) {
             console.log("Considering", challengesTemp[i]);
-          if ((challengesTemp[i].mode == mode) /*&& 
-                (challengesTemp[i].completed != isCompleted[1])*/ ) {
+          if ((challengesTemp[i].mode == mode) && 
+                (challengesTemp[i].completed != isCompleted[1]) ) {
             challengesTemp[i].completed = isCompleted[1];
             result = challengesTemp[i].challenge;
             break
@@ -236,7 +256,6 @@ const JourneyStartScreen = ({ navigation }) => {
         ( startLocation !== null && endLocation !== null 
             && endLocation.timestamp < startLocation.timestamp )){
         // Before trip start
-        
         return (
             <View style={styles.container}>
                 <MapView 
@@ -257,24 +276,53 @@ const JourneyStartScreen = ({ navigation }) => {
                             
                         // still here?
                         setStartLocation(location);
-                        setTripType("public");
+                        setTripType("bus");
                     }}
                 >
-                {img({name: "PublicTransportIcon", style:styles.itemIcon})}
-                <Text style={styles.label}>Catch!</Text>
+                {img({name: "PublicTransportIcon", style:styles.itemIcon}) /*TODO: bus */}
                 </TouchableOpacity>
 
+                <TouchableOpacity
+                    style = {styles.itemIcon} // need this to be set
+                    onPress = {async () => {
+                        setEndLocation(null);
+                        let location = await currentPositionAsync();
+                        // test whether we're at a bus or a train stop
+                        if(true){
+                            Alert.alert('', "Please start your trip when you're at a train station or bus stop");
+                        }
+                            
+                        // still here?
+                        setStartLocation(location);
+                        setTripType("train");
+                    }}
+                >
+                {img({name: "PublicTransportIcon", style:styles.itemIcon}) /*TODO: train */ }
+                </TouchableOpacity>
                 <TouchableOpacity
                     style = {styles.itemIcon} // need this to be set
                     onPress = {async () => {
                         let location = await currentPositionAsync();
                         setStartLocation(location);
                         setEndLocation(null);
-                        setTripType("walking");
+                        setTripType("walk");
                     }}
                 >
                 {img({name: "WalkingIcon", style:styles.itemIcon})}
-                <Text style={styles.label}>Walk!</Text>
+                </TouchableOpacity>
+                </ImageBackground>
+            <ImageBackground source={require('../../images/bg/challengesbg.png')} style={styles.row}> 
+
+                <TouchableOpacity
+                    style = {styles.itemIcon} // need this to be set
+                    onPress = {async () => {
+                        let location = await currentPositionAsync();
+                        setStartLocation(location);
+                        setEndLocation(null);
+                        setTripType("bike");
+                    }}
+                >
+                {img({name: "ActiveTransportIcon", style:styles.itemIcon}) /*TODO: bike */ }
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -283,12 +331,16 @@ const JourneyStartScreen = ({ navigation }) => {
                         let location = await currentPositionAsync();
                         setStartLocation(location);
                         setEndLocation(null);
-                        setTripType("active");
+                        setTripType("scooter");
                     }}
                 >
-                {img({name: "ActiveTransportIcon", style:styles.itemIcon})}
-                <Text style={styles.label}>Ride!</Text>
+                {img({name: "ActiveTransportIcon", style:styles.itemIcon}) /*TODO: scooter */ }
                 </TouchableOpacity>
+
+                <View style={styles.itemIcon}>
+                <Text style={{fontSize: 14, fontFamily: 'PressStart2P', color:'white', textAlign:'center', marginTop: 'auto', marginBottom: 'auto'}}>
+                    Select a mode to begin your journey!</Text>
+                </View>
             </ImageBackground>
             </View>        
         )
@@ -330,6 +382,17 @@ const JourneyStartScreen = ({ navigation }) => {
                         await loadChallenges();
                         console.log("Challenges available?");
                         console.log(challenges);
+
+                        // navigate straight to challengeCompleted screen if relevant
+                        let result = completeChallenge(tripType);
+                        console.log("result:", result)
+                        if (result != null){
+                            setStartLocation(null);
+                            setEndLocation(null);                                    
+                            navigation.navigate('Challenge Completed', {"tripType": tripType, "challenge": result});                    
+                        } else {
+                            console.log("No challenge completed this trip.")
+                        }
                     }}
                     >
                     <Text style={styles.buttonTitle}>I'm There!</Text>
@@ -338,7 +401,6 @@ const JourneyStartScreen = ({ navigation }) => {
         </View>
         )
     } else if (endLocation !== null) {
-        // 
         return (        
             <View style={styles.container}>
                 <MapView 
@@ -358,39 +420,17 @@ const JourneyStartScreen = ({ navigation }) => {
                         pinColor={"purple"}
                     />
                 </MapView>
-            <ImageBackground source={require('../../images/bg/challengesbg.png')} style={styles.row}> 
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                        setStartLocation(null);
-                        setEndLocation(null);            
-                        // unconditional for now...            
-                        
-                        let result = null;
-                        // TODO fix impedance mismatch
-                        if (tripType == "walking"){
-                            result = completeChallenge("walk");
-                        } else if (tripType == "public"){
-                            result = completeChallenge("bus");
-                            if (result == null){
-                                result = completeChallenge("train");
-                            }
-                        } else if (tripType == "active"){
-                            result = completeChallenge("bike");
-                            if (result == null){
-                                result = completeChallenge("scooter");
-                            }                            
-                        }
-                        console.log("result:", result)
-                        if (result != null){
-                            navigation.navigate('Challenge Completed', {"tripType": tripType, "challenge": result});                    
-                        } else {
-                            console.log("No challenge completed this trip.")
-                        }
-                    }}>
-                    <Text style={styles.buttonTitle}>{Math.round(Geography.distanceApproxDevice(startLocation, endLocation))/1000} km</Text>
-                </TouchableOpacity>
-            </ImageBackground>
+                <ImageBackground source={require('../../images/bg/challengesbg.png')} 
+                    style={styles.container}> 
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => {
+                            setStartLocation(null);
+                            setEndLocation(null);                                                    
+                        }}>
+                        <Text style={styles.buttonTitle}>{distanceFormat(Geography.distanceApproxDevice(startLocation, endLocation))}</Text>
+                    </TouchableOpacity>
+                </ImageBackground>
             </View>
         )
     }
@@ -412,17 +452,9 @@ const ChallengeCompletedScreen = ({ navigation, route }, tripType, challenge) =>
         <ImageBackground source={require('../../images/bg/challengesbg.png')} 
             style={{width:"100%", height:"100%"}}> 
         <View style={styles.container}>
-            <Text style={styles.label}>You completed a challenge!</Text>
-            {img({name: imageNameSelect(route.params.tripType), style:{width: "100%"}})}
             <Text style={styles.label}>{route.params.challenge}</Text>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                    navigation.navigate("Start Journey");
-                }}>
-            <Text style={styles.buttonTitle}>Keep Travelling</Text>
-          </TouchableOpacity>
-
+            {img({name: imageNameSelect(route.params.tripType), style:{width: "100%"}})}
+            <Text style={styles.label}>You received TODO</Text>
         </View>
         </ImageBackground>
     );
