@@ -133,11 +133,15 @@ function distanceFormat(distance) {
 function imageNameSelect(mode){
     switch (mode) {
         case "bus":
+            return "BusIcon";
         case "train":
+            return "TrainIcon"
         case "public":
             return "PublicTransportIcon";
         case "bike":
+            return "BikeIcon";
         case "scooter":
+            return "ScooterIcon";
         case "active":
             return "ActiveTransportIcon";
         case "walk":
@@ -294,7 +298,7 @@ const JourneyStartScreen = ({ navigation }) => {
                         }
                     }}
                 >
-                {img({name: "PublicTransportIcon", style:styles.itemIcon}) /*TODO: bus */}
+                {img({name: "BusIcon", style:styles.itemIcon}) /*TODO: bus */}
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -311,7 +315,7 @@ const JourneyStartScreen = ({ navigation }) => {
                         }
                     }}
                 >
-                {img({name: "PublicTransportIcon", style:styles.itemIcon}) /*TODO: train */ }
+                {img({name: "TrainIcon", style:styles.itemIcon}) /*TODO: train */ }
                 </TouchableOpacity>
                 <TouchableOpacity
                     style = {styles.itemIcon} // need this to be set
@@ -336,7 +340,7 @@ const JourneyStartScreen = ({ navigation }) => {
                         setTripType("bike");
                     }}
                 >
-                {img({name: "ActiveTransportIcon", style:styles.itemIcon}) /*TODO: bike */ }
+                {img({name: "BikeIcon", style:styles.itemIcon}) /*TODO: bike */ }
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -348,7 +352,7 @@ const JourneyStartScreen = ({ navigation }) => {
                         setTripType("scooter");
                     }}
                 >
-                {img({name: "ActiveTransportIcon", style:styles.itemIcon}) /*TODO: scooter */ }
+                {img({name: "ScooterIcon", style:styles.itemIcon}) /*TODO: scooter */ }
                 </TouchableOpacity>
 
                 <View style={styles.itemIcon}>
