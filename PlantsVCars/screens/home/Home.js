@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
   },
 })
 
+/*
 var images = [
   {name: "Waves-in-Sea", style: styles.tinyLogo},
   {name: "Waves-in-Sea", style: styles.tinyLogo},
@@ -106,6 +107,7 @@ const OurForest = (images) => {
     </View>
   );
 }
+*/
 
 export const HomeScreen = (props) => {
 
@@ -135,9 +137,11 @@ export const HomeScreen = (props) => {
           return (
             <Image source={image} style={{width: 50, height: 50}}/>
           )
-        }
+        },
+        tabBarActiveTintColor:'darkgreen',
       })
-      }>
+      }
+      >
       <Tab.Screen name={"My Garden"} component={MyGardenNav}/>
       <Tab.Screen name={"Journey"} component={JourneyScreen}/>
       <Tab.Screen name={"Challenges"} component={ChallengesScreen}/>

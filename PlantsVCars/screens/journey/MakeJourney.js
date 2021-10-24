@@ -6,50 +6,77 @@ import * as Location from 'expo-location';
 import {img} from "../../images/manifest"
 import MapView, {Marker} from 'react-native-maps';
 import * as Geography from "./Geography";
+import userId from '../home/userId';
+import {firebase} from "../settings/Firebase";
+import {isCompleted, ChallengeOptions} from "../challenges/Challenges";
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     flexDirection: "column"
+    
   },
   icon: {
     width: 20,
     height: 20,
   },
   row: {
+    flex: 1,
+    justifyContent: "space-evenly",
+    alignItems: 'center',
+    display: 'flex',
     flexDirection: "row",
     flexWrap: "wrap",
-    height: '33%'
+    width: '100%',
+    height: '100%',
   },
   bg: {
     width: '100%',
     height: '100%',
   },
-  input: {
-    fontSize: 20,
-    width: '60%',
-    borderRadius: 5,
-    backgroundColor: 'lightgrey',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+  map: {
+    width: '100%',
+    height: '100%',    
+    flex: 3,
   },
   itemIcon: {
-    justifyContent: "center",
-    width: "33%",
-    height: "33%",
-    padding: "0%",
-    marginTop: "2%",
-    marginLeft: "auto",
-    marginRight: "auto"
+    flex: 1,
+    width: "100%",
+    height: "100%",
   },
   label: {
-    fontSize: 10,
+    fontSize: 12,
     justifyContent: 'center',
     marginLeft: "auto",
     marginRight: "auto",
-  }
+    fontFamily: 'PressStart2P',
+    color: 'white',
+    fontWeight: "bold",
+    paddingRight: 12,
+    paddingLeft: 12,
+  },
+  buttonTitle: {
+    fontFamily: 'PressStart2P',
+    color: 'darkorange',
+    fontSize: 16,
+    fontWeight: "bold"
+  },
+  button: {
+      flex: 1,
+      backgroundColor: 'darkgreen',
+      height: 48,
+      margin: 'auto',
+      maxHeight: 48,
+      paddingRight: 12,
+      paddingLeft: 12,
+      borderRadius: 5,
+      alignItems: "center",
+      justifyContent: 'center'
+    },
+
 })
 
 function unixDateTimeStrf(ts){
@@ -132,7 +159,14 @@ async function currentPositionAsync(){
 
 const Stack = createStackNavigator();
 
-const JourneyScreen = () => {
+const JourneyScreen = ({ navigation, route }) => {
+        React.useLayoutEffect(() => {
+            navigation.setOptions({
+                title: "Make a Journey",
+                tabBarLabel: "Journey",
+            })
+        }, []);
+
   return (
       <Stack.Navigator 
         screenOptions={{headerShown: false}}
@@ -150,6 +184,36 @@ const JourneyStartScreen = ({ navigation }) => {
       const [status, setStatus] = useState(null);
       const [tripType, setTripType] = useState(null);
       const [challengeCompleted, setChallengeCompleted] = useState(null);
+
+      const uid = useContext(userId);
+      const [challenges, setChallenges] = useState(null);
+    
+      // now we have our challenges
+      const loadChallenges = async () => {
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+          setChallenges(doc.data().challenges);
+        })
+      }
+
+      const completeChallenge = (mode) => {
+        let challengesTemp = [...challenges];
+        let result = null;
+        for (let i = 0; i < challenges.length; i++) {
+            console.log("Considering", challengesTemp[i]);
+          if ((challengesTemp[i].mode == mode) /*&& 
+                (challengesTemp[i].completed != isCompleted[1])*/ ) {
+            challengesTemp[i].completed = isCompleted[1];
+            result = challengesTemp[i].challenge;
+            break
+          }
+        }
+        setChallenges(challengesTemp);
+        firebase.firestore().collection("users").doc(uid).update({
+          challenges: challengesTemp
+        })
+        return result;
+      }
+
 
       useEffect(() => {
         (async () => {
@@ -172,14 +236,15 @@ const JourneyStartScreen = ({ navigation }) => {
         ( startLocation !== null && endLocation !== null 
             && endLocation.timestamp < startLocation.timestamp )){
         // Before trip start
+        
         return (
             <View style={styles.container}>
                 <MapView 
-                        style = {styles.bg}
+                        style = {styles.map}
                         showsUserLocation = {true}
                         pitchEnabled = {false}
                 />
-            <View style={styles.row}>
+            <ImageBackground source={require('../../images/bg/challengesbg.png')} style={styles.row}> 
                 <TouchableOpacity
                     style = {styles.itemIcon} // need this to be set
                     onPress = {async () => {
@@ -195,8 +260,8 @@ const JourneyStartScreen = ({ navigation }) => {
                         setTripType("public");
                     }}
                 >
-                {img({name: "PublicTransportIcon", style:styles.bg})}
-                <Text style={styles.label}>Public Transport</Text>
+                {img({name: "PublicTransportIcon", style:styles.itemIcon})}
+                <Text style={styles.label}>Catch!</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -208,8 +273,8 @@ const JourneyStartScreen = ({ navigation }) => {
                         setTripType("walking");
                     }}
                 >
-                {img({name: "WalkingIcon", style:styles.bg})}
-                <Text style={styles.label}>Walking</Text>
+                {img({name: "WalkingIcon", style:styles.itemIcon})}
+                <Text style={styles.label}>Walk!</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -221,11 +286,10 @@ const JourneyStartScreen = ({ navigation }) => {
                         setTripType("active");
                     }}
                 >
-                {img({name: "ActiveTransportIcon", style:styles.bg})}
-                <Text style={styles.label}>Bike or Scooter</Text>
+                {img({name: "ActiveTransportIcon", style:styles.itemIcon})}
+                <Text style={styles.label}>Ride!</Text>
                 </TouchableOpacity>
-            </View>
-            <Text>Start Your Journey...</Text>
+            </ImageBackground>
             </View>        
         )
     } else if (((startLocation !== null) && (endLocation == null))) {
@@ -235,7 +299,7 @@ const JourneyStartScreen = ({ navigation }) => {
         return (
         <View style={styles.container}>
                 <MapView 
-                    style = {styles.bg}
+                    style = {styles.map}
                     showsUserLocation = {true}
                     region = {makeRegion(startLocation, loc)}
                     rotateEnabled = {false}
@@ -246,10 +310,12 @@ const JourneyStartScreen = ({ navigation }) => {
                         coordinate={startLocation.coords}
                     />
                 </MapView>
-            <View style={styles.row}>
+            <ImageBackground source={require('../../images/bg/challengesbg.png')} style={styles.row}> 
                 {img({name: imageNameSelect(tripType), style:styles.itemIcon})}
-                <Button title="I'm there!" 
-                    onPress = {async () => {
+
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={async () => {
                         let location = await currentPositionAsync();
                         setEndLocation(location);
                         // evaluate trip type
@@ -261,10 +327,14 @@ const JourneyStartScreen = ({ navigation }) => {
                         // sanity check for active - less than 40 km/h average 
                         
                         // update challenge?
+                        await loadChallenges();
+                        console.log("Challenges available?");
+                        console.log(challenges);
                     }}
-                    style = {styles.itemIcon}
-                />
-            </View>
+                    >
+                    <Text style={styles.buttonTitle}>I'm There!</Text>
+                </TouchableOpacity>
+            </ImageBackground>
         </View>
         )
     } else if (endLocation !== null) {
@@ -272,7 +342,7 @@ const JourneyStartScreen = ({ navigation }) => {
         return (        
             <View style={styles.container}>
                 <MapView 
-                    style = {styles.bg}
+                    style = {styles.map}
                     region = {makeRegion(startLocation, endLocation)}
                     rotateEnabled = {false}
                     pitchEnabled = {false}
@@ -288,36 +358,73 @@ const JourneyStartScreen = ({ navigation }) => {
                         pinColor={"purple"}
                     />
                 </MapView>
-            <View style={styles.row}>
-                <Text>Time spent: {timeParse(startLocation.timestamp, endLocation.timestamp)}</Text>
-                <Text>Distance travelled: {Math.round(Geography.distanceApproxDevice(startLocation, endLocation))} metres</Text>
-                <Button title = "Dismiss"
-                    onPress = { () => {
+            <ImageBackground source={require('../../images/bg/challengesbg.png')} style={styles.row}> 
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => {
                         setStartLocation(null);
-                        setEndLocation(null);
-            
+                        setEndLocation(null);            
                         // unconditional for now...            
-                        navigation.navigate('Challenge Completed', {"tripType": tripType});
                         
-                    }}
-                />
-            </View>
+                        let result = null;
+                        // TODO fix impedance mismatch
+                        if (tripType == "walking"){
+                            result = completeChallenge("walk");
+                        } else if (tripType == "public"){
+                            result = completeChallenge("bus");
+                            if (result == null){
+                                result = completeChallenge("train");
+                            }
+                        } else if (tripType == "active"){
+                            result = completeChallenge("bike");
+                            if (result == null){
+                                result = completeChallenge("scooter");
+                            }                            
+                        }
+                        console.log("result:", result)
+                        if (result != null){
+                            navigation.navigate('Challenge Completed', {"tripType": tripType, "challenge": result});                    
+                        } else {
+                            console.log("No challenge completed this trip.")
+                        }
+                    }}>
+                    <Text style={styles.buttonTitle}>{Math.round(Geography.distanceApproxDevice(startLocation, endLocation))/1000} km</Text>
+                </TouchableOpacity>
+            </ImageBackground>
             </View>
         )
     }
 }
 
-const ChallengeCompletedScreen = ({ navigation, route }, tripType) => {
+//                 <Text>Time spent: {timeParse(startLocation.timestamp, endLocation.timestamp)}</Text>
+//                 <Text>Distance travelled: {Math.round(Geography.distanceApproxDevice(startLocation, endLocation))/1000} km</Text>
+
+
+const ChallengeCompletedScreen = ({ navigation, route }, tripType, challenge) => {
+        React.useLayoutEffect(() => {
+            navigation.setOptions({
+                title: "Challenge Completed!",
+                tabBarLabel: "Journey",
+            })
+        }, []);
+
     return (
+        <ImageBackground source={require('../../images/bg/challengesbg.png')} 
+            style={{width:"100%", height:"100%"}}> 
         <View style={styles.container}>
+            <Text style={styles.label}>You completed a challenge!</Text>
             {img({name: imageNameSelect(route.params.tripType), style:{width: "100%"}})}
-            <Text>🎉 🎉 🎉 You completed a challenge! 🎉 🎉 🎉</Text>
-            <Button title="Continue" 
-                onPress = {() => {
-                    navigation.navigate('Start Journey')                    
-                }}
-            />
+            <Text style={styles.label}>{route.params.challenge}</Text>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                    navigation.navigate("Start Journey");
+                }}>
+            <Text style={styles.buttonTitle}>Keep Travelling</Text>
+          </TouchableOpacity>
+
         </View>
+        </ImageBackground>
     );
 }
 

@@ -25,9 +25,9 @@ const ChallengesScreenNav = () => {
   )
 }
 
-const isCompleted = ["cross", "tick"]
+export const isCompleted = ["cross", "tick"]
 
-const ChallengeOptions = [
+export const ChallengeOptions = [
   {challenge: "Walk to work once this Week", completed: isCompleted[0], mode: "walk"},
   {challenge: "Take the bus to work once this week", completed: isCompleted[0], mode: "bus"},
   {challenge: "Take the train once this week", completed: isCompleted[0], mode: "train"},
@@ -165,12 +165,7 @@ const ChallengesScreen = ({navigation}) => {
    */
   const [level, setLevel] = useState(1);
   const [bonusChallenge, setBonusChallenge] = useState(false);
-  const [challenges, setChallenges] = useState([
-    {challenge: "Walk to work once this Week", completed: isCompleted[0], mode: "walk"},
-    {challenge: "Take the bus to work once this week", completed: isCompleted[0], mode: "bus"},
-    {challenge: "Take the train once this week", completed: isCompleted[0], mode: "train"},
-    {challenge: "Ride a bike to work once this week", completed: isCompleted[0], mode: "bike"},
-  ]);
+  const [challenges, setChallenges] = useState(ChallengeOptions);
   const [storedWeek, changeWeek] = useState("2021-09-06T14:00:00.000Z");
   const uid = useContext(userId);
   //--------------------------------------------------------------------------------
