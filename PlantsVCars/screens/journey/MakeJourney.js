@@ -167,31 +167,31 @@ function makeRegion(startLocation, currentLocation){
 async function currentPositionAsync(){
     let loc = await Location.getLastKnownPositionAsync({'maxAge': 30000, 'requiredAccuracy': 100});
     if (loc == null){
-        console.log("Needed fresh location")
+        // console.log("Needed fresh location")
         return await Location.getCurrentPositionAsync({});
     } else {
-        console.log("Used existing location")
+        // console.log("Used existing location")
         return loc;
     }
 }
 
 function testLocationAtPT(location, mode, maxDist){
-    console.log("TST", Geography.trainStationsTree.length);
-    console.log("BST", Geography.busStopsTree.length);
+    // console.log("TST", Geography.trainStationsTree.length);
+    // console.log("BST", Geography.busStopsTree.length);
     // let pt = {"type": "Point", "coordinates": [location.coords.longitude, location.coords.latitude]};
     let pt = Geography.eastingsNorthings([location.coords.longitude, location.coords.latitude]);
-    console.log("pt", pt);
+    // console.log("pt", pt);
     if(mode == "bus"){
         let rez = Geography.busStopsTree.nn(pt);
         let rez_pt = Geography._busStopPoints[rez];
         let dist = Math.hypot((pt[0] - rez_pt[0]), (pt[1] - rez_pt[1]))
-        console.log("rez", rez, rez_pt, Geography._busStopIDs[rez], dist);
+        // console.log("rez", rez, rez_pt, Geography._busStopIDs[rez], dist);
         return dist < maxDist;
     } else if (mode == "train"){
         let rez = Geography.trainStationsTree.nn(pt);
         let rez_pt = Geography._trainStationPoints[rez];
         let dist = Math.hypot((pt[0] - rez_pt[0]), (pt[1] - rez_pt[1]))
-        console.log("rez", rez, rez_pt, Geography._trainStationIDs[rez], dist);
+        // console.log("rez", rez, rez_pt, Geography._trainStationIDs[rez], dist);
         return dist < maxDist;
     }
 }
@@ -235,7 +235,7 @@ const JourneyStartScreen = ({ navigation }) => {
         let challengesTemp = [...challenges];
         let result = null;
         for (let i = 0; i < challenges.length; i++) {
-            console.log("Considering", challengesTemp[i]);
+            // console.log("Considering", challengesTemp[i]);
           if ((challengesTemp[i].mode == mode) && 
                 (challengesTemp[i].completed != isCompleted[1]) ) {
             challengesTemp[i].completed = isCompleted[1];
@@ -386,12 +386,13 @@ const JourneyStartScreen = ({ navigation }) => {
                         setEndLocation(location);
                         // evaluate trip type: sanity-check speeds for walking and active transport
                         // we already checked that they got on near a PT node
+                        // if fail, then just quietly return
                         let startEN = Geography.eastingsNorthings([startLocation.coords.longitude, startLocation.coords.latitude]);
                         let stopEN = Geography.eastingsNorthings([location.coords.longitude, location.coords.latitude]);
                         let dist_m = Math.hypot((startEN[0] - stopEN[0]), (startEN[1] - stopEN[1]));
                         let time_ms = Math.abs(location.timestamp - startLocation.timestamp) + 1;
                         let speed_kmh = dist_m/(time_ms * 3600); // metres per millisecond is kilometres per second...
-                        if ((tripType == walk) && (speed_kmh > 15)){
+                        if ((tripType == "walk") && (speed_kmh > 15)){
                             console.log("walked too fast");
                             setStartLocation(null);
                             setEndLocation(null);                                    
@@ -405,8 +406,8 @@ const JourneyStartScreen = ({ navigation }) => {
                                                 
                         // update challenge?
                         await loadChallenges();
-                        console.log("Challenges available?");
-                        console.log(challenges);
+                        // console.log("Challenges available?");
+                        // console.log(challenges);
 
                         // navigate straight to challengeCompleted screen if relevant
                         let result = completeChallenge(tripType);

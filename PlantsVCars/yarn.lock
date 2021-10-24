@@ -7930,11 +7930,6 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-k-d-tree@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/k-d-tree/-/k-d-tree-1.0.1.tgz#fffe35d20e5403a41f4262539382877c939fbca2"
-  integrity sha1-//410g5UA6QfQmJTk4KHfJOfvKI=
-
 keychain@1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/keychain/-/keychain-1.3.0.tgz#ccb8ddc64a62f34d541ac25e612186442a432410"
