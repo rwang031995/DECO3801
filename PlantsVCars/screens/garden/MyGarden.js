@@ -1,7 +1,10 @@
-import {Text, View, Button, Image, StyleSheet, Dimensions, TouchableOpacity, ImageBackground} from "react-native";
-import React, {useState} from "react";
+import {Text, View, Button, Image, StyleSheet, Dimensions, TouchableOpacity, ImageBackground, Alert} from "react-native";
+import React, {useContext, useState} from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from '@react-navigation/stack';
+import userId from '../home/userId';
+import {firebase} from "../settings/Firebase"
+
 
 //RETRIEVED FROM https://morioh.com/p/e42eec224939
 import ImageZoom from 'react-native-image-pan-zoom'
@@ -67,32 +70,25 @@ const styles = StyleSheet.create({
 /////                                                                               /////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-
 const MyGarden = ({navigation}) => {
-  const [inventory, setInventory] = useState([]);
   const [flowerSeating, setFlowerSeating] = useState([
-    {name: "DandelionFlower", health: 50},
-    {name: "RoseFlower", health: 50},
-    {name: "OrchidFlower", health:50},
+    {name: "DandelionFlower", health: 0},
+    {name: "RoseFlower", health: 0},
+    {name: "OrchidFlower", health:0},
     {name: "RoseFlower", health: 0},
     {name: "OrchidFlower", health: 0},
     {name: "TulipFlower", health: 0}
   ]);
   const [gardenHealth, setGardenHealth] = useState(0);
-  const [interaction, setInteraction] = useState(0)
+  const [interaction, setInteraction] = useState(0);
+  const [healthModifier, setHealthModifier] = useState(1);
+  const [currency, setCurrency] = useState(100);
+  const uid = useContext(userId);
 
   /**
    * Changes the garden flower at index 'index' to flower with name 'newName'
    * and sets its health to 'newHealth'.
    */
-
-  const getGardenHealth = () => {
-    var totalHealth = 0;
-    for (let i = 0; i < flowerSeating.length; i++) {
-      totalHealth = totalHealth + flowerSeating[i].health;
-    }
-    setGardenHealth(totalHealth/flowerSeating.length);
-  }
 
   const changeFlower = (index, newName, newHealth) => {
     let newFlower = {name: newName, health: newHealth}
@@ -106,30 +102,51 @@ const MyGarden = ({navigation}) => {
   const useOnFlower = (index) => {
     switch (interaction) {
       case "Water":
-        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // water adds 5 health
-        setFlowerSeating([
-          ...flowerSeating.slice(0, index),
-          modifiedFlower,
-          ...flowerSeating.slice(index + 1)
-        ])
+        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
         break;
       case "Fertilizer":
-        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 2} // fertiliser adds 2 health (maybe this provides a modifier instead?)
-        setFlowerSeating([
-          ...flowerSeating.slice(0, index),
-          modifiedFlower,
-          ...flowerSeating.slice(index + 1)
-        ])
+        setHealthModifier(2);
         break;
       case "Sun":
-        modifiedFlower = {name: flowerSeating[index].name, health: flowerSeating[index].health + 5} // sun adds 5 health
-        setFlowerSeating([
-          ...flowerSeating.slice(0, index),
-          modifiedFlower,
-          ...flowerSeating.slice(index + 1)
-        ])
+        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
+        break;
+      default:
+        Alert.alert(
+          "Buy a Resource First",
+          "Buy a resource by tapping one below.",
+          [
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+        );
     }
   }
+
+    /**
+   * Database functions for flowers and currency
+   */
+     const loadFlowers = async () => {
+      if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+          setFlowerSeating(doc.data().flowers);
+        })
+      }
+    }
+  
+    const loadCurrency = async () => {
+      if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+          setCurrency(doc.data().currency);
+        })
+      }
+    }
+  
+    useEffect(() => {
+      loadFlowers();
+      loadCurrency();
+    }, [])
+  
+    console.log(currency);
+  
   
   var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -190,8 +207,6 @@ const MyGarden = ({navigation}) => {
     }
   }, [interaction]) 
 
-
-
   return (  
     <View style={{flex: 1}}>  
       <View style={{
@@ -248,7 +263,6 @@ const MyGarden = ({navigation}) => {
         </ImageBackground>
         </View>
     </View>
-  
   );
 }
 

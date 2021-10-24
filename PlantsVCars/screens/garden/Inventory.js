@@ -25,9 +25,9 @@ const Inventory = (props) => {
     // ^^^ ABOVE IS KIND OF BROKEN WITH WIERD ERRORS LIKE UNDEFINED NAMES
     useEffect(() => {
         getItemData(ITEM_KEYS.itemWater).then( itemData => {
-            if (itemData != null) { // changed for current ersion due to errors
+            if (itemData == null) { // changed for current ersion due to errors
                 console.log("itemData for water: ", itemData)
-                const waterDefault = {name: "Water", quantity: 10}
+                const waterDefault = {name: "Water", cost: 50}
                 setItemData(ITEM_KEYS.itemWater, waterDefault)
                 setWater(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
             } else {
@@ -36,20 +36,22 @@ const Inventory = (props) => {
             }      
         });
         getItemData(ITEM_KEYS.itemSun).then( itemData => {
-            if (itemData != null) { // changed for current ersion due to errors
-                const sunDefault = {name: "Sun", quantity: 6}
+            if (itemData == null) { // changed for current ersion due to errors
+                const sunDefault = {name: "Sun", cost: 50}
                 setItemData(ITEM_KEYS.itemSun, sunDefault)
                 setSun(sunDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
             } else {
+                console.log("sun exists\n")
                 setSun(itemData)
             }    
         });
         getItemData(ITEM_KEYS.itemFertilizer).then( itemData => {
-            if (itemData != null) { // changed for current ersion due to errors
-                const fertilizerDefault = {name: "Fertilizer", quantity: 2}
+            if (itemData == null) { // changed for current ersion due to errors
+                const fertilizerDefault = {name: "Fertilizer", cost: 100}
                 setItemData(ITEM_KEYS.itemFertilizer, fertilizerDefault)
                 setFertilizer(fertilizerDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
             } else {
+                console.log("fertilizer exists\n")
                 setFertilizer(itemData)
             }    
         });
@@ -68,9 +70,8 @@ const Inventory = (props) => {
     return (
         <>
             <>
-                
                 <TouchableOpacity style={styles.elements} onPress={() => {
-                    setWater({name: water.name, quantity: water.quantity + 1});
+                    // remove currency
                     props.setInteraction("Water");
                 }}>
                     {img({name: "Water", style:styles.itemIcon})}
@@ -79,7 +80,7 @@ const Inventory = (props) => {
             <>
                 
                 <TouchableOpacity style={styles.elements} onPress={() => {
-                    setSun({name: sun.name, quantity: sun.quantity + 1});
+                    // remove currency
                     props.setInteraction("Sun");
                 }}>
                     {img({name: "Sunlight", style:styles.itemIcon})}
@@ -88,7 +89,7 @@ const Inventory = (props) => {
             <>
                 
                 <TouchableOpacity style={styles.elements} onPress={() => {
-                    setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1});
+                    // remove currency
                     props.setInteraction("Fertilizer");
                 }}>
                     {img({name: "Fertiliser", style:styles.itemIcon})}
@@ -97,7 +98,7 @@ const Inventory = (props) => {
             <>
                 
                 <TouchableOpacity style={styles.elements} onPress={() => {
-                    setFertilizer({name: fertilizer.name, quantity: fertilizer.quantity + 1});
+                    // remove currency
                     props.setInteraction("Shovel");
                 }}>
                     {img({name: "Shovel", style:styles.itemIcon})}
