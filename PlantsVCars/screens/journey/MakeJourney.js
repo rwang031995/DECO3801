@@ -175,9 +175,25 @@ async function currentPositionAsync(){
     }
 }
 
-function testLocationAtPT(location){
-    // TODO
-    return true;
+function testLocationAtPT(location, mode, maxDist){
+    console.log("TST", Geography.trainStationsTree.length);
+    console.log("BST", Geography.busStopsTree.length);
+    // let pt = {"type": "Point", "coordinates": [location.coords.longitude, location.coords.latitude]};
+    let pt = Geography.eastingsNorthings([location.coords.longitude, location.coords.latitude]);
+    console.log("pt", pt);
+    if(mode == "bus"){
+        let rez = Geography.busStopsTree.nn(pt);
+        let rez_pt = Geography._busStopPoints[rez];
+        let dist = Math.hypot((pt[0] - rez_pt[0]), (pt[1] - rez_pt[1]))
+        console.log("rez", rez, rez_pt, Geography._busStopIDs[rez], dist);
+        return dist < maxDist;
+    } else if (mode == "train"){
+        let rez = Geography.trainStationsTree.nn(pt);
+        let rez_pt = Geography._trainStationPoints[rez];
+        let dist = Math.hypot((pt[0] - rez_pt[0]), (pt[1] - rez_pt[1]))
+        console.log("rez", rez, rez_pt, Geography._trainStationIDs[rez], dist);
+        return dist < maxDist;
+    }
 }
 
 const Stack = createStackNavigator();
@@ -270,13 +286,12 @@ const JourneyStartScreen = ({ navigation }) => {
                         setEndLocation(null);
                         let location = await currentPositionAsync();
                         // test whether we're at a bus or a train stop
-                        if(true){
-                            Alert.alert('', "Please start your trip when you're at a train station or bus stop");
+                        if(testLocationAtPT(location, "bus", 200)){                                                        
+                            setStartLocation(location);
+                            setTripType("bus");
+                        } else {
+                            Alert.alert('', "Please start your trip when you're at a bus stop");
                         }
-                            
-                        // still here?
-                        setStartLocation(location);
-                        setTripType("bus");
                     }}
                 >
                 {img({name: "PublicTransportIcon", style:styles.itemIcon}) /*TODO: bus */}
@@ -287,14 +302,13 @@ const JourneyStartScreen = ({ navigation }) => {
                     onPress = {async () => {
                         setEndLocation(null);
                         let location = await currentPositionAsync();
-                        // test whether we're at a bus or a train stop
-                        if(true){
-                            Alert.alert('', "Please start your trip when you're at a train station or bus stop");
+                        // test whether we're at a train station
+                        if(testLocationAtPT(location, "train", 200)){                                                        
+                            setStartLocation(location);
+                            setTripType("train");
+                        } else{
+                            Alert.alert('', "Please start your trip when you're at a train station");
                         }
-                            
-                        // still here?
-                        setStartLocation(location);
-                        setTripType("train");
                     }}
                 >
                 {img({name: "PublicTransportIcon", style:styles.itemIcon}) /*TODO: train */ }
@@ -370,14 +384,25 @@ const JourneyStartScreen = ({ navigation }) => {
                     onPress={async () => {
                         let location = await currentPositionAsync();
                         setEndLocation(location);
-                        // evaluate trip type
-                        
-                        // we tested that they got on PT, so we'll trust that they got off OK
-                        
-                        // sanity check for walking - less than 10 km/h average
-                        
-                        // sanity check for active - less than 40 km/h average 
-                        
+                        // evaluate trip type: sanity-check speeds for walking and active transport
+                        // we already checked that they got on near a PT node
+                        let startEN = Geography.eastingsNorthings([startLocation.coords.longitude, startLocation.coords.latitude]);
+                        let stopEN = Geography.eastingsNorthings([location.coords.longitude, location.coords.latitude]);
+                        let dist_m = Math.hypot((startEN[0] - stopEN[0]), (startEN[1] - stopEN[1]));
+                        let time_ms = Math.abs(location.timestamp - startLocation.timestamp) + 1;
+                        let speed_kmh = dist_m/(time_ms * 3600); // metres per millisecond is kilometres per second...
+                        if ((tripType == walk) && (speed_kmh > 15)){
+                            console.log("walked too fast");
+                            setStartLocation(null);
+                            setEndLocation(null);                                    
+                            return;
+                        } else if ((tripType == "bike" || tripType == "scooter") && (speed_kmh > 50)) {
+                            console.log("cycled or scooted too fast");
+                            setStartLocation(null);
+                            setEndLocation(null);                                    
+                            return;
+                        }
+                                                
                         // update challenge?
                         await loadChallenges();
                         console.log("Challenges available?");

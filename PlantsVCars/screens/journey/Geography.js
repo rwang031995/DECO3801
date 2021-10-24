@@ -1,8 +1,7 @@
 // Geography related functions and such
 
-import kdTree from 'k-d-tree';
-
-import * as Location from 'expo-location';
+import createKDTree from 'static-kdtree';
+// import * as Location from 'expo-location';
 import * as SQLite from 'expo-sqlite';
 import * as FileSystem from "expo-file-system";
 // import * as TaskManager from 'expo-task-manager';
@@ -32,16 +31,23 @@ function distanceApprox(lonA, latA, lonB, latB){
     let _lonB = lonB * Math.PI / 180;
     let _latB = latB * Math.PI / 180;
     
-    
     // longitudinal difference scales by latitude
     // (approximation by average latitude)
-    let x = (_lonB - _lonA) * Math.cos((_latA + _latB)/2);
+    let x = Math.abs((_lonB - _lonA) * Math.cos((_latA + _latB)/2));
     
     // difference in latitudes doesn't need to be scaled
-    let y = (_latB - _latA);
+    let y = Math.abs(_latB - _latA);
     
     // finally scale hypotenuse by radius of spherical Earth in metres
     return 6378137.0 * Math.hypot(x, y);
+}
+
+function eastingsNorthings(coords){
+    let _latA = coords[1] * Math.PI / 180;
+
+    let x = 40075017 * Math.cos(_latA) * coords[0] / 360;
+    let y = 40007863 * coords[1] / 360;
+    return [x, y];
 }
 
 // Calculate the area of the triangle 
@@ -61,37 +67,62 @@ function triangleMetric(self, tree){
 
 var gtfs_db;
 
-// async function prepareShapesDb() {
-//     /** update 'translink.db' to be dbAsset
-//      *  @param dbAsset: the asset reference via require() 
-//      */
-// 
-//   let dirinfo = await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite");
-// 
-//   if (!(dirinfo.exists && dirinfo.isDirectory)){
-//       await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + "SQLite");
-//   }
-//   await FileSystem.downloadAsync(
-//     Asset.fromModule(require('./assets/translink.db')).uri,
-//     FileSystem.documentDirectory + 'SQLite/translink.db'
-//   );
-//   
-//   gtfs_db = SQLite.openDatabase('translink.db');
-// }
-// 
-// var stopsTree = new kdTree([], distanceApproxJSON);
-// 
-// function prepareStops(){
-//     dbQuery(gtfs_db, "SELECT * FROM Stops;", [],
-//         (t, r) => {
-//             let points = []
-//             for (i = 0; i < r.rows.length; i++){
-//                 let x = r.rows.item(i);
-//                 stopsTree.insert({"type": "Point", "coordinates": [x.lon, x.lat], 
-//                     "properties" : {"stop_id" : x.stop_id}});
-//             }
-//         });
-// }
+async function prepareDatabase() {
+    /** update 'translink.db' to be dbAsset
+     *  @param dbAsset: the asset reference via require() 
+     */
+
+  let dirinfo = await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite");
+
+  if (!(dirinfo.exists && dirinfo.isDirectory)){
+      await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + "SQLite");
+  }
+  await FileSystem.downloadAsync(
+    Asset.fromModule(require('../../assets/translink.db')).uri,
+    FileSystem.documentDirectory + 'SQLite/translink.db'
+  );
+  
+  gtfs_db = SQLite.openDatabase('translink.db');
+}
+
+var busStopsTree = null;
+var trainStationsTree = null;
+
+var _busStopPoints = [];
+var _trainStationPoints = [];
+
+// debugging
+var _busStopIDs = [];
+var _trainStationIDs = [];
+
+
+function prepareBusStops(){
+    dbQuery(gtfs_db, "SELECT * FROM BusStops;", [],
+        (t, r) => {
+            for (i = 0; i < r.rows.length; i++){
+                let x = r.rows.item(i);
+                // busStopsTree.insert({"type": "Point", "coordinates": [x.lon, x.lat], 
+                //     "properties" : {"stop_id" : x.stop_id}});
+                _busStopPoints.push(eastingsNorthings([x.lon, x.lat]));
+                _busStopIDs.push(x.stop_id);
+            }
+            busStopsTree = createKDTree(_busStopPoints);
+        });
+}
+
+function prepareTrainStations(){
+    dbQuery(gtfs_db, "SELECT * FROM TrainStations;", [],
+        (t, r) => {
+            for (i = 0; i < r.rows.length; i++){
+                let x = r.rows.item(i);
+                // trainStationsTree.insert({"type": "Point", "coordinates": [x.lon, x.lat], 
+                //     "properties" : {"stop_id" : x.stop_id}});
+                _trainStationPoints.push(eastingsNorthings([x.lon, x.lat]));
+                _trainStationIDs.push(x.stop_id);
+            }
+            trainStationsTree = createKDTree(_trainStationPoints);
+        });
+}
 
 function dbQuery(database, statement, args, success, failure){
     /** A wrapper for database.transaction(tx => {tx.executeSql(_____)}) 
@@ -106,157 +137,157 @@ function dbQuery(database, statement, args, success, failure){
         () => {/*console.log('finished DB query')*/});
 }
 
-var _pointsBuffer = []; // [[longitude, latitude, timestamp], ...]
+// var _pointsBuffer = []; // [[longitude, latitude, timestamp], ...]
 
-var _travelHistory = [];
+// var _travelHistory = [];
 
-var thisSegFlavour = "";
+// var thisSegFlavour = "";
 
-function getRoutesForPoints(pbuf, db){
-    // We have to consider a bunch of routes within the bounding box of the segment    
+// function getRoutesForPoints(pbuf, db){
+//     // We have to consider a bunch of routes within the bounding box of the segment    
     
-    console.log("Searching for PT routes across ", pbuf.length, "points");
+//     console.log("Searching for PT routes across ", pbuf.length, "points");
     
-    bboxMinLon = pbuf.reduce((prev, curr) => Math.min(prev, curr[0]), 999);
-    bboxMaxLon = pbuf.reduce((prev, curr) => Math.max(prev, curr[0]), -999);
-    bboxMinLat = pbuf.reduce((prev, curr) => Math.min(prev, curr[1]), 999);
-    bboxMaxLat = pbuf.reduce((prev, curr) => Math.max(prev, curr[1]), -999);
+//     bboxMinLon = pbuf.reduce((prev, curr) => Math.min(prev, curr[0]), 999);
+//     bboxMaxLon = pbuf.reduce((prev, curr) => Math.max(prev, curr[0]), -999);
+//     bboxMinLat = pbuf.reduce((prev, curr) => Math.min(prev, curr[1]), 999);
+//     bboxMaxLat = pbuf.reduce((prev, curr) => Math.max(prev, curr[1]), -999);
     
-    console.log("Bounding box: ", bboxMinLon, bboxMinLat, bboxMaxLon, bboxMaxLat);
+//     console.log("Bounding box: ", bboxMinLon, bboxMinLat, bboxMaxLon, bboxMaxLat);
     
-    var shapesTrees = {};
+//     var shapesTrees = {};
     
-    dbQuery(db, "SELECT * FROM RouteShapes WHERE (lon >= ?) AND (lon <= ?) AND (lat >= ?) AND (lat <= ?);",
-    [bboxMinLon, bboxMaxLon, bboxMinLat, bboxMaxLat],
-        (t, r) => {
-            console.log(t);
-            console.log(r);
-        }
-    )
+//     dbQuery(db, "SELECT * FROM RouteShapes WHERE (lon >= ?) AND (lon <= ?) AND (lat >= ?) AND (lat <= ?);",
+//     [bboxMinLon, bboxMaxLon, bboxMinLat, bboxMaxLat],
+//         (t, r) => {
+//             console.log(t);
+//             console.log(r);
+//         }
+//     )
     
-    return {"error": 0, "route": "DERP"};
+//     return {"error": 0, "route": "DERP"};
 
-}
+// }
 
-function segmentPoints(){
-    /* Iterate over the points buffer and classify into journeys.
+// function segmentPoints(){
+//     /* Iterate over the points buffer and classify into journeys.
         
-        Business rules:
+//         Business rules:
         
-        * generally under 10km/h is active transport
-        * 5 minutes spent in a 200m bounding box marks not a trip
-        * faster trips get matched to bus routes
-        * exact matches get credited
-        * the hard part is distinguishing scoots vs cars
-        * sustaining above 50 km/h for more than 30 seconds means motorised transport
-        * generally prefer to not end trips 
-        * passing through a transport stop is a mode-change possibility?
-        * points older than two hours get removed
-    */
+//         * generally under 10km/h is active transport
+//         * 5 minutes spent in a 200m bounding box marks not a trip
+//         * faster trips get matched to bus routes
+//         * exact matches get credited
+//         * the hard part is distinguishing scoots vs cars
+//         * sustaining above 50 km/h for more than 30 seconds means motorised transport
+//         * generally prefer to not end trips 
+//         * passing through a transport stop is a mode-change possibility?
+//         * points older than two hours get removed
+//     */
     
-    // we're going to disregard timestamps older than two hours for sanity 
-    //  (our timestamps are in milliseconds)
-    let timestamp = _pointsBuffer[_pointsBuffer.length - 1][2] - 7200000;
+//     // we're going to disregard timestamps older than two hours for sanity 
+//     //  (our timestamps are in milliseconds)
+//     let timestamp = _pointsBuffer[_pointsBuffer.length - 1][2] - 7200000;
     
-    let segments = [];
+//     let segments = [];
     
-    let thisSegStart = 0;
-    let thisSegDist = 0;
-    let thisSegTime = 0;
+//     let thisSegStart = 0;
+//     let thisSegDist = 0;
+//     let thisSegTime = 0;
     
-    // we're going to average the last three points once we can
-    let firSpeed = 0;
+//     // we're going to average the last three points once we can
+//     let firSpeed = 0;
     
-    for(i=1; i < _pointsBuffer.length; i++){
-        let lon = _pointsBuffer[i][0];
-        let lat = _pointsBuffer[i][1];
-        let ts  = _pointsBuffer[i][2];
+//     for(i=1; i < _pointsBuffer.length; i++){
+//         let lon = _pointsBuffer[i][0];
+//         let lat = _pointsBuffer[i][1];
+//         let ts  = _pointsBuffer[i][2];
         
-        if (ts < timestamp){
-            continue; // disregard old timestamps and catch up
-        }
+//         if (ts < timestamp){
+//             continue; // disregard old timestamps and catch up
+//         }
         
-        // find out if we've been in the same area for a while
-        // we should only get updates every 100m, so if two updates ago is > 5 minutes ago
-        // that qualifies
-        if ((i > 2) && (ts - _pointsBuffer[i-2] > 300000)){
-            // signal new segment
-            console.log("new segment: stopped");
-            // store old segment
-            _travelHistory.push([thisSegFlavour, ts])
-            // reset 
-            thisSegStart = i;
-            thisSegDist = 0;
-            thisSegTime = 0;
-            continue;
-        }
+//         // find out if we've been in the same area for a while
+//         // we should only get updates every 100m, so if two updates ago is > 5 minutes ago
+//         // that qualifies
+//         if ((i > 2) && (ts - _pointsBuffer[i-2] > 300000)){
+//             // signal new segment
+//             console.log("new segment: stopped");
+//             // store old segment
+//             _travelHistory.push([thisSegFlavour, ts])
+//             // reset 
+//             thisSegStart = i;
+//             thisSegDist = 0;
+//             thisSegTime = 0;
+//             continue;
+//         }
         
-        // previous...
-        let prevLon = _pointsBuffer[i-1][0];
-        let prevLat = _pointsBuffer[i-1][1];
-        let prevTs  = _pointsBuffer[i-1][2];
+//         // previous...
+//         let prevLon = _pointsBuffer[i-1][0];
+//         let prevLat = _pointsBuffer[i-1][1];
+//         let prevTs  = _pointsBuffer[i-1][2];
         
-        let dist = distanceApprox(prevLon, prevLat, lon, lat);
-        let time = ts - prevTs;
+//         let dist = distanceApprox(prevLon, prevLat, lon, lat);
+//         let time = ts - prevTs;
         
-        // speed in km/h. We have metres per millisecond by default, which is also km/s
-        let speed = 3600 * dist / time;
+//         // speed in km/h. We have metres per millisecond by default, which is also km/s
+//         let speed = 3600 * dist / time;
         
-        // we're basically segmenting based on recent average speed
+//         // we're basically segmenting based on recent average speed
         
-        // just started a new segment
-        if (thisSegTime == 0){ 
-            thisSegDist += dist;
-            thisSegTime += time;
-            continue;
-        } 
+//         // just started a new segment
+//         if (thisSegTime == 0){ 
+//             thisSegDist += dist;
+//             thisSegTime += time;
+//             continue;
+//         } 
 
-        let segSpeed = 3600 * thisSegDist / thisSegTime;
+//         let segSpeed = 3600 * thisSegDist / thisSegTime;
         
-        console.log(i, " segSpeed: ", segSpeed, " inst speed: ", speed);
+//         console.log(i, " segSpeed: ", segSpeed, " inst speed: ", speed);
         
-        if (segSpeed < 11){
-            if (speed > 11){
-                // no longer walking, new segment
-                // store old segment
-                console.log("new segment: faster")
-                _travelHistory.push([thisSegFlavour, ts])
-                // reset
-                thisSegStart = i;
-                thisSegDist = 0;
-                thisSegTime = 0;
-                thisSegFlavour = "";
-                continue;
-            }
-        } 
-        // same segment
-        thisSegDist += dist;
-        thisSegTime += time;
-    }
+//         if (segSpeed < 11){
+//             if (speed > 11){
+//                 // no longer walking, new segment
+//                 // store old segment
+//                 console.log("new segment: faster")
+//                 _travelHistory.push([thisSegFlavour, ts])
+//                 // reset
+//                 thisSegStart = i;
+//                 thisSegDist = 0;
+//                 thisSegTime = 0;
+//                 thisSegFlavour = "";
+//                 continue;
+//             }
+//         } 
+//         // same segment
+//         thisSegDist += dist;
+//         thisSegTime += time;
+//     }
     
-    // delete former segments from points buffer when we're done with them
-    if (thisSegStart > 0){
-        _pointsBuffer.splice(0, Math.min(0, thisSegStart - 1));
-    }
+//     // delete former segments from points buffer when we're done with them
+//     if (thisSegStart > 0){
+//         _pointsBuffer.splice(0, Math.min(0, thisSegStart - 1));
+//     }
 
-    // figure out if the most recent segment is public transport
+//     // figure out if the most recent segment is public transport
         
-    let res = getRoutesForPoints(_pointsBuffer, gtfs_db);
+//     let res = getRoutesForPoints(_pointsBuffer, gtfs_db);
     
-    if (res.error > 1000) {
-        // probably not on PT
-        if (segSpeed > 40) {
-            // definitely motorised
-            thisSegFlavour = "Private Vehicle"
-        } else {
-            // assume AT
-            thisSegFlavour = "Active Transport"
-        }
-    } else {
-        // assume PT
-        thisSegFlavour = "Public Transport: " + res.route;
-    }    
-}
+//     if (res.error > 1000) {
+//         // probably not on PT
+//         if (segSpeed > 40) {
+//             // definitely motorised
+//             thisSegFlavour = "Private Vehicle"
+//         } else {
+//             // assume AT
+//             thisSegFlavour = "Active Transport"
+//         }
+//     } else {
+//         // assume PT
+//         thisSegFlavour = "Public Transport: " + res.route;
+//     }    
+// }
 
 // Disable background location
 //    /** 
@@ -292,5 +323,4 @@ function segmentPoints(){
 //    });
 
 // LOCATION_UPDATES_TASK
-// export {dbQuery, prepareShapesDb, prepareStops, stopsTree, gtfs_db, distanceApprox /* todo: bus route history */};
-export {distanceApprox, distanceApproxJSON, distanceApproxDevice};
+export {distanceApprox, distanceApproxJSON, distanceApproxDevice, eastingsNorthings, dbQuery, prepareDatabase, prepareBusStops, prepareTrainStations, busStopsTree, trainStationsTree, gtfs_db, _busStopPoints, _trainStationPoints, _busStopIDs, _trainStationIDs};
