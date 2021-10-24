@@ -1,5 +1,5 @@
 import {Text, View, Button, Image, StyleSheet, Dimensions, TouchableOpacity, ImageBackground, Alert, Animated} from "react-native";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, createContext, useContext} from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from '@react-navigation/stack';
 import * as Location from 'expo-location';
@@ -130,12 +130,26 @@ async function currentPositionAsync(){
     }
 }
 
+const Stack = createStackNavigator();
+
 const JourneyScreen = () => {
+  return (
+      <Stack.Navigator 
+        screenOptions={{headerShown: false}}
+      >
+        <Stack.Screen name="Start Journey" component={JourneyStartScreen}/>
+        <Stack.Screen name="Challenge Completed" component={ChallengeCompletedScreen}/>
+      </Stack.Navigator>
+  );
+}
+
+const JourneyStartScreen = ({ navigation }) => {
       const [startLocation, setStartLocation] = useState(null);
       const [endLocation, setEndLocation] = useState(null);
       const [errorMsg, setErrorMsg] = useState(null);
       const [status, setStatus] = useState(null);
       const [tripType, setTripType] = useState(null);
+      const [challengeCompleted, setChallengeCompleted] = useState(null);
 
       useEffect(() => {
         (async () => {
@@ -152,6 +166,8 @@ const JourneyScreen = () => {
     // make the UI snappy
     var loc = Location.getCurrentPositionAsync();
 
+    // we have this insane conditional setup because useState is limited. 
+    // TODO, maybe: refactor for useContext?
     if ((startLocation == null) || 
         ( startLocation !== null && endLocation !== null 
             && endLocation.timestamp < startLocation.timestamp )){
@@ -209,6 +225,7 @@ const JourneyScreen = () => {
                 <Text style={styles.label}>Bike or Scooter</Text>
                 </TouchableOpacity>
             </View>
+            <Text>Start Your Journey...</Text>
             </View>        
         )
     } else if (((startLocation !== null) && (endLocation == null))) {
@@ -250,7 +267,8 @@ const JourneyScreen = () => {
             </View>
         </View>
         )
-    } else if (endLocation !== null) {        
+    } else if (endLocation !== null) {
+        // 
         return (        
             <View style={styles.container}>
                 <MapView 
@@ -277,6 +295,10 @@ const JourneyScreen = () => {
                     onPress = { () => {
                         setStartLocation(null);
                         setEndLocation(null);
+            
+                        // unconditional for now...            
+                        navigation.navigate('Challenge Completed', {"tripType": tripType});
+                        
                     }}
                 />
             </View>
@@ -284,5 +306,20 @@ const JourneyScreen = () => {
         )
     }
 }
+
+const ChallengeCompletedScreen = ({ navigation, route }, tripType) => {
+    return (
+        <View style={styles.container}>
+            {img({name: imageNameSelect(route.params.tripType), style:{width: "100%"}})}
+            <Text>🎉 🎉 🎉 You completed a challenge! 🎉 🎉 🎉</Text>
+            <Button title="Continue" 
+                onPress = {() => {
+                    navigation.navigate('Start Journey')                    
+                }}
+            />
+        </View>
+    );
+}
+
 
 export default JourneyScreen;
