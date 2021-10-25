@@ -224,7 +224,7 @@ const MyGarden = ({navigation}) => {
   useEffect(() => {
     const interval = setInterval(() => {
       checkTime();
-      updateHealth(false);
+      updateHealth(true);
     }, 500)
     return () => clearInterval(interval)
   }, []);
@@ -264,7 +264,7 @@ const MyGarden = ({navigation}) => {
         setFlowerSeating(doc.data().flowers);
       });
     }
-    updateHealth();
+    updateHealth(updateLeaderboard);
   }
 
   const loadCurrency = async () => {

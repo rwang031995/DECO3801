@@ -170,7 +170,7 @@ const Quiz = (props) => {
     // console.log(`Score: ${score}`)
     writeScore(score)
     writeBonusChallengesComplete(true)
-    setUpdateScore(updatedScore => score)
+    setUpdateScore(score)
     setQIndex(qIndex => qIndex + 1)
     if (qIndex === myQuestions.length - 1) {
       props.navigation.navigate("Challenges", {score: score})
