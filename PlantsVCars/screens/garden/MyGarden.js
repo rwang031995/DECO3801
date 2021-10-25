@@ -4,6 +4,7 @@ import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from '@react-navigation/stack';
 import userId from '../home/userId';
 import {firebase, getFirebaseValue} from "../settings/Firebase"
+import moment from 'moment';
 
 
 //RETRIEVED FROM https://morioh.com/p/e42eec224939
@@ -13,6 +14,8 @@ import Inventory from "./Inventory";
 import {img} from "../../images/manifest"
 import { useEffect } from "react/cjs/react.development";
 import { set } from "react-native-reanimated";
+
+
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
 
 var date = new Date();
@@ -116,6 +119,7 @@ const MyGarden = ({navigation}) => {
   const [sun, setSun] = useState(false);
   const [fertilizer, setFertilizer] = useState(false);
   const [shovel, setShovel] = useState(false);
+  const [currentTime, setCurrentTime] = useState(moment().startOf('hour'));
   const uid = useContext(userId);
 
   /**
@@ -182,6 +186,41 @@ const MyGarden = ({navigation}) => {
         break;
     }
   }
+
+  const checkTime = () => {
+    var currentHour = moment().startOf("hour");
+    firebase.firestore().collection("users").doc(uid).get().then((doc) => {
+      var recordedHour = moment().startOf("hour");
+      var databaseTime = doc.data().recordedTime
+      var databaseTimeString = databaseTime.substring(1, databaseTime.length - 1);
+      recordedHour = moment(databaseTimeString);
+      var hourChange = moment.duration(currentHour.diff(recordedHour)).asHours();
+      var garden = doc.data().flowers;
+      if (hourChange > 0) {
+        for (let i = 0; i < garden.length; i++) {
+          if (garden[i].health - hourChange < 0) {
+            garden[i].health = 0;
+          } else {
+            garden[i].health = garden[i].health - hourChange;
+          }
+        }
+      }
+
+      firebase.firestore().collection("users").doc(uid).update({
+        recordedTime: JSON.stringify(currentHour),
+        flowers: garden,
+      })
+    })
+
+  }
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkTime();
+      updateHealth();
+    }, 500)
+    return () => clearInterval(interval)
+  }, []);
 
   const updateHealth = () => {
     firebase.firestore().collection("users").doc(uid).get().then((doc) => {
