@@ -48,10 +48,8 @@ const styles = StyleSheet.create({
     height: "33%",
   },
   plantTile: {
-    marginLeft: "auto",
-    marginRight: "auto",
-    height: "80%",
-    width: "80%",
+    height: "75%",
+    width: "75%",
   },
   overallBG: {
     height: windowHeight,
@@ -60,7 +58,10 @@ const styles = StyleSheet.create({
   hitBox: {
     height: "33%",
     width:"33%",
-    borderStyle: "solid"
+    borderStyle: "solid",
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   }, 
   buttonTitle: {
     fontFamily: 'PressStart2P',
@@ -85,9 +86,9 @@ const styles = StyleSheet.create({
       color: 'cyan',
       fontSize: 12,
       fontWeight: "bold",
-      position:'absolute', 
-      paddingLeft:'30%', 
-      paddingTop:'75%'
+      maxHeight: '20%',
+      position: "absolute",
+      marginTop: '75%',
     }
 
 })
