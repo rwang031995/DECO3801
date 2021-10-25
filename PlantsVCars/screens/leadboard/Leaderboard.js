@@ -32,7 +32,7 @@ const PvCLeaderboard = () => {
       setData(arr)
     })
 
-  }, [])
+  }, )
 
   const props = {
     labelBy: "name",
