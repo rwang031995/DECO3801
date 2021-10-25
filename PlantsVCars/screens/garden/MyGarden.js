@@ -60,7 +60,26 @@ const styles = StyleSheet.create({
     height: "33%",
     width:"33%",
     borderStyle: "solid"
-  }
+  }, 
+  buttonTitle: {
+    fontFamily: 'PressStart2P',
+    color: 'darkorange',
+    fontSize: 14,
+    fontWeight: "bold"
+  },
+  button: {
+      flex: 1,
+      backgroundColor: 'darkgreen',
+      margin: 'auto',
+      height: 48,
+      maxWidth: '50%',
+      maxHeight: '80%',
+      borderRadius: 5,
+      alignItems: "center",
+      justifyContent: 'center',
+      elevation: 999,
+    },
+
 })
 
 
@@ -215,17 +234,20 @@ const MyGarden = ({navigation}) => {
         justifyContent: 'center',
         backgroundColor: "orange"
       }}>
-          <ImageBackground source={require('../../images/bg/table.png')} style={{flex:1, width:"100%", height:"100%"}}>   
-          <View style={{ alignItems: 'center'}}>
-            <Button
-              title = "My Collection"
-              onPress = { () => navigation.navigate("My Collection")}
-            />
-
+          <ImageBackground source={require('../../images/bg/table.png')} 
+          style={{flex:1, width:"100%", height:"100%", alignItems: 'center', justifyContent: 'space-evenly', flexDirection: 'row'}}>   
+            <TouchableOpacity style={styles.button} 
+              onPress={() => navigation.navigate("My Collection")}>
+              <Text style={styles.buttonTitle}>Collection</Text>
+            </TouchableOpacity>
             <View style={{marginTop: "2%"}}>
-              <Text> garden health is {gardenHealth} </Text>
+              <Text style={[styles.buttonTitle, {fontSize: 20, color: 'lightgreen'}]}>
+                ♥{gardenHealth}</Text>
             </View>
-          </View>
+            <View style={{marginTop: "2%"}}>
+              <Text style={[styles.buttonTitle, {fontSize: 20, color: 'gold'}]}>
+                ${'000' /*TODO: expose currency level*/}</Text>
+            </View>
           </ImageBackground>
         <View style={{flex: 6, backgroundColor: "lightgreen"}}>
 
@@ -258,7 +280,8 @@ const MyGarden = ({navigation}) => {
         </View>
       </View> 
         <View style={{ height:"18%", justifyContent: 'center'}}>
-        <ImageBackground source={require('../../images/bg/table.png')} style={{width:"100%", height:"100%", flexDirection:"row"}} resizeMode="stretch">    
+        <ImageBackground source={require('../../images/bg/table.png')} 
+          style={{width:"100%", height:"100%", flexDirection:"row"}} resizeMode="stretch">    
             <Inventory setInteraction={setInteraction} />
         </ImageBackground>
         </View>
