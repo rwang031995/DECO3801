@@ -1,7 +1,7 @@
 import {Image, ImageBackground, StyleSheet, Text, View} from "react-native";
 import MyGardenNav from "../garden/MyGarden";
 import ChallengesScreen from "../challenges/Challenges";
-import PvCLeaderboard from "../Leaderboard";
+import PvCLeaderboard from "../leadboard/Leaderboard";
 import SettingsNav from "../settings/Settings";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import React from "react";
