@@ -14,6 +14,7 @@ export const RegistrationScreen = ({navigation}) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [suburb, setSuburb] = useState("")
 
   const onFooterLinkPress = () => {
     navigation.navigate("Login")
@@ -24,6 +25,17 @@ export const RegistrationScreen = ({navigation}) => {
       alert("Passwords don't match.")
       return
     }
+    if (suburb == null) {
+      alert("Please enter your suburb!")
+      return
+    }
+    firebase
+      .firestore()
+      .collection("suburbs")
+      .limit(1)
+      .get()
+      .then(query => {
+      })
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -57,6 +69,7 @@ export const RegistrationScreen = ({navigation}) => {
             hasScooter: false,
             hasTrain: false
           },
+          suburb: suburb
         };
         const usersRef = firebase.firestore().collection('users')
         usersRef
@@ -87,7 +100,6 @@ export const RegistrationScreen = ({navigation}) => {
             placeholder={"Email"}
             onChangeText={(text) => setEmail(text)}
             value={email}
-            underlineColorAndroid="transparent"
             autoCapitalize="none"
           />
           <TextInput
@@ -96,7 +108,6 @@ export const RegistrationScreen = ({navigation}) => {
             placeholder='Password'
             onChangeText={(text) => setPassword(text)}
             value={password}
-            underlineColorAndroid="transparent"
             autoCapitalize="none"
           />
           <TextInput
@@ -105,9 +116,15 @@ export const RegistrationScreen = ({navigation}) => {
             placeholder='Confirm Password'
             onChangeText={(text) => setConfirmPassword(text)}
             value={confirmPassword}
-            underlineColorAndroid="transparent"
             autoCapitalize="none"
           />
+          <TextInput
+            style={styles.input}
+            placeholder='Suburb'
+            onChangeText={(text) => setSuburb(text)}
+            value={suburb}
+            autoCapitalize="words"
+            />
           <TouchableOpacity
             style={styles.button}
             onPress={() => onRegisterPress()}>
