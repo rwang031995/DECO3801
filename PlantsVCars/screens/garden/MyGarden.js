@@ -80,6 +80,15 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       elevation: 999,
     },
+    flowerbar: {
+      fontFamily: 'PressStart2P',
+      color: 'cyan',
+      fontSize: 12,
+      fontWeight: "bold",
+      position:'absolute', 
+      paddingLeft:40, 
+      paddingTop:120
+    }
 
 })
 
@@ -115,6 +124,11 @@ const MyGarden = ({navigation}) => {
    */
 
   const changeFlower = (index, newName, newHealth) => {
+    if (newHealth > 100) {
+      newHealth = 100;
+    } else if (newHealth < 0) {
+      newHealth = 0;
+    }
     let newFlower = {name: newName, health: newHealth}
     var newFlowerSeating = [
       ...flowerSeating.slice(0, index),
@@ -127,10 +141,14 @@ const MyGarden = ({navigation}) => {
   }
 
   const subtractCost = (number) => {
-    var newAmount = currency - number;
-    firebase.firestore().collection("users").doc(uid).update({
-      currency: newAmount,
-    })
+    if (currency < number) {
+      alert("Not enough coins")
+    } else {    
+      var newAmount = currency - number;
+      firebase.firestore().collection("users").doc(uid).update({
+        currency: newAmount,
+      });
+    }
   }
 
   const deselectAll = () => {
@@ -143,8 +161,9 @@ const MyGarden = ({navigation}) => {
   const useOnFlower = (index) => {
     switch (interaction) {
       case "Water":
-        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
+        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (10 * healthModifier));
         subtractCost(20);
+        updateHealth();
         setInteraction("None");
         deselectAll();
         break;
@@ -157,46 +176,50 @@ const MyGarden = ({navigation}) => {
       case "Sun":
         changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (50 * healthModifier));
         subtractCost(80);
+        updateHealth();
         setInteraction("None");
         deselectAll();
         break;
     }
   }
 
-    /**
+  const updateHealth = () => {
+    firebase.firestore().collection("users").doc(uid).get().then((doc) => {
+      var sum = 0;
+      for (let i = 0; i < flowerSeating.length; i++) {
+        sum = sum + doc.data().flowers[i].health
+      }
+      setGardenHealth(Math.ceil(sum/flowerSeating.length));
+    })
+  }
+  /**
    * Database functions for flowers and currency
    */
   const loadFlowers = async () => {
     if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
       firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
         setFlowerSeating(doc.data().flowers);
-        for (let i = 0; i < flowerSeating.length; i++) {
-          var sum = 0;
-          firebase.firestore().collection("users").doc(uid).get().then((doc) => {
-            sum = sum + doc.data().flowers[i].health;
-            setGardenHealth(Math.ceil(sum/flowerSeating.length))
-          })
-        }
+      });
+    }
+    updateHealth();
+  }
+  
+  const loadCurrency = async () => {
+    if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
+      firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+        setCurrency(doc.data().currency);
       })
+    } else {
+      setCurrency(0);
     }
   }
   
-    const loadCurrency = async () => {
-      if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
-        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
-          setCurrency(doc.data().currency);
-        })
-      } else {
-        setCurrency(0);
-      }
-    }
+  useEffect(() => {
+    loadFlowers();
+    loadCurrency();
+  }, [])
   
-    useEffect(() => {
-      loadFlowers();
-      loadCurrency();
-    }, [])
-  
-  
+
   var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
         {img({name: season+"-top", style: styles.bgTile})}
@@ -223,38 +246,30 @@ const MyGarden = ({navigation}) => {
     }}>
       <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(0)}>
         {img({name: flowerSeating[0].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[0].health}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(1)}>
         {img({name: flowerSeating[1].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[1].health}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(2)}>
         {img({name: flowerSeating[2].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[2].health}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(3)}>
         {img({name: flowerSeating[3].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[3].health}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(4)}>
         {img({name: flowerSeating[4].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[4].health}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(5)}>
         {img({name: flowerSeating[5].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[5].health}</Text>
       </TouchableOpacity>
     </View>
   );
-
-  // when interaction is changed from child
-  useEffect(() => {
-    switch (interaction) {
-      case "Water":
-        console.log("Water pressed");
-        break;
-      case "Fertilizer":
-        console.log("Fertilizer pressed");
-        break;
-      case "Sun":
-        console.log("Sun pressed");
-    }
-  }, [interaction]) 
 
   return (  
     <View style={{flex: 1}}>  
@@ -271,11 +286,11 @@ const MyGarden = ({navigation}) => {
               <Text style={styles.buttonTitle}>Collection</Text>
             </TouchableOpacity>
             <View style={{marginTop: "2%"}}>
-              <Text style={[styles.buttonTitle, {fontSize: 20, color: 'lightgreen'}]}>
+              <Text style={[styles.buttonTitle, {fontSize: 20, color: 'cyan'}]}>
                 ♥{gardenHealth}</Text>
             </View>
             <View style={{marginTop: "2%"}}>
-              <Text style={[styles.buttonTitle, {fontSize: 20, color: 'gold'}]}>
+              <Text style={[styles.buttonTitle, {fontSize: 20, color: 'yellow'}]}>
                 ${currency}</Text>
             </View>
           </ImageBackground>

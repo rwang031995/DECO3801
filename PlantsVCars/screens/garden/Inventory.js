@@ -34,6 +34,7 @@ const Inventory = (props) => {
                     <View>
                         {img({name: "Water", style:styles.itemIcon})}
                     </View>}
+                    <Text style={styles.pricing}> -$20</Text>
                 </TouchableOpacity>
             </>
             <>
@@ -60,6 +61,7 @@ const Inventory = (props) => {
                     <View>
                         {img({name: "Sunlight", style:styles.itemIcon})}
                     </View>}
+                    <Text style={styles.pricing}> -$80</Text>
                 </TouchableOpacity>
             </>
             <>
@@ -86,6 +88,7 @@ const Inventory = (props) => {
                     <View>
                         {img({name: "Fertiliser", style:styles.itemIcon})}
                     </View>}
+                    <Text style={styles.pricing}> -$40</Text>
                 </TouchableOpacity>
             </>
             <>
@@ -112,6 +115,7 @@ const Inventory = (props) => {
                     <View>
                         {img({name: "Shovel", style:styles.itemIcon})}
                     </View>}
+                    <Text style={styles.pricing}> -$00</Text>
                 </TouchableOpacity>
             </>
         </>
@@ -134,7 +138,14 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 8
     },
-
+    pricing: {
+        position: 'absolute',
+        paddingTop: 75,
+        fontSize: 16,
+        fontFamily: 'PressStart2P',
+        color: 'yellow',
+        fontWeight: "bold"
+    },
     itemIcon: {
         justifyContent: "center",
         width: "70%",
