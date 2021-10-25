@@ -77,11 +77,16 @@ async function prepareDatabase() {
   if (!(dirinfo.exists && dirinfo.isDirectory)){
       await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + "SQLite");
   }
-  await FileSystem.downloadAsync(
-    Asset.fromModule(require('../../assets/translink.db')).uri,
-    FileSystem.documentDirectory + 'SQLite/translink.db'
-  );
-  
+
+  let dbAsset = Asset.fromModule(require('../../assets/translink.db'));
+  let assetinfo = await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite/translink.db", {md5: true});
+
+  if (!assetinfo.exists || dbAsset.hash != assetinfo.md5){
+    await FileSystem.downloadAsync(
+        dbAsset.uri,
+        FileSystem.documentDirectory + 'SQLite/translink.db'
+      );    
+  }  
   gtfs_db = SQLite.openDatabase('translink.db');
 }
 

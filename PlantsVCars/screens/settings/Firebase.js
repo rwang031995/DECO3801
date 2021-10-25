@@ -5,7 +5,20 @@ import "@firebase/firestore"
  * Database related code
  */
 
+export async function setFirebaseValue(uid, key, value){
+    let updateObj = new Object;
+    updateObj[key] = value;
+    firebase.firestore().collection("users").doc(uid).update(updateObj);
+}
 
+export async function getFirebaseValue(uid, key){
+    return (await (await firebase.firestore().collection("users").doc(uid).get()).data())[key];
+}
+
+export async function updateCurrencyBalance(uid, amount){
+    let balance = await getFirebaseValue(uid, 'currency');
+    setFirebaseValue(uid, 'currency', parseInt(balance) + amount);
+}
 
 const firebaseConfig = {
     apiKey: "AIzaSyCR5WDI8njkxgAJ67fZbhLx07gO6dy0eK0",

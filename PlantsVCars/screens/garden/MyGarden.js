@@ -3,7 +3,7 @@ import React, {useContext, useState} from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from '@react-navigation/stack';
 import userId from '../home/userId';
-import {firebase} from "../settings/Firebase"
+import {firebase, getFirebaseValue} from "../settings/Firebase"
 
 
 //RETRIEVED FROM https://morioh.com/p/e42eec224939
@@ -156,6 +156,8 @@ const MyGarden = ({navigation}) => {
         firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
           setCurrency(doc.data().currency);
         })
+      } else {
+        setCurrency(0);
       }
     }
   
@@ -164,7 +166,7 @@ const MyGarden = ({navigation}) => {
       loadCurrency();
     }, [])
   
-    console.log(currency);
+    console.log("Currency balance is:", currency);
   
   
   var seasonBG = (
@@ -246,7 +248,7 @@ const MyGarden = ({navigation}) => {
             </View>
             <View style={{marginTop: "2%"}}>
               <Text style={[styles.buttonTitle, {fontSize: 20, color: 'gold'}]}>
-                ${'000' /*TODO: expose currency level*/}</Text>
+                ${currency}</Text>
             </View>
           </ImageBackground>
         <View style={{flex: 6, backgroundColor: "lightgreen"}}>
