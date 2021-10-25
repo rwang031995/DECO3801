@@ -125,6 +125,31 @@ const MyGarden = ({navigation}) => {
         );
     }
   }
+
+    /**
+   * Database functions for flowers and currency
+   */
+     const loadFlowers = async () => {
+      if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+          setFlowerSeating(doc.data().flowers);
+        })
+      }
+    }
+  
+    const loadCurrency = async () => {
+      if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+          setCurrency(doc.data().currency);
+        })
+      }
+    }
+  
+    useEffect(() => {
+      loadFlowers();
+      loadCurrency();
+    }, [])
+    
   
   var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -204,6 +229,7 @@ const MyGarden = ({navigation}) => {
 
             <View style={{marginTop: "2%"}}>
               <Text> garden health is {gardenHealth} </Text>
+              <Text> currency is {currency} </Text>
             </View>
           </View>
           </ImageBackground>
