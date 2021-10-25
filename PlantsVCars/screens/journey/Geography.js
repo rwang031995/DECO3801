@@ -81,7 +81,7 @@ async function prepareDatabase() {
   let dbAsset = Asset.fromModule(require('../../assets/translink.db'));
   let assetinfo = await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite/translink.db", {md5: true});
 
-  if (!assetinfo.exists || dbAsset.hash != assetinfo.md5){
+  if (!(assetinfo.exists && dbAsset.hash != assetinfo.md5)){
     await FileSystem.downloadAsync(
         dbAsset.uri,
         FileSystem.documentDirectory + 'SQLite/translink.db'
