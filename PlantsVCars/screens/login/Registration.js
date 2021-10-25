@@ -16,6 +16,8 @@ export const RegistrationScreen = ({navigation}) => {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [suburb, setSuburb] = useState("")
 
+  const leaderboardDb = firebase.firestore().collection("leaderboard")
+
   const onFooterLinkPress = () => {
     navigation.navigate("Login")
   }
@@ -29,12 +31,13 @@ export const RegistrationScreen = ({navigation}) => {
       alert("Please enter your suburb!")
       return
     }
-    firebase
-      .firestore()
-      .collection("suburbs")
-      .limit(1)
-      .get()
+    leaderboardDb.get()
       .then(query => {
+        if (!query.exists) {
+          leaderboardDb.doc(suburb).set({
+            score: 0
+          }).then()
+        }
       })
     firebase
       .auth()
@@ -71,9 +74,8 @@ export const RegistrationScreen = ({navigation}) => {
           },
           suburb: suburb
         };
-        const usersRef = firebase.firestore().collection('users')
+        const usersRef = firebase.firestore().collection('users').doc(uid)
         usersRef
-          .doc(uid)
           .set(data)
           .then(() => {
           })
