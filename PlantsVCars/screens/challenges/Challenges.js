@@ -35,7 +35,14 @@ export const ChallengeOptions = [
   {challenge: "Ride a scooter to work once this week", completed: isCompleted[0], mode: "scooter"},
 ];
 
+/* The base rate reward and the challenge bonus reward */
 export const Reward = 100;
+
+export const scaleReward = (distance, mode) => {
+  let distances = {walk: 1000, scooter: 2000, bike: 3000, bus: 5000, train: 8000}; //fibonacci
+  // maybe an adjustment for level eventually?
+  return Math.abs(Math.round(Reward * distance / distances[mode]));
+}
 
 const ChallengesScreen = ({navigation}) => {
 

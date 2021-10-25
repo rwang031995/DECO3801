@@ -4,6 +4,7 @@ import {StyleSheet, TextInput, TouchableOpacity, ImageBackground} from "react-na
 import {Text, View} from "react-native";
 import {img} from "../../images/manifest"
 import {firebase} from "../settings/Firebase";
+import moment from 'moment';
 
 /***
  * Code adapted from https://www.freecodecamp.org/news/react-native-firebase-tutorial/
@@ -73,7 +74,8 @@ export const RegistrationScreen = ({navigation}) => {
             hasScooter: false,
             hasTrain: false
           },
-          suburb: suburb
+          suburb: suburb,
+          recordedTime: JSON.stringify(moment().startOf('hour'))
         };
         const usersRef = firebase.firestore().collection('users').doc(uid)
         usersRef
