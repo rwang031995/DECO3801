@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, StyleSheet, Text, View, Dimensions, ImageBackground, LogBox} from 'react-native';
+import {Button, StyleSheet, Text, View, Dimensions, ImageBackground, LogBox, Touchable, TouchableOpacity} from 'react-native';
 import moment from 'moment';
 import {img} from "../../images/manifest"
 import {createStackNavigator} from '@react-navigation/stack';
@@ -261,7 +261,11 @@ const ChallengesScreen = ({navigation}) => {
           <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
           <View style={styles.container}>
             <Text style={styles.headings2}> Bonus Challenges </Text>
-            <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
+            <TouchableOpacity
+                style = {{height: 48, borderRadius: 5, backgroundColor: 'tomato', width: '50%', display: 'flex', alignItems: 'center'}}
+                onPress={() => takeQuiz(navigation)}>
+                <Text style={styles.challengeText2}>Take Quiz</Text>
+            </TouchableOpacity>
             {bonusChallenge ?
             <View style={styles.challengeContainer}>
               <Text style={styles.challengeText2}> Quiz Completion: </Text>
@@ -297,7 +301,11 @@ const ChallengesScreen = ({navigation}) => {
           <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
           <View style={styles.container}>
             <Text style={styles.headings2}> Bonus Challenges </Text>
-            <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
+            <TouchableOpacity
+                style = {{height: 48, borderRadius: 5, backgroundColor: 'rgba(1, 0, 0, 0.5)', width: '50%', display: 'flex', alignItems: 'center'}}
+                onPress={() => takeQuiz(navigation)}>
+                <Text style={styles.challengeText2}>Take Quiz</Text>
+            </TouchableOpacity>
             {bonusChallenge ?
             <View style={styles.challengeContainer}>
               <Text style={styles.challengeText2}> Quiz Completion: </Text>
@@ -339,7 +347,11 @@ const ChallengesScreen = ({navigation}) => {
           <ImageBackground source={require('../../images/bg/bonus.png')} style={{flex:1, width:"100%", height:"100%", }}>
           <View style={styles.container}>
             <Text style={styles.headings2}> Bonus Challenges </Text>
-            <Button title="Take Quiz" onPress={() => takeQuiz(navigation)}/>
+            <TouchableOpacity
+                style = {{height: 48, borderRadius: 5, backgroundColor: 'rgba(1, 0, 0, 0.5)', width: '50%', display: 'flex', alignItems: 'center'}}
+                onPress={() => takeQuiz(navigation)}>
+                <Text style={styles.challengeText2}>Take Quiz</Text>
+            </TouchableOpacity>
             {bonusChallenge ?
             <View style={styles.challengeContainer}>
               <Text style={styles.challengeText2}> Quiz Completion: </Text>
@@ -355,6 +367,7 @@ const ChallengesScreen = ({navigation}) => {
       </ImageBackground>
     )
   }
+
   // return (
   //   <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}>
   //     <View style={styles.container}>
