@@ -224,7 +224,7 @@ const MyGarden = ({navigation}) => {
   useEffect(() => {
     const interval = setInterval(() => {
       checkTime();
-      updateHealth(true);
+      updateHealth(false);
     }, 500)
     return () => clearInterval(interval)
   }, []);
