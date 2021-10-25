@@ -25,7 +25,7 @@ const ChallengesScreenNav = () => {
   )
 }
 
-export const isCompleted = ["cross", "tick"]
+export const isCompleted = ["Cross", "Tick"]
 
 export const ChallengeOptions = [
   {challenge: "Walk to work once this Week", completed: isCompleted[0], mode: "walk"},

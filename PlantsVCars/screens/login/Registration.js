@@ -10,7 +10,7 @@ import {firebase} from "../settings/Firebase";
  */
 
 export const RegistrationScreen = ({navigation}) => {
-  const isCompleted = ["cross", "tick"]
+  const isCompleted = ["Cross", "Tick"]
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
