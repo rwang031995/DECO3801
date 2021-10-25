@@ -83,6 +83,7 @@ const MyGarden = ({navigation}) => {
   const [interaction, setInteraction] = useState(0);
   const [healthModifier, setHealthModifier] = useState(1);
   const [currency, setCurrency] = useState(100);
+  const [averageHealth, setAverageHealth] = useState(0);
   const uid = useContext(userId);
 
   /**
@@ -124,29 +125,33 @@ const MyGarden = ({navigation}) => {
     /**
    * Database functions for flowers and currency
    */
-     const loadFlowers = async () => {
-      if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
-        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
-          setFlowerSeating(doc.data().flowers);
-        })
-      }
+  const loadFlowers = async () => {
+    if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
+      firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+        setFlowerSeating(doc.data().flowers);
+        for (let i = 0; i < flowerSeating.length; i++) {
+          var sum = 0;
+          firebase.firestore().collection("users").doc(uid).get().then((doc) => {
+            sum = sum + doc.data().flowers[i].health;
+            setGardenHealth(Math.ceil(sum/flowerSeating.length))
+          })
+        }
+      })
     }
+  }
   
-    const loadCurrency = async () => {
-      if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
-        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
-          setCurrency(doc.data().currency);
-        })
-      }
+  const loadCurrency = async () => {
+    if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
+      firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+        setCurrency(doc.data().currency);
+      })
     }
-  
-    useEffect(() => {
-      loadFlowers();
-      loadCurrency();
-    }, [])
-  
-    console.log(currency);
-  
+  }
+
+  useEffect(() => {
+    loadFlowers();
+    loadCurrency();
+  }, [])
   
   var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -224,6 +229,7 @@ const MyGarden = ({navigation}) => {
 
             <View style={{marginTop: "2%"}}>
               <Text> garden health is {gardenHealth} </Text>
+              <Text> currency is {currency} </Text>
             </View>
           </View>
           </ImageBackground>
