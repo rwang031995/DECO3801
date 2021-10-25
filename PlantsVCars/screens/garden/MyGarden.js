@@ -116,14 +116,21 @@ const MyGarden = ({navigation}) => {
 
   const changeFlower = (index, newName, newHealth) => {
     let newFlower = {name: newName, health: newHealth}
-    setFlowerSeating([
+    var newFlowerSeating = [
       ...flowerSeating.slice(0, index),
       newFlower,
       ...flowerSeating.slice(index + 1)
-    ]);
+    ]
+    firebase.firestore().collection("users").doc(uid).update({
+      flowers: newFlowerSeating,
+    })
   }
 
   const subtractCost = (number) => {
+    var newAmount = currency - number;
+    firebase.firestore().collection("users").doc(uid).update({
+      currency: newAmount,
+    })
   }
 
   const deselectAll = () => {
@@ -137,19 +144,19 @@ const MyGarden = ({navigation}) => {
     switch (interaction) {
       case "Water":
         changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
-        subtractCost(50);
+        subtractCost(20);
         setInteraction("None");
         deselectAll();
         break;
       case "Fertilizer":
         setHealthModifier(2);
-        subtractCost(50);
+        subtractCost(20);
         setInteraction("None");
         deselectAll();
         break;
       case "Sun":
-        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
-        subtractCost(50);
+        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (50 * healthModifier));
+        subtractCost(80);
         setInteraction("None");
         deselectAll();
         break;
