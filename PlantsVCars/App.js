@@ -8,7 +8,9 @@ import {RegistrationScreen} from "./screens/login/Registration";
 import {HomeScreen} from "./screens/home/Home";
 import {firebase} from "./screens/settings/Firebase"
 import userId from './screens/home/userId';
-import * as Font from 'expo-font'
+import * as Font from 'expo-font';
+import * as Geography from "./screens/journey/Geography";
+
 
 const Stack = createStackNavigator()
 
@@ -37,17 +39,26 @@ const App = () => {
         setLoading(false)
       }
     });
+  
+    (async () => {
+      await Geography.prepareDatabase();
+      await Geography.prepareBusStops();
+      await Geography.prepareTrainStations();
+    })();
+
   }, []);
 
   let [fontsLoaded] = Font.useFonts({
     'PressStart2P': require('./assets/fonts/PressStart2P-Regular.ttf')
   });
 
-  if (loading) {
+  if (loading || !fontsLoaded) {
     return(
       <></>
     )
   }
+
+
 
   LogBox.ignoreLogs(["Setting a timer"])
 

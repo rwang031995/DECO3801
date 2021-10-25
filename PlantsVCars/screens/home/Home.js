@@ -7,6 +7,8 @@ import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import React from "react";
 import {img} from "../../images/manifest";
 import {firebase} from "../settings/Firebase"
+import JourneyScreen from '../journey/MakeJourney'
+
 
 const Tab = createBottomTabNavigator();
 
@@ -61,6 +63,7 @@ const styles = StyleSheet.create({
   },
 })
 
+/*
 var images = [
   {name: "Waves-in-Sea", style: styles.tinyLogo},
   {name: "Waves-in-Sea", style: styles.tinyLogo},
@@ -69,8 +72,6 @@ var images = [
   {name: "Waves-in-Sea", style: styles.biigLogo},
   {name: "Waves-in-Sea", style: styles.tinyLogo},
 ];
-
-console.log(images[0])
 
 var i0 = images[0]
 var i1 = images[1]
@@ -106,6 +107,7 @@ const OurForest = (images) => {
     </View>
   );
 }
+*/
 
 export const HomeScreen = (props) => {
 
@@ -120,8 +122,8 @@ export const HomeScreen = (props) => {
           if (route.name === 'My Garden') {
             image = require('../../images/icons/MyGardenIcon.png')
           }
-          if (route.name === 'Our Forest') {
-            image = require('../../images/icons/OurForestIcon.png')
+          if (route.name === 'Journey') {
+            image = require('../../images/icons/WalkingIcon.png')
           }
           if (route.name === 'Settings') {
             image = require('../../images/icons/SettingsIcon.png')
@@ -135,16 +137,16 @@ export const HomeScreen = (props) => {
           return (
             <Image source={image} style={{width: 50, height: 50}}/>
           )
-        }
+        },
+        tabBarActiveTintColor:'darkgreen',
       })
-      }>
+      }
+      >
       <Tab.Screen name={"My Garden"} component={MyGardenNav}/>
-      <Tab.Screen name={"Our Forest"} component={OurForest}/>
+      <Tab.Screen name={"Journey"} component={JourneyScreen}/>
       <Tab.Screen name={"Challenges"} component={ChallengesScreen}/>
       <Tab.Screen name={"Leaderboard"} component={PvCLeaderboard}/>
-      <Tab.Screen name={"Settings"}>
-        {props => <SettingsNav {...props} extraData={user}/>}
-      </Tab.Screen>
+      <Tab.Screen name={"Settings"} component={SettingsNav}/>
     </Tab.Navigator>
   )
 }

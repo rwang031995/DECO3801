@@ -1,7 +1,7 @@
-import React, {useContext, useEffect, useState} from "react";
-import {getSetting, setSetting, STORAGE_KEY} from "./Storage"
+import React, {useContext, useEffect} from "react";
 
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Switch,
@@ -10,10 +10,8 @@ import {
   View
 } from "react-native";
 import {createStackNavigator} from "@react-navigation/stack";
-import DatePicker from "react-native-date-picker";
 import {firebase} from "./Firebase";
 import userId from "../home/userId";
-import {has} from "react-native/Libraries/Blob/BlobRegistry";
 
 const Stack = createStackNavigator();
 
@@ -40,83 +38,60 @@ const ConfigureTransport = () => {
   const [hasBus, setHasBus] = React.useState(false);
   const [hasTrain, setHasTrain] = React.useState(false);
 
-  const settingsRef = firebase.firestore().collection("settings")
   const uid = useContext(userId)
-  const db = firebase.firestore()
+  const db = firebase.firestore().collection("users").doc(uid)
 
   const settingsOptions = [
     {
       title: "Bicycle",
       subtitle: "Do you have a bicycle?",
       toggle: hasBicycle,
-      onPress: () => setHasBicycle(hasBicycle => !hasBicycle)
+      onPress: () => db.update(
+        "settings.hasBicycle", !hasBicycle
+      )
     },
     {
       title: "Bus",
       subtitle: "Do you have access to a bus?",
       toggle: hasBus,
-      onPress: () => setHasBus(hasBus => !hasBus)
+      onPress: () => db.update(
+        "settings.hasBus", !hasBus
+      )
     },
     {
       title: "Scooter",
       subtitle: "Do you have a scooter?",
       toggle: hasScooter,
-      onPress: () => setHasScooter(hasScooter => !hasScooter)
+      onPress: () => db.update(
+        "settings.hasScooter", !hasScooter
+      )
     },
     {
       title: "Train",
       subtitle: "Do you have access to a train?",
       toggle: hasTrain,
-      onPress: () => setHasTrain(hasTrain => !hasTrain)
+      onPress: () => db.update(
+        "settings.hasTrain", !hasTrain
+      )
     },
   ];
 
-  const saveSettings = async () => {
-    await firebase.firestore().collection("users").doc(uid).update(
-      {
-        settings: {
-          hasBicycle: hasBicycle,
-          hasBus: hasBus,
-          hasScooter: hasScooter,
-          hasTrain: hasTrain
-        }
-      }
-    )
-  }
-
-  const loadSettings = async () => {
-    firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
-      setHasBicycle(doc.data().settings.hasBicycle);
-      setHasBus(doc.data().settings.hasBus);
-      setHasScooter(doc.data().settings.hasScooter);
-      setHasTrain(doc.data().settings.hasTrain)
-    })
-  }
-
   /* Get settings from internal storage */
   useEffect(() => {
-    db.collection("users")
-      .doc(uid)
-      .onSnapshot(doc => {
-
+    let isMounted = true
+    db.onSnapshot(doc => {
+      if (isMounted) {
         setHasBicycle(doc.data().settings.hasBicycle)
-    } )
-    console.log("Settings loaded")
-  }, [])
-
-  /* Set settings in internal storage */
-  useEffect(() => {
-    db.collection("users").doc(uid).update({
-      settings: {
-        hasBicycle: hasBicycle,
-        hasBus: hasBus,
-        hasScooter: hasScooter,
-        hasTrain: hasTrain
+        setHasBus(doc.data().settings.hasBus)
+        setHasScooter(doc.data().settings.hasScooter)
+        setHasTrain(doc.data().settings.hasTrain)
       }
-    }).then(function() {
-      console.log("Settings saved")
     })
-  }, [hasBicycle, hasScooter, hasBus, hasTrain])
+
+    console.log("Settings loaded")
+
+    return () => (isMounted = false)
+  }, [])
 
   return <SettingsComponent settingsOptions={settingsOptions}/>
 }
@@ -166,9 +141,6 @@ const SettingsComponent = ({settingsOptions,}) => {
 }
 
 const Settings = ({navigation}) => {
-  const [date, setDate] = React.useState(new Date());
-  const [age, setAge] = React.useState(new Date());
-  const [popupVis, setPopupVis] = React.useState(false)
 
   const settingsOptions = [
     {
@@ -179,25 +151,47 @@ const Settings = ({navigation}) => {
       }
     },
     {
-      title: "About ",
-      onPress: () => {
-        setPopupVis(true)
-      }
+      title: "Sign Out",
+      onPress: () =>
+        Alert.alert(
+          "We'll miss you!",
+          "Are you sure you want to sign out?",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+            },
+            {
+              text: "OK",
+              onPress: () =>
+                [
+                  () => console.log("Logged out"),
+                  firebase.auth().signOut().then(
+                    navigation.navigate("Login")
+                  ),
+                  () => Alert.alert(
+                    "Signed out successfully."
+                  )
+                ]
+            }
+          ]
+        )
     },
     {
-      title: "Sign Out",
+      title: "About ",
       onPress: () => {
-        firebase.auth().signOut().then(),
-        navigation.navigate("Login")
+        Alert.alert(
+          "Created with love by \"The Masked Bandits\" DECO3801 team",
+          ""
+        )
       }
-    }
+    },
   ];
 
   return (
     <SettingsComponent
       settingsOptions={settingsOptions}
-      popupVis={popupVis}
-      setPopupVis={setPopupVis}
     />)
 }
 
