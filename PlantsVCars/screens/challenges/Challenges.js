@@ -35,6 +35,8 @@ export const ChallengeOptions = [
   {challenge: "Ride a scooter to work once this week", completed: isCompleted[0], mode: "scooter"},
 ];
 
+export const Reward = 100;
+
 const ChallengesScreen = ({navigation}) => {
 
   /**
@@ -130,7 +132,10 @@ const ChallengesScreen = ({navigation}) => {
     setChallenges(challengesTemp);
     firebase.firestore().collection("users").doc(uid).update({
       challenges: challengesTemp
-    })
+    });
+    firebase.firestore().collection("users").doc(uid).update({
+        
+    });
   }
 
   /**

@@ -10,7 +10,7 @@ import {
   View
 } from "react-native";
 import {createStackNavigator} from "@react-navigation/stack";
-import {firebase} from "./Firebase";
+import {firebase, setFirebaseValue} from "./Firebase";
 import userId from "../home/userId";
 
 const Stack = createStackNavigator();
@@ -141,6 +141,7 @@ const SettingsComponent = ({settingsOptions,}) => {
 }
 
 const Settings = ({navigation}) => {
+  const uid = useContext(userId);
 
   const settingsOptions = [
     {
@@ -187,6 +188,12 @@ const Settings = ({navigation}) => {
         )
       }
     },
+    { // comment out if not needed, but AJ's value got really messed up
+      title: "Reset Balance",
+      onPress: () => {
+        setFirebaseValue(uid, 'currency', 100);
+      }
+    }
   ];
 
   return (

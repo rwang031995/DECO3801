@@ -7,8 +7,8 @@ import {img} from "../../images/manifest"
 import MapView, {Marker} from 'react-native-maps';
 import * as Geography from "./Geography";
 import userId from '../home/userId';
-import {firebase} from "../settings/Firebase";
-import {isCompleted, ChallengeOptions} from "../challenges/Challenges";
+import {firebase, updateCurrencyBalance} from "../settings/Firebase";
+import {isCompleted, Reward, ChallengeOptions} from "../challenges/Challenges";
 
 
 const styles = StyleSheet.create({
@@ -226,7 +226,7 @@ const JourneyStartScreen = ({ navigation }) => {
       const [challengeCompleted, setChallengeCompleted] = useState(null);
 
       const uid = useContext(userId);
-      const [challenges, setChallenges] = useState(null);
+      const [challenges, setChallenges] = useState(ChallengeOptions);
     
       // now we have our challenges
       const loadChallenges = async () => {
@@ -240,10 +240,10 @@ const JourneyStartScreen = ({ navigation }) => {
         let result = null;
         for (let i = 0; i < challenges.length; i++) {
             // console.log("Considering", challengesTemp[i]);
-          if ((challengesTemp[i].mode == mode) && 
-                (challengesTemp[i].completed != isCompleted[1]) ) {
+          if ((challengesTemp[i].mode == mode) /*&& 
+                (challengesTemp[i].completed != isCompleted[1]) */ ) {
             challengesTemp[i].completed = isCompleted[1];
-            result = challengesTemp[i].challenge;
+            result = challengesTemp[i];
             break
           }
         }
@@ -251,7 +251,11 @@ const JourneyStartScreen = ({ navigation }) => {
         firebase.firestore().collection("users").doc(uid).update({
           challenges: challengesTemp
         })
-        return result;
+        if (result != null){
+            return {'challenge': result.challenge, 'reward': Reward};
+        } else {
+            return null;
+        }
       }
 
 
@@ -418,8 +422,9 @@ const JourneyStartScreen = ({ navigation }) => {
                         console.log("result:", result)
                         if (result != null){
                             setStartLocation(null);
-                            setEndLocation(null);                                    
-                            navigation.navigate('Challenge Completed', {"tripType": tripType, "challenge": result});                    
+                            setEndLocation(null);
+                            await updateCurrencyBalance(uid, result.reward);                                    
+                            navigation.navigate('Challenge Completed', {"tripType": tripType, "result": result});                    
                         } else {
                             console.log("No challenge completed this trip.")
                         }
@@ -470,21 +475,20 @@ const JourneyStartScreen = ({ navigation }) => {
 //                 <Text>Distance travelled: {Math.round(Geography.distanceApproxDevice(startLocation, endLocation))/1000} km</Text>
 
 
-const ChallengeCompletedScreen = ({ navigation, route }, tripType, challenge) => {
+const ChallengeCompletedScreen = ({ navigation, route}) => {
         React.useLayoutEffect(() => {
             navigation.setOptions({
                 title: "Challenge Completed!",
                 tabBarLabel: "Journey",
             })
         }, []);
-
     return (
         <ImageBackground source={require('../../images/bg/challengesbg.png')} 
             style={{width:"100%", height:"100%"}}> 
         <View style={styles.container}>
-            <Text style={styles.label}>{route.params.challenge}</Text>
+            <Text style={styles.label}>{route.params.result.challenge}</Text>
             {img({name: imageNameSelect(route.params.tripType), style:{width: "100%"}})}
-            <Text style={styles.label}>You received TODO</Text>
+            <Text style={[styles.buttonTitle, {color: 'yellow'}]}>You earned ${route.params.result.reward}!</Text>
         </View>
         </ImageBackground>
     );
