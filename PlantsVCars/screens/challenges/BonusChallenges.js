@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
-  Alert,
+  Alert, BackHandler,
   Button,
   StyleSheet,
   Text,
@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import {questions} from "./BonusQuestionPool";
 import {getStorage, setStorage} from "../settings/Storage";
+import {firebase} from "../settings/Firebase";
+import userId from "../home/userId";
 
 const NUM_OF_QUESTIONS = 3
 
@@ -138,6 +140,8 @@ const Quiz = (props) => {
   const [updatedScore, setUpdateScore] = useState(0)
   const [myQuestions, setMyQuestions] = useState([])
 
+  const uid = useContext(userId)
+
   const loadQuestions = () => {
 
     const nums = new Set()
@@ -154,7 +158,7 @@ const Quiz = (props) => {
       arr.push(questions[Array.from(nums)[i]])
     }
 
-    console.log(arr)
+    // console.log(arr)
 
     setMyQuestions(myQuestions => arr)
 
@@ -170,43 +174,47 @@ const Quiz = (props) => {
     // console.log(`Score: ${score}`)
     writeScore(score)
     writeBonusChallengesComplete(true)
+    if (score > updatedScore) {
+    }
     setUpdateScore(score)
     setQIndex(qIndex => qIndex + 1)
-    if (qIndex === myQuestions.length - 1) {
-      props.navigation.navigate("Challenges", {score: score})
-      return
-    }
+    // if (qIndex === myQuestions.length - 1) {
+    //   props.navigation.navigate("Challenges", {score: score})
+    //   return
+    // }
     setShowNext(false)
   }
 
   useEffect(() => {
-    console.log(qIndex, myQuestions.length)
-    props.navigation.addListener("beforeRemove", (e) => {
-      if (qIndex >= myQuestions.length - 1) {
-        return
-      }
 
+    const backAction = () => {
       console.log(qIndex)
-
-      e.preventDefault()
-
-      Alert.alert(
-        "Are you sure you want to quit?",
-        "You will lose all progress for this week's bonus challenges!",
-        [
+      if (qIndex < myQuestions.length) {
+        Alert.alert("Wait!", "Are you sure you want to go leave? All" +
+          " progress on the quiz will be lost!", [
           {
-            text: "Finish the quiz!", style: "cancel", onPress: () => {
-            }
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel"
           },
-          {
-            text: "Leave",
-            style: "destructive",
-            onPress: () => props.navigation.dispatch(e.data.action),
-          }
-        ]
-      )
-    })
-  }, [props.navigation, qIndex])
+          { text: "YES", onPress: () => props.navigation.pop() }
+        ]);
+        return true;
+      }
+      firebase.firestore().collection("users").doc(uid).get().then(doc => {
+        firebase.firestore().collection("users").doc(uid).update({
+          currency: doc.data().currency + score * 60
+        }).then()
+      })
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [qIndex]);
 
   return (
     qIndex < myQuestions.length ?

@@ -229,6 +229,10 @@ const MyGarden = ({navigation}) => {
     return () => clearInterval(interval)
   }, []);
 
+  /**
+   * Update the health
+   * @param updateLeaderboard
+   */
   const updateHealth = (updateLeaderboard) => {
     firebase.firestore().collection("users").doc(uid).get().then((doc) => {
       let sum = 0;
@@ -258,13 +262,13 @@ const MyGarden = ({navigation}) => {
   /**
    * Database functions for flowers and currency
    */
-  const loadFlowers = async (updateLeaderboard) => {
+  const loadFlowers = async () => {
     if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
       firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
         setFlowerSeating(doc.data().flowers);
       });
     }
-    updateHealth(updateLeaderboard);
+    updateHealth(false);
   }
 
   const loadCurrency = async () => {
@@ -278,7 +282,7 @@ const MyGarden = ({navigation}) => {
   }
 
   useEffect(() => {
-    loadFlowers(false).then();
+    loadFlowers().then();
     loadCurrency().then();
   }, [])
 
