@@ -226,8 +226,6 @@ const MyGarden = ({navigation}) => {
     }
   }, [interaction]) 
 
-  console.log(interaction);
-
   return (  
     <View style={{flex: 1}}>  
       <View style={{
