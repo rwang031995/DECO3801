@@ -31,7 +31,8 @@ export const RegistrationScreen = ({navigation}) => {
       alert("Please enter your suburb!")
       return
     }
-    leaderboardDb.get()
+    leaderboardDb.doc(suburb)
+      .get()
       .then(query => {
         if (!query.exists) {
           leaderboardDb.doc(suburb).set({

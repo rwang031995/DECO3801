@@ -17,8 +17,15 @@ const Stack = createStackNavigator()
 
 
 const App = () => {
+
+  /*
+  Code adapted from Code adapted from
+   https://www.freecodecamp.org/news/react-native-firebase-tutorial/
+  */
+
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState(null)
+  const [modalVisible, setModalVisible] = useState(false)
 
   useEffect(() => {
     const usersRef = firebase.firestore().collection('users');
@@ -27,10 +34,12 @@ const App = () => {
         usersRef
           .doc(user.uid)
           .get()
-          .then((document) => {
-            const userData = document.data()
-            setUser(userData)
+          .then((doc) => {
+            setUser(doc.data())
             setLoading(false)
+            if (doc.data().suburb === false) {
+              setModalVisible(true)
+            }
           })
           .catch((error) => {
             setLoading(false)
@@ -58,17 +67,13 @@ const App = () => {
     )
   }
 
-
-
   LogBox.ignoreLogs(["Setting a timer"])
 
   if (user == null) {
     return (
         <NavigationContainer>
           <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'} screenOptions ={{headerShown: false}}>
-            <Stack.Screen name={"Home"}>
-              {props => <HomeScreen {...props} extraData={user}/>}
-            </Stack.Screen>
+            <Stack.Screen name={"Home"} component={HomeScreen}/>
             <Stack.Screen name={"Login"} component={LoginPage}/>
             <Stack.Screen name={"Registration"} component={RegistrationScreen}/>
           </Stack.Navigator>
