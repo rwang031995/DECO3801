@@ -64,13 +64,13 @@ const styles = StyleSheet.create({
   },
   buttonTitle: {
     fontFamily: 'PressStart2P',
-    color: 'darkorange',
+    color: 'darkgreen',
     fontSize: 16,
     fontWeight: "bold"
   },
   button: {
       flex: 1,
-      backgroundColor: 'darkgreen',
+      backgroundColor: 'limegreen',
       height: 48,
       margin: 'auto',
       maxHeight: 48,
