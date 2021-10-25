@@ -134,7 +134,6 @@ const ChallengesScreen = ({navigation}) => {
       challenges: challengesTemp
     });
     firebase.firestore().collection("users").doc(uid).update({
-        
     });
   }
 

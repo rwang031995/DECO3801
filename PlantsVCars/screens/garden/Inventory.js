@@ -6,11 +6,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {img} from "../../images/manifest"
 
 const Inventory = (props) => {
-    // state declarations
-    const [water, setWater] = useState(false);
-    const [sun, setSun] = useState(false);
-    const [fertilizer, setFertilizer] = useState(false);
-    const [shovel, setShovel] = useState(false);
 
     // visual
     return (
@@ -20,19 +15,19 @@ const Inventory = (props) => {
                     // remove currency
                     if (props.interaction != "Water") {
                         props.setInteraction("Water");
-                        setWater(true);
-                        setSun(false);
-                        setFertilizer(false);
-                        setShovel(false);
+                        props.setWater(true);
+                        props.setSun(false);
+                        props.setFertilizer(false);
+                        props.setShovel(false);
                     } else {
                         props.setInteraction("None");
-                        setWater(false);
-                        setSun(false);
-                        setFertilizer(false);
-                        setShovel(false);
+                        props.setWater(false);
+                        props.setSun(false);
+                        props.setFertilizer(false);
+                        props.setShovel(false);
                     }
                 }}>
-                    {water ? 
+                    {props.water ? 
                     <View>
                         {img({name: "WaterOutlined", style:styles.itemIcon})}
                     </View>:
@@ -46,19 +41,19 @@ const Inventory = (props) => {
                     // remove currency
                     if (props.interaction != "Sun") {
                         props.setInteraction("Sun");
-                        setWater(false);
-                        setSun(true);
-                        setFertilizer(false);
-                        setShovel(false);
+                        props.setWater(false);
+                        props.setSun(true);
+                        props.setFertilizer(false);
+                        props.setShovel(false);
                     } else {
                         props.setInteraction("None");
-                        setWater(false);
-                        setSun(false);
-                        setFertilizer(false);
-                        setShovel(false);
+                        props.setWater(false);
+                        props.setSun(false);
+                        props.setFertilizer(false);
+                        props.setShovel(false);
                     }
                 }}>
-                    {sun ? 
+                    {props.sun ? 
                     <View>
                         {img({name: "SunlightOutlined", style:styles.itemIcon})}
                     </View>:
@@ -72,19 +67,19 @@ const Inventory = (props) => {
                     // remove currency
                     if (props.interaction != "Fertilizer") {
                         props.setInteraction("Fertilizer");
-                        setWater(false);
-                        setSun(false);
-                        setFertilizer(true);
-                        setShovel(false);
+                        props.setWater(false);
+                        props.setSun(false);
+                        props.setFertilizer(true);
+                        props.setShovel(false);
                     } else {
                         props.setInteraction("None");
-                        setWater(false);
-                        setSun(false);
-                        setFertilizer(false);
-                        setShovel(false);
+                        props.setWater(false);
+                        props.setSun(false);
+                        props.setFertilizer(false);
+                        props.setShovel(false);
                     }
                 }}>
-                    {fertilizer ? 
+                    {props.fertilizer ? 
                     <View>
                         {img({name: "FertiliserOutlined", style:styles.itemIcon})}
                     </View>:
@@ -98,19 +93,19 @@ const Inventory = (props) => {
                     // remove currency
                     if (props.interaction != "Shovel") {
                         props.setInteraction("Shovel");
-                        setWater(false);
-                        setSun(false);
-                        setFertilizer(false);
-                        setShovel(true);
+                        props.setWater(false);
+                        props.setSun(false);
+                        props.setFertilizer(false);
+                        props.setShovel(true);
                     } else {
                         props.setInteraction("None");
-                        setWater(false);
-                        setSun(false);
-                        setFertilizer(false);
-                        setShovel(false);
+                        props.setWater(false);
+                        props.setSun(false);
+                        props.setFertilizer(false);
+                        props.setShovel(false);
                     }
                 }}>
-                    {shovel ? 
+                    {props.shovel ? 
                     <View>
                         {img({name: "ShovelOutlined", style:styles.itemIcon})}
                     </View>:

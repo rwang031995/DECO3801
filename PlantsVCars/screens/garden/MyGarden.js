@@ -12,6 +12,7 @@ import ImageZoom from 'react-native-image-pan-zoom'
 import Inventory from "./Inventory";
 import {img} from "../../images/manifest"
 import { useEffect } from "react/cjs/react.development";
+import { set } from "react-native-reanimated";
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
 
 var date = new Date();
@@ -99,10 +100,13 @@ const MyGarden = ({navigation}) => {
     {name: "TulipFlower", health: 0}
   ]);
   const [gardenHealth, setGardenHealth] = useState(0);
-  const [interaction, setInteraction] = useState(0);
   const [healthModifier, setHealthModifier] = useState(1);
   const [currency, setCurrency] = useState(100);
-  
+  const [interaction, setInteraction] = useState(0);
+  const [water, setWater] = useState(false);
+  const [sun, setSun] = useState(false);
+  const [fertilizer, setFertilizer] = useState(false);
+  const [shovel, setShovel] = useState(false);
   const uid = useContext(userId);
 
   /**
@@ -119,19 +123,29 @@ const MyGarden = ({navigation}) => {
     ]);
   }
 
+  const deselectAll = () => {
+    setWater(false);
+    setSun(false);
+    setFertilizer(false);
+    setShovel(false);
+  }
+
   const useOnFlower = (index) => {
     switch (interaction) {
       case "Water":
         changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
-        console.log("water is used");
+        setInteraction("None");
+        deselectAll();
         break;
       case "Fertilizer":
         setHealthModifier(2);
-        console.log("Fertilizer is used");
+        setInteraction("None");
+        deselectAll();
         break;
       case "Sun":
         changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
-        console.log("Sun is used");
+        setInteraction("None");
+        deselectAll();
         break;
     }
   }
@@ -154,18 +168,21 @@ const MyGarden = ({navigation}) => {
     }
   }
   
-  const loadCurrency = async () => {
-    if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
-      firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
-        setCurrency(doc.data().currency);
-      })
+    const loadCurrency = async () => {
+      if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
+        firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
+          setCurrency(doc.data().currency);
+        })
+      } else {
+        setCurrency(0);
+      }
     }
-  }
-
-  useEffect(() => {
-    loadFlowers();
-    loadCurrency();
-  }, [])
+  
+    useEffect(() => {
+      loadFlowers();
+      loadCurrency();
+    }, [])
+  
   
   var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -282,7 +299,9 @@ const MyGarden = ({navigation}) => {
         <View style={{ height:"18%", justifyContent: 'center'}}>
         <ImageBackground source={require('../../images/bg/table.png')} 
           style={{width:"100%", height:"100%", flexDirection:"row"}} resizeMode="stretch">    
-            <Inventory setInteraction={setInteraction} />
+            <Inventory setInteraction={setInteraction} interaction={interaction} setWater={setWater} water={water} 
+            setSun={setSun} sun={sun} setFertilizer={setFertilizer} fertilizer={fertilizer} setShovel={setShovel} shovel={shovel}
+            />
         </ImageBackground>
         </View>
     </View>
