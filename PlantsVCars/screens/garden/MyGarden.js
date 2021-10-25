@@ -123,6 +123,9 @@ const MyGarden = ({navigation}) => {
     ]);
   }
 
+  const subtractCost = (number) => {
+  }
+
   const deselectAll = () => {
     setWater(false);
     setSun(false);
@@ -134,16 +137,19 @@ const MyGarden = ({navigation}) => {
     switch (interaction) {
       case "Water":
         changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
+        subtractCost(50);
         setInteraction("None");
         deselectAll();
         break;
       case "Fertilizer":
         setHealthModifier(2);
+        subtractCost(50);
         setInteraction("None");
         deselectAll();
         break;
       case "Sun":
         changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
+        subtractCost(50);
         setInteraction("None");
         deselectAll();
         break;
