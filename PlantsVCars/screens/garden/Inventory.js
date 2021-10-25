@@ -140,8 +140,8 @@ const styles = StyleSheet.create({
     },
     pricing: {
         position: 'absolute',
-        paddingTop: 75,
-        fontSize: 16,
+        paddingTop: '70%',
+        fontSize: 14,
         fontFamily: 'PressStart2P',
         color: 'yellow',
         fontWeight: "bold"
