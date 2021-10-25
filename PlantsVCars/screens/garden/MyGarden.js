@@ -64,13 +64,13 @@ const styles = StyleSheet.create({
   }, 
   buttonTitle: {
     fontFamily: 'PressStart2P',
-    color: 'darkorange',
+    color: 'darkgreen',
     fontSize: 14,
     fontWeight: "bold"
   },
   button: {
       flex: 1,
-      backgroundColor: 'darkgreen',
+      backgroundColor: 'limegreen',
       margin: 'auto',
       height: 48,
       maxWidth: '50%',
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
       fontSize: 12,
       fontWeight: "bold",
       position:'absolute', 
-      paddingLeft:40, 
-      paddingTop:120
+      paddingLeft:'30%', 
+      paddingTop:'75%'
     }
 
 })
@@ -286,11 +286,11 @@ const MyGarden = ({navigation}) => {
               <Text style={styles.buttonTitle}>Collection</Text>
             </TouchableOpacity>
             <View style={{marginTop: "2%"}}>
-              <Text style={[styles.buttonTitle, {fontSize: 20, color: 'cyan'}]}>
+              <Text style={[styles.buttonTitle, {fontSize: 18, color: 'cyan'}]}>
                 ♥{gardenHealth}</Text>
             </View>
             <View style={{marginTop: "2%"}}>
-              <Text style={[styles.buttonTitle, {fontSize: 20, color: 'yellow'}]}>
+              <Text style={[styles.buttonTitle, {fontSize: 18, color: 'yellow'}]}>
                 ${currency}</Text>
             </View>
           </ImageBackground>
