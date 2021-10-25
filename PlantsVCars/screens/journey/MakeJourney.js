@@ -8,7 +8,7 @@ import MapView, {Marker} from 'react-native-maps';
 import * as Geography from "./Geography";
 import userId from '../home/userId';
 import {firebase, updateCurrencyBalance} from "../settings/Firebase";
-import {isCompleted, Reward, ChallengeOptions} from "../challenges/Challenges";
+import {isCompleted, Reward, ChallengeOptions, scaleReward} from "../challenges/Challenges";
 
 
 const styles = StyleSheet.create({
@@ -240,11 +240,10 @@ const JourneyStartScreen = ({ navigation }) => {
         let result = null;
         for (let i = 0; i < challenges.length; i++) {
             // console.log("Considering", challengesTemp[i]);
-          if ((challengesTemp[i].mode == mode) /*&& 
-                (challengesTemp[i].completed != isCompleted[1]) */ ) {
+          if ((challengesTemp[i].mode == mode) && (challengesTemp[i].completed != isCompleted[1]) ) {
             challengesTemp[i].completed = isCompleted[1];
             result = challengesTemp[i];
-            break
+            break;
           }
         }
         setChallenges(challengesTemp);
@@ -268,6 +267,7 @@ const JourneyStartScreen = ({ navigation }) => {
           }
           setStatus(status);
         })();
+        loadChallenges();
       }, []);
       
     
@@ -286,6 +286,7 @@ const JourneyStartScreen = ({ navigation }) => {
                         style = {styles.map}
                         showsUserLocation = {true}
                         pitchEnabled = {false}
+                        rotateEnabled = {false}
                 />
             <ImageBackground source={require('../../images/bg/challengesbg.png')} style={styles.row}> 
                 <TouchableOpacity
@@ -302,7 +303,7 @@ const JourneyStartScreen = ({ navigation }) => {
                         }
                     }}
                 >
-                {img({name: "BusIcon", style:styles.itemIcon}) /*TODO: bus */}
+                {img({name: "BusIcon", style:styles.itemIcon})}
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -319,7 +320,7 @@ const JourneyStartScreen = ({ navigation }) => {
                         }
                     }}
                 >
-                {img({name: "TrainIcon", style:styles.itemIcon}) /*TODO: train */ }
+                {img({name: "TrainIcon", style:styles.itemIcon}) }
                 </TouchableOpacity>
                 <TouchableOpacity
                     style = {styles.itemIcon} // need this to be set
@@ -344,7 +345,7 @@ const JourneyStartScreen = ({ navigation }) => {
                         setTripType("bike");
                     }}
                 >
-                {img({name: "BikeIcon", style:styles.itemIcon}) /*TODO: bike */ }
+                {img({name: "BikeIcon", style:styles.itemIcon})}
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -356,7 +357,7 @@ const JourneyStartScreen = ({ navigation }) => {
                         setTripType("scooter");
                     }}
                 >
-                {img({name: "ScooterIcon", style:styles.itemIcon}) /*TODO: scooter */ }
+                {img({name: "ScooterIcon", style:styles.itemIcon})}
                 </TouchableOpacity>
 
                 <View style={styles.itemIcon}>
@@ -411,7 +412,10 @@ const JourneyStartScreen = ({ navigation }) => {
                             setEndLocation(null);                                    
                             return;
                         }
-                                                
+
+                        let reward = scaleReward(dist_m, tripType);
+                        await updateCurrencyBalance(uid, reward);                
+
                         // update challenge?
                         await loadChallenges();
                         // console.log("Challenges available?");
@@ -424,7 +428,8 @@ const JourneyStartScreen = ({ navigation }) => {
                             setStartLocation(null);
                             setEndLocation(null);
                             await updateCurrencyBalance(uid, result.reward);                                    
-                            navigation.navigate('Challenge Completed', {"tripType": tripType, "result": result});                    
+                            navigation.navigate('Challenge Completed', 
+                                {"tripType": tripType, "result": result, 'standardReward': reward});                    
                         } else {
                             console.log("No challenge completed this trip.")
                         }
@@ -436,6 +441,8 @@ const JourneyStartScreen = ({ navigation }) => {
         </View>
         )
     } else if (endLocation !== null) {
+        let distance = Geography.distanceApproxDevice(startLocation, endLocation);
+        let reward = scaleReward(distance, tripType);
         return (        
             <View style={styles.container}>
                 <MapView 
@@ -463,7 +470,7 @@ const JourneyStartScreen = ({ navigation }) => {
                             setStartLocation(null);
                             setEndLocation(null);                                                    
                         }}>
-                        <Text style={styles.buttonTitle}>{distanceFormat(Geography.distanceApproxDevice(startLocation, endLocation))}</Text>
+                        <Text style={styles.buttonTitle}>{distanceFormat(distance)} and ${reward}!</Text>
                     </TouchableOpacity>
                 </ImageBackground>
             </View>
@@ -488,7 +495,7 @@ const ChallengeCompletedScreen = ({ navigation, route}) => {
         <View style={styles.container}>
             <Text style={styles.label}>{route.params.result.challenge}</Text>
             {img({name: imageNameSelect(route.params.tripType), style:{width: "100%"}})}
-            <Text style={[styles.buttonTitle, {color: 'yellow'}]}>You earned ${route.params.result.reward}!</Text>
+            <Text style={[styles.buttonTitle, {color: 'yellow'}]}>You earned ${route.params.result.reward + route.params.standardReward}!</Text>
         </View>
         </ImageBackground>
     );
