@@ -83,7 +83,7 @@ const MyGarden = ({navigation}) => {
   const [interaction, setInteraction] = useState(0);
   const [healthModifier, setHealthModifier] = useState(1);
   const [currency, setCurrency] = useState(100);
-  const [averageHealth, setAverageHealth] = useState(0);
+  
   const uid = useContext(userId);
 
   /**
@@ -104,21 +104,16 @@ const MyGarden = ({navigation}) => {
     switch (interaction) {
       case "Water":
         changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
+        console.log("water is used");
         break;
       case "Fertilizer":
         setHealthModifier(2);
+        console.log("Fertilizer is used");
         break;
       case "Sun":
         changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
+        console.log("Sun is used");
         break;
-      default:
-        Alert.alert(
-          "Buy a Resource First",
-          "Buy a resource by tapping one below.",
-          [
-            { text: "OK", onPress: () => console.log("OK Pressed") }
-          ]
-        );
     }
   }
 
@@ -212,6 +207,8 @@ const MyGarden = ({navigation}) => {
     }
   }, [interaction]) 
 
+  console.log(interaction);
+
   return (  
     <View style={{flex: 1}}>  
       <View style={{
@@ -265,7 +262,7 @@ const MyGarden = ({navigation}) => {
       </View> 
         <View style={{ height:"18%", justifyContent: 'center'}}>
         <ImageBackground source={require('../../images/bg/table.png')} style={{width:"100%", height:"100%", flexDirection:"row"}} resizeMode="stretch">    
-            <Inventory setInteraction={setInteraction} />
+            <Inventory setInteraction={setInteraction} interaction = {interaction}/>
         </ImageBackground>
         </View>
     </View>

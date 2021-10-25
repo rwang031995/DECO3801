@@ -5,66 +5,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {img} from "../../images/manifest"
 
-const ITEM_KEYS = {
-    itemWater: "@key_Water",
-    itemSun: "@key_Sun",
-    itemFertilizer: "@key_Fertilizer"
-}
-
 const Inventory = (props) => {
     // state declarations
-    const [water, setWater] = useState({});
-    const [sun, setSun] = useState({});
-    const [fertilizer, setFertilizer] = useState({});
-
-    const [currency, setCurrency] = useState(0);
-
-    // startup (only run on first render) LOOP IT!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    // this will check if keys are already stored and if they are, just recieve them
-    // otherwise, if key doesn't exist, store a new key with a default value
-    // ^^^ ABOVE IS KIND OF BROKEN WITH WIERD ERRORS LIKE UNDEFINED NAMES
-    useEffect(() => {
-        getItemData(ITEM_KEYS.itemWater).then( itemData => {
-            if (itemData == null) { // changed for current ersion due to errors
-                console.log("itemData for water: ", itemData)
-                const waterDefault = {name: "Water", cost: 50}
-                setItemData(ITEM_KEYS.itemWater, waterDefault)
-                setWater(waterDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
-            } else {
-                console.log("water exists\n")
-                setWater(itemData)
-            }      
-        });
-        getItemData(ITEM_KEYS.itemSun).then( itemData => {
-            if (itemData == null) { // changed for current ersion due to errors
-                const sunDefault = {name: "Sun", cost: 50}
-                setItemData(ITEM_KEYS.itemSun, sunDefault)
-                setSun(sunDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
-            } else {
-                console.log("sun exists\n")
-                setSun(itemData)
-            }    
-        });
-        getItemData(ITEM_KEYS.itemFertilizer).then( itemData => {
-            if (itemData == null) { // changed for current ersion due to errors
-                const fertilizerDefault = {name: "Fertilizer", cost: 100}
-                setItemData(ITEM_KEYS.itemFertilizer, fertilizerDefault)
-                setFertilizer(fertilizerDefault) // keep async storage and state storage seperate???? maybe better for debugging?????
-            } else {
-                console.log("fertilizer exists\n")
-                setFertilizer(itemData)
-            }    
-        });
-    }, []);
-
-    // on data change (when buttons are pressed)
-    useEffect(() => {
-        console.log("updating items")
-        console.log(water);
-        setItemData(ITEM_KEYS.itemWater, water);
-        setItemData(ITEM_KEYS.itemFertilizer, fertilizer);
-        setItemData(ITEM_KEYS.itemSun, sun);
-    }, [water, sun, fertilizer]);
+    const [water, setWater] = useState(false);
+    const [sun, setSun] = useState(false);
+    const [fertilizer, setFertilizer] = useState(false);
+    const [shovel, setShovel] = useState(false);
 
     // visual
     return (
@@ -72,60 +18,109 @@ const Inventory = (props) => {
             <>
                 <TouchableOpacity style={styles.elements} onPress={() => {
                     // remove currency
-                    props.setInteraction("Water");
+                    if (props.interaction != "Water") {
+                        props.setInteraction("Water");
+                        setWater(true);
+                        setSun(false);
+                        setFertilizer(false);
+                        setShovel(false);
+                    } else {
+                        props.setInteraction("None");
+                        setWater(false);
+                        setSun(false);
+                        setFertilizer(false);
+                        setShovel(false);
+                    }
                 }}>
-                    {img({name: "Water", style:styles.itemIcon})}
+                    {water ? 
+                    <View>
+                        {img({name: "WaterOutlined", style:styles.itemIcon})}
+                    </View>:
+                    <View>
+                        {img({name: "Water", style:styles.itemIcon})}
+                    </View>}
                 </TouchableOpacity>
             </>
             <>
-                
                 <TouchableOpacity style={styles.elements} onPress={() => {
                     // remove currency
-                    props.setInteraction("Sun");
+                    if (props.interaction != "Sun") {
+                        props.setInteraction("Sun");
+                        setWater(false);
+                        setSun(true);
+                        setFertilizer(false);
+                        setShovel(false);
+                    } else {
+                        props.setInteraction("None");
+                        setWater(false);
+                        setSun(false);
+                        setFertilizer(false);
+                        setShovel(false);
+                    }
                 }}>
-                    {img({name: "Sunlight", style:styles.itemIcon})}
+                    {sun ? 
+                    <View>
+                        {img({name: "SunlightOutlined", style:styles.itemIcon})}
+                    </View>:
+                    <View>
+                        {img({name: "Sunlight", style:styles.itemIcon})}
+                    </View>}
                 </TouchableOpacity>
             </>
             <>
-                
                 <TouchableOpacity style={styles.elements} onPress={() => {
                     // remove currency
-                    props.setInteraction("Fertilizer");
+                    if (props.interaction != "Fertilizer") {
+                        props.setInteraction("Fertilizer");
+                        setWater(false);
+                        setSun(false);
+                        setFertilizer(true);
+                        setShovel(false);
+                    } else {
+                        props.setInteraction("None");
+                        setWater(false);
+                        setSun(false);
+                        setFertilizer(false);
+                        setShovel(false);
+                    }
                 }}>
-                    {img({name: "Fertiliser", style:styles.itemIcon})}
+                    {fertilizer ? 
+                    <View>
+                        {img({name: "FertiliserOutlined", style:styles.itemIcon})}
+                    </View>:
+                    <View>
+                        {img({name: "Fertiliser", style:styles.itemIcon})}
+                    </View>}
                 </TouchableOpacity>
             </>
             <>
-                
                 <TouchableOpacity style={styles.elements} onPress={() => {
                     // remove currency
-                    props.setInteraction("Shovel");
+                    if (props.interaction != "Shovel") {
+                        props.setInteraction("Shovel");
+                        setWater(false);
+                        setSun(false);
+                        setFertilizer(false);
+                        setShovel(true);
+                    } else {
+                        props.setInteraction("None");
+                        setWater(false);
+                        setSun(false);
+                        setFertilizer(false);
+                        setShovel(false);
+                    }
                 }}>
-                    {img({name: "Shovel", style:styles.itemIcon})}
+                    {shovel ? 
+                    <View>
+                        {img({name: "ShovelOutlined", style:styles.itemIcon})}
+                    </View>:
+                    <View>
+                        {img({name: "Shovel", style:styles.itemIcon})}
+                    </View>}
                 </TouchableOpacity>
             </>
         </>
     );
-}
-
-// fetching item data
-const getItemData = async (key) => {
-    try {
-        const jsonValue = await AsyncStorage.getItem(key);
-        return JSON.parse(jsonValue);
-    } catch (e) {
-        console.log("Failed to fetch item. Key: " + key);
-    }
-}
-
-// setting item data
-const setItemData = async (key, value) => {
-    try {
-        const jsonValue = JSON.stringify(value)
-        return await AsyncStorage.setItem(key, jsonValue)
-    } catch (e) {
-        console.log("Failed to set item. Key: " + key);
-    }
 }
 
 const styles = StyleSheet.create({
