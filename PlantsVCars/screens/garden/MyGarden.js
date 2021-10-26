@@ -135,21 +135,21 @@ const MyGarden = ({navigation}) => {
       newHealth = 0;
     }
     let newFlower = {name: newName, health: newHealth}
-    var newFlowerSeating = [
+    let newFlowerSeating = [
       ...flowerSeating.slice(0, index),
       newFlower,
       ...flowerSeating.slice(index + 1)
     ]
     firebase.firestore().collection("users").doc(uid).update({
       flowers: newFlowerSeating,
-    })
+    }).then()
   }
 
   const subtractCost = (number) => {
-    var newAmount = currency - number;
+    let newAmount = currency - number;
     firebase.firestore().collection("users").doc(uid).update({
       currency: newAmount,
-    });
+    }).then();
   }
 
   const deselectAll = () => {
@@ -165,7 +165,7 @@ const MyGarden = ({navigation}) => {
         if (currency >= 10) {
           changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (10 * healthModifier));
           subtractCost(10);
-          updateHealth();
+          updateHealth(true);
         } else (
           alert("Not enough funds")
         )
@@ -186,7 +186,7 @@ const MyGarden = ({navigation}) => {
         if (currency >= 40) {
           changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (50 * healthModifier));
           subtractCost(40);
-          updateHealth();
+          updateHealth(true);
         } else (
           alert("Not enough funds")
         )
@@ -197,14 +197,14 @@ const MyGarden = ({navigation}) => {
   }
 
   const checkTime = () => {
-    var currentHour = moment().startOf("hour");
+    let currentHour = moment().startOf("hour");
     firebase.firestore().collection("users").doc(uid).get().then((doc) => {
-      var recordedHour = moment().startOf("hour");
-      var databaseTime = doc.data().recordedTime
-      var databaseTimeString = databaseTime.substring(1, databaseTime.length - 1);
+      let recordedHour = moment().startOf("hour");
+      let databaseTime = doc.data().recordedTime
+      let databaseTimeString = databaseTime.substring(1, databaseTime.length - 1);
       recordedHour = moment(databaseTimeString);
-      var hourChange = moment.duration(currentHour.diff(recordedHour)).asHours();
-      var garden = doc.data().flowers;
+      let hourChange = moment.duration(currentHour.diff(recordedHour)).asHours();
+      let garden = doc.data().flowers;
       if (hourChange > 0) {
         for (let i = 0; i < garden.length; i++) {
           if (garden[i].health - hourChange < 0) {
@@ -218,7 +218,7 @@ const MyGarden = ({navigation}) => {
       firebase.firestore().collection("users").doc(uid).update({
         recordedTime: JSON.stringify(currentHour),
         flowers: garden,
-      })
+      }).then()
     })
 
   }
@@ -226,21 +226,42 @@ const MyGarden = ({navigation}) => {
   useEffect(() => {
     const interval = setInterval(() => {
       checkTime();
-      updateHealth();
+      updateHealth(false);
     }, 500)
     return () => clearInterval(interval)
   }, []);
 
-  const updateHealth = () => {
+  /**
+   * Update the health
+   * @param updateLeaderboard
+   */
+  const updateHealth = (updateLeaderboard) => {
     firebase.firestore().collection("users").doc(uid).get().then((doc) => {
-      var sum = 0;
+      let sum = 0;
       for (let i = 0; i < flowerSeating.length; i++) {
         sum = sum + doc.data().flowers[i].health
       }
-      setGardenHealth(Math.ceil(sum/flowerSeating.length));
+      /* Add score to suburb */
+      let finalSum = Math.ceil(sum / flowerSeating.length)
+      if (updateLeaderboard) {
+        firebase.firestore().collection("users").doc(uid).get().then(
+          doc => {
+            const leaderboardDb = firebase.firestore().collection("leaderboard").doc(doc.data().suburb)
+            leaderboardDb.get().then(
+              doc => {
+                leaderboardDb.update({
+                  score: doc.data().score + finalSum - gardenHealth
+                }).then()
+              }
+            )
+          }
+        )
+      }
+      setGardenHealth(finalSum);
     })
   }
-  /**
+
+      /**
    * Database functions for flowers and currency
    */
   const loadFlowers = async () => {
@@ -249,7 +270,7 @@ const MyGarden = ({navigation}) => {
         setFlowerSeating(doc.data().flowers);
       });
     }
-    updateHealth();
+    updateHealth(false);
   }
   
   const loadCurrency = async () => {
@@ -263,12 +284,12 @@ const MyGarden = ({navigation}) => {
   }
   
   useEffect(() => {
-    loadFlowers();
-    loadCurrency();
+    loadFlowers().then();
+    loadCurrency().then();
   }, [])
   
 
-  var seasonBG = (
+  let seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
         {img({name: season+"-top", style: styles.bgTile})}
         {img({name: season+"-duck", style: styles.bgTile})}
