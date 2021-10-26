@@ -105,23 +105,31 @@ const MyGarden = ({navigation}) => {
   }
 
   const useOnFlower = (index) => {
-    switch (interaction) {
-      case "Water":
-        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
-        break;
-      case "Fertilizer":
-        setHealthModifier(2);
-        break;
-      case "Sun":
-        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
-      default:
-        Alert.alert(
-          "Buy a Resource First",
-          "Buy a resource by tapping one below.",
-          [
-            { text: "OK", onPress: () => console.log("OK Pressed") }
-          ]
-        );
+    if (flowerSeating[index].name == "Barren") {
+        navigation.navigate("My Collection");
+    } else {
+      switch (interaction) {
+        case "Water":
+          changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
+          break;
+        case "Fertilizer":
+          setHealthModifier(2);
+          break;
+        case "Sun":
+          changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (5 * healthModifier));
+          break;
+        case "Shovel":
+          changeFlower(index, "Barren", 0)
+          break;
+        default:
+          Alert.alert(
+            "Buy a Resource First",
+            "Buy a resource by tapping one below.",
+            [
+              { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+          );
+      }
     }
   }
   
