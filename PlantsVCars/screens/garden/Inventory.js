@@ -34,7 +34,7 @@ const Inventory = (props) => {
                     <View>
                         {img({name: "Water", style:styles.itemIcon})}
                     </View>}
-                    <Text style={styles.pricing}> -$20</Text>
+                    <Text style={styles.pricing}> -$10</Text>
                 </TouchableOpacity>
             </>
             <>
@@ -61,7 +61,7 @@ const Inventory = (props) => {
                     <View>
                         {img({name: "Sunlight", style:styles.itemIcon})}
                     </View>}
-                    <Text style={styles.pricing}> -$80</Text>
+                    <Text style={styles.pricing}> -$40</Text>
                 </TouchableOpacity>
             </>
             <>
@@ -88,7 +88,7 @@ const Inventory = (props) => {
                     <View>
                         {img({name: "Fertiliser", style:styles.itemIcon})}
                     </View>}
-                    <Text style={styles.pricing}> -$40</Text>
+                    <Text style={styles.pricing}> -$20</Text>
                 </TouchableOpacity>
             </>
             <>

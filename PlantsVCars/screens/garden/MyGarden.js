@@ -1,15 +1,9 @@
-import {
-  Dimensions,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import {Text, View, Button, Image, StyleSheet, Dimensions, TouchableOpacity, ImageBackground, Alert} from "react-native";
 import React, {useContext, useState} from "react";
+import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from '@react-navigation/stack';
 import userId from '../home/userId';
-import {firebase} from "../settings/Firebase"
+import {firebase, getFirebaseValue} from "../settings/Firebase"
 import moment from 'moment';
 
 
@@ -18,14 +12,14 @@ import ImageZoom from 'react-native-image-pan-zoom'
 
 import Inventory from "./Inventory";
 import {img} from "../../images/manifest"
-import {useEffect} from "react/cjs/react.development";
+import { useEffect } from "react/cjs/react.development";
+import { set } from "react-native-reanimated";
 
 
 const seasons = ["Summer", "Autumn", "Winter", "Spring"];
 
-let date = new Date();
-let season = seasons[Math.ceil((date.getMonth() + 1) / 4)]; // getMonth
-// returns month from 0 - 11
+var date = new Date();
+var season = seasons[Math.ceil((date.getMonth() + 1) / 4)]; // getMonth returns month from 0 - 11
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -66,12 +60,12 @@ const styles = StyleSheet.create({
   },
   hitBox: {
     height: "33%",
-    width: "33%",
+    width:"33%",
     borderStyle: "solid",
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
-  },
+  }, 
   buttonTitle: {
     fontFamily: 'PressStart2P',
     color: 'darkgreen',
@@ -79,26 +73,26 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   button: {
-    flex: 1,
-    backgroundColor: 'limegreen',
-    margin: 'auto',
-    height: 48,
-    maxWidth: '50%',
-    maxHeight: '80%',
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: 'center',
-    elevation: 999,
-  },
-  flowerbar: {
-    fontFamily: 'PressStart2P',
-    color: 'cyan',
-    fontSize: 12,
-    fontWeight: "bold",
-    maxHeight: '20%',
-    position: "absolute",
-    marginTop: '75%',
-  }
+      flex: 1,
+      backgroundColor: 'limegreen',
+      margin: 'auto',
+      height: 48,
+      maxWidth: '50%',
+      maxHeight: '80%',
+      borderRadius: 5,
+      alignItems: "center",
+      justifyContent: 'center',
+      elevation: 999,
+    },
+    flowerbar: {
+      fontFamily: 'PressStart2P',
+      color: 'cyan',
+      fontSize: 12,
+      fontWeight: "bold",
+      maxHeight: '20%',
+      position: "absolute",
+      marginTop: '75%',
+    }
 
 })
 
@@ -113,7 +107,7 @@ const MyGarden = ({navigation}) => {
   const [flowerSeating, setFlowerSeating] = useState([
     {name: "DandelionFlower", health: 0},
     {name: "RoseFlower", health: 0},
-    {name: "OrchidFlower", health: 0},
+    {name: "OrchidFlower", health:0},
     {name: "RoseFlower", health: 0},
     {name: "OrchidFlower", health: 0},
     {name: "TulipFlower", health: 0}
@@ -141,25 +135,21 @@ const MyGarden = ({navigation}) => {
       newHealth = 0;
     }
     let newFlower = {name: newName, health: newHealth}
-    let newFlowerSeating = [
+    var newFlowerSeating = [
       ...flowerSeating.slice(0, index),
       newFlower,
       ...flowerSeating.slice(index + 1)
     ]
     firebase.firestore().collection("users").doc(uid).update({
       flowers: newFlowerSeating,
-    }).then()
+    })
   }
 
   const subtractCost = (number) => {
-    if (currency < number) {
-      alert("Not enough coins")
-    } else {
-      let newAmount = currency - number;
-      firebase.firestore().collection("users").doc(uid).update({
-        currency: newAmount,
-      }).then();
-    }
+    var newAmount = currency - number;
+    firebase.firestore().collection("users").doc(uid).update({
+      currency: newAmount,
+    });
   }
 
   const deselectAll = () => {
@@ -172,22 +162,34 @@ const MyGarden = ({navigation}) => {
   const useOnFlower = (index) => {
     switch (interaction) {
       case "Water":
-        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (10 * healthModifier));
-        subtractCost(20);
-        updateHealth(true);
+        if (currency >= 10) {
+          changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (10 * healthModifier));
+          subtractCost(10);
+          updateHealth();
+        } else (
+          alert("Not enough funds")
+        )
         setInteraction("None");
         deselectAll();
         break;
       case "Fertilizer":
-        setHealthModifier(2);
-        subtractCost(20);
+        if (currency >= 20) {
+          setHealthModifier(2);
+          subtractCost(20);
+        } else (
+          alert("Not enough funds")
+        )
         setInteraction("None");
         deselectAll();
         break;
       case "Sun":
-        changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (50 * healthModifier));
-        subtractCost(80);
-        updateHealth(true);
+        if (currency >= 40) {
+          changeFlower(index, flowerSeating[index].name, flowerSeating[index].health + (50 * healthModifier));
+          subtractCost(40);
+          updateHealth();
+        } else (
+          alert("Not enough funds")
+        )
         setInteraction("None");
         deselectAll();
         break;
@@ -195,14 +197,14 @@ const MyGarden = ({navigation}) => {
   }
 
   const checkTime = () => {
-    let currentHour = moment().startOf("hour");
+    var currentHour = moment().startOf("hour");
     firebase.firestore().collection("users").doc(uid).get().then((doc) => {
-      let recordedHour = moment().startOf("hour");
-      let databaseTime = doc.data().recordedTime
-      let databaseTimeString = databaseTime.substring(1, databaseTime.length - 1);
+      var recordedHour = moment().startOf("hour");
+      var databaseTime = doc.data().recordedTime
+      var databaseTimeString = databaseTime.substring(1, databaseTime.length - 1);
       recordedHour = moment(databaseTimeString);
-      let hourChange = moment.duration(currentHour.diff(recordedHour)).asHours();
-      let garden = doc.data().flowers;
+      var hourChange = moment.duration(currentHour.diff(recordedHour)).asHours();
+      var garden = doc.data().flowers;
       if (hourChange > 0) {
         for (let i = 0; i < garden.length; i++) {
           if (garden[i].health - hourChange < 0) {
@@ -216,47 +218,26 @@ const MyGarden = ({navigation}) => {
       firebase.firestore().collection("users").doc(uid).update({
         recordedTime: JSON.stringify(currentHour),
         flowers: garden,
-      }).then()
+      })
     })
 
   }
-
+  
   useEffect(() => {
     const interval = setInterval(() => {
       checkTime();
-      updateHealth(false);
+      updateHealth();
     }, 500)
     return () => clearInterval(interval)
   }, []);
 
-  /**
-   * Update the health
-   * @param updateLeaderboard
-   */
-  const updateHealth = (updateLeaderboard) => {
+  const updateHealth = () => {
     firebase.firestore().collection("users").doc(uid).get().then((doc) => {
-      let sum = 0;
+      var sum = 0;
       for (let i = 0; i < flowerSeating.length; i++) {
         sum = sum + doc.data().flowers[i].health
       }
-      /* Add score to suburb */
-      let finalSum = Math.ceil(sum / flowerSeating.length)
-
-      if (updateLeaderboard) {
-        firebase.firestore().collection("users").doc(uid).get().then(
-          doc => {
-            const leaderboardDb = firebase.firestore().collection("leaderboard").doc(doc.data().suburb)
-            leaderboardDb.get().then(
-              doc => {
-                leaderboardDb.update({
-                  score: doc.data().score + finalSum - gardenHealth
-                }).then()
-              }
-            )
-          }
-        )
-      }
-      setGardenHealth(finalSum);
+      setGardenHealth(Math.ceil(sum/flowerSeating.length));
     })
   }
   /**
@@ -268,9 +249,9 @@ const MyGarden = ({navigation}) => {
         setFlowerSeating(doc.data().flowers);
       });
     }
-    updateHealth(false);
+    updateHealth();
   }
-
+  
   const loadCurrency = async () => {
     if ((await firebase.firestore().collection("users").doc(uid).get()).exists) {
       firebase.firestore().collection("users").doc(uid).onSnapshot(doc => {
@@ -280,32 +261,32 @@ const MyGarden = ({navigation}) => {
       setCurrency(0);
     }
   }
-
+  
   useEffect(() => {
-    loadFlowers().then();
-    loadCurrency().then();
+    loadFlowers();
+    loadCurrency();
   }, [])
+  
 
-
-  let seasonBG = (
+  var seasonBG = (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-      {img({name: season + "-top", style: styles.bgTile})}
-      {img({name: season + "-duck", style: styles.bgTile})}
+        {img({name: season+"-top", style: styles.bgTile})}
+        {img({name: season+"-duck", style: styles.bgTile})}
 
-      {img({name: season, style: styles.bgTile})}
-      {img({name: season, style: styles.bgTile})}
-      {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
 
-      {img({name: season, style: styles.bgTile})}
-      {img({name: season, style: styles.bgTile})}
-      {img({name: season, style: styles.bgTile})}
-      {img({name: season, style: styles.bgTile})}
-      {img({name: season, style: styles.bgTile})}
-      {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
+        {img({name: season, style: styles.bgTile})}
     </View>
   );
 
-  let plantsInGround = (
+  var plantsInGround = (
     // TODO: make this dynamic somehow
     <View style={{
       flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "60%",
@@ -338,46 +319,39 @@ const MyGarden = ({navigation}) => {
     </View>
   );
 
-  return (
-    <View style={{flex: 1}}>
+  return (  
+    <View style={{flex: 1}}>  
       <View style={{
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: "orange"
       }}>
-        <ImageBackground source={require('../../images/bg/table.png')}
-                         style={{
-                           flex: 1,
-                           width: "100%",
-                           height: "100%",
-                           alignItems: 'center',
-                           justifyContent: 'space-evenly',
-                           flexDirection: 'row'
-                         }}>
-          <TouchableOpacity style={styles.button}
-                            onPress={() => navigation.navigate("My Collection")}>
-            <Text style={styles.buttonTitle}>Collection</Text>
-          </TouchableOpacity>
-          <View style={{marginTop: "2%"}}>
-            <Text style={[styles.buttonTitle, {fontSize: 18, color: 'cyan'}]}>
-              ♥{gardenHealth}</Text>
-          </View>
-          <View style={{marginTop: "2%"}}>
-            <Text style={[styles.buttonTitle, {fontSize: 18, color: 'yellow'}]}>
-              ${currency}</Text>
-          </View>
-        </ImageBackground>
+          <ImageBackground source={require('../../images/bg/table.png')} 
+          style={{flex:1, width:"100%", height:"100%", alignItems: 'center', justifyContent: 'space-evenly', flexDirection: 'row'}}>   
+            <TouchableOpacity style={styles.button} 
+              onPress={() => navigation.navigate("My Collection")}>
+              <Text style={styles.buttonTitle}>Collection</Text>
+            </TouchableOpacity>
+            <View style={{marginTop: "2%"}}>
+              <Text style={[styles.buttonTitle, {fontSize: 18, color: 'cyan'}]}>
+                ♥{gardenHealth}</Text>
+            </View>
+            <View style={{marginTop: "2%"}}>
+              <Text style={[styles.buttonTitle, {fontSize: 18, color: 'yellow'}]}>
+                ${currency}</Text>
+            </View>
+          </ImageBackground>
         <View style={{flex: 6, backgroundColor: "lightgreen"}}>
 
           <ImageZoom cropWidth={windowWidth}
-                     cropHeight={windowHeight}
-                     imageWidth={windowWidth}
-                     imageHeight={windowHeight}
-                     minScale={1}
+                    cropHeight={windowHeight}
+                    imageWidth={windowWidth}
+                    imageHeight={windowHeight}
+                    minScale={1}
           >
-            {img({name: season + "-bg-animated", style: styles.overallBG})}
-            <View style={{position: "absolute", height: "100%", width: "100%"}}>
+            {img({name: season+"-bg-animated", style: styles.overallBG})}
+            <View style={{position:"absolute", height:"100%", width:"100%"}}>
               {plantsInGround}
             </View>
 
@@ -397,22 +371,15 @@ const MyGarden = ({navigation}) => {
           {/*</ImageZoom>*/}
 
         </View>
-      </View>
-      <View style={{height: "18%", justifyContent: 'center'}}>
-        <ImageBackground source={require('../../images/bg/table.png')}
-                         style={{
-                           width: "100%",
-                           height: "100%",
-                           flexDirection: "row"
-                         }} resizeMode="stretch">
-          <Inventory setInteraction={setInteraction} interaction={interaction}
-                     setWater={setWater} water={water}
-                     setSun={setSun} sun={sun} setFertilizer={setFertilizer}
-                     fertilizer={fertilizer} setShovel={setShovel}
-                     shovel={shovel}
-          />
+      </View> 
+        <View style={{ height:"18%", justifyContent: 'center'}}>
+        <ImageBackground source={require('../../images/bg/table.png')} 
+          style={{width:"100%", height:"100%", flexDirection:"row"}} resizeMode="stretch">    
+            <Inventory setInteraction={setInteraction} interaction={interaction} setWater={setWater} water={water} 
+            setSun={setSun} sun={sun} setFertilizer={setFertilizer} fertilizer={fertilizer} setShovel={setShovel} shovel={shovel}
+            />
         </ImageBackground>
-      </View>
+        </View>
     </View>
   );
 }
