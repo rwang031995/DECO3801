@@ -205,7 +205,7 @@ const MyGarden = ({navigation}) => {
   ]);
   const [gardenHealth, setGardenHealth] = useState(0);
   const [healthModifier, setHealthModifier] = useState(1);
-  const [currency, setCurrency] = useState(100);
+  const [currency, setCurrency] = useState(500);
   const [interaction, setInteraction] = useState("None");
   const [water, setWater] = useState(false);
   const [sun, setSun] = useState(false);
