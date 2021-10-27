@@ -1,135 +1,99 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, Button, Image, ImageBackground} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React, {useEffect, useState} from 'react';
+import {ImageBackground, LogBox, StyleSheet, Text, View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
 import {img} from "./images/manifest";
-import { createStackNavigator } from '@react-navigation/stack';
-import PvCLeaderboard from './screens/Leaderboard';
-import MyGardenNav from './screens/garden/MyGarden'
-import ChallengesScreen from './screens/Challenges';
-import SettingsNav from "./screens/settings/Settings";
+import {LoginPage} from "./screens/login/Login";
+import {createStackNavigator} from "@react-navigation/stack";
+import {RegistrationScreen} from "./screens/login/Registration";
+import {HomeScreen} from "./screens/home/Home";
+import {firebase} from "./screens/settings/Firebase"
+import userId from './screens/home/userId';
+import * as Font from 'expo-font';
+import * as Geography from "./screens/journey/Geography";
 
-const Tab = createBottomTabNavigator();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1, 
-    alignItems: 'center', 
-    justifyContent: 'center'
-  },
-  icon : {
-    width: 20,
-    height: 20,
-  },
-  
-  tinyLogo: {
-    width: 50,
-    height: 50,
-  },
-  
-  biigLogo: {
-    width: 200,
-    height: 200,
-  },
+const Stack = createStackNavigator()
 
-  flippy : {
-    width: 150,
-    height: 150,
-    borderRadius: 10,
-    margin: 10,
-  },
-  
-  row : {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    padding: 10,
-  },
-  bg : {
-    width: '100%',
-    height: '100%',
-  }
-})
-
-var images = [
-    {name: "Waves-in-Sea", style: styles.tinyLogo},
-    {name: "Waves-in-Sea", style: styles.tinyLogo},
-    {name: "Waves-in-Sea", style: styles.tinyLogo},
-    {name: "Waves-in-Sea", style: styles.flippy},
-    {name: "Waves-in-Sea", style: styles.biigLogo},
-    {name: "Waves-in-Sea", style: styles.tinyLogo},
-];
-
-console.log(images[0])
-
-var i0 = images[0]
-var i1 = images[1]
-var i2 = images[2]
-var i3 = images[3]
-var i4 = images[4]
-var i5 = images[5]
-
-i0.style = styles.biigLogo;
-
-const OurForest = (images) => {
-    return (
-    <View style={styles.container}>
-    <ImageBackground resizeMode="cover"
-        blurRadius={20}
-        source={require('./images/sub/Waves-in-Sea.jpg')}
-        style={styles.bg}>
-      <Text>This will be the suburb forest for multiplayer; currently showing off the fundamentals of a grid layout and background.</Text>
-      <View style={styles.row}>
-          {img(i0)}
-          {img(i1)}
-      </View>
-      <View style={styles.row}>
-          {img(i2)}
-          {img(i3)}
-      </View>
-      <View style={styles.row}>
-          {img(i4)}
-          {img(i5)}
-      </View>
-    </ImageBackground>
-    </View>
-    );
-}
 
 
 const App = () => {
-  return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route, }) => ({
-          tabBarIcon: ({image}) => {
-          if (route.name == 'My Garden') {
-            image = require('./images/icons/MyGardenIcon.png')
-          }
-          if (route.name == 'Our Forest') {
-            image = require('./images/icons/OurForestIcon.png')
-          }
-          if (route.name == 'Settings') {
-            image = require('./images/icons/SettingsIcon.png')
-          }          
-          if (route.name == 'Challenges') {
-            image = require('./images/icons/ChallengesIcon.png')
-          }
-          if (route.name == 'Leaderboard') {
-            image = require('./images/icons/LeaderboardIcon.png')
-          }
-          return (
-            <Image source={image} style={{width: 50, height:50}}/>
-          )}
+
+  /*
+  Code adapted from Code adapted from
+   https://www.freecodecamp.org/news/react-native-firebase-tutorial/
+  */
+
+  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState(null)
+  const [modalVisible, setModalVisible] = useState(false)
+
+  useEffect(() => {
+    const usersRef = firebase.firestore().collection('users');
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        usersRef
+          .doc(user.uid)
+          .get()
+          .then((doc) => {
+            setUser(doc.data())
+            setLoading(false)
+            if (doc.data().suburb === false) {
+              setModalVisible(true)
+            }
           })
-        }>
-        <Tab.Screen name="My Garden" component={MyGardenNav} />
-        <Tab.Screen name="Our Forest" component={OurForest} />
-        <Tab.Screen name={"Challenges"} component={ChallengesScreen} />
-        <Tab.Screen name="Leaderboard" component={PvCLeaderboard} />
-        <Tab.Screen name="Settings" component={SettingsNav} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
+          .catch((error) => {
+            setLoading(false)
+          });
+      } else {
+        setLoading(false)
+      }
+    });
+  
+    (async () => {
+      await Geography.prepareDatabase();
+      await Geography.prepareBusStops();
+      await Geography.prepareTrainStations();
+    })();
+
+  }, []);
+
+  let [fontsLoaded] = Font.useFonts({
+    'PressStart2P': require('./assets/fonts/PressStart2P-Regular.ttf')
+  });
+
+  if (loading || !fontsLoaded) {
+    return(
+      <></>
+    )
+  }
+
+  LogBox.ignoreLogs(["Setting a timer"])
+
+  if (user == null) {
+    return (
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'} screenOptions ={{headerShown: false}}>
+            <Stack.Screen name={"Home"} component={HomeScreen}/>
+            <Stack.Screen name={"Login"} component={LoginPage}/>
+            <Stack.Screen name={"Registration"} component={RegistrationScreen}/>
+          </Stack.Navigator>
+        </NavigationContainer>
+    );
+  } else {
+    return (
+      <userId.Provider value={user.id}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'} screenOptions ={{headerShown: false}}>
+            <Stack.Screen name={"Home"}>
+              {props => <HomeScreen {...props} extraData={user}/>}
+            </Stack.Screen>
+            <Stack.Screen name={"Login"} component={LoginPage}/>
+            <Stack.Screen name={"Registration"} component={RegistrationScreen}/>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </userId.Provider>
+    )
+  }
 }
 
 export default App;
