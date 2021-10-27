@@ -1,6 +1,12 @@
 import React, {useState} from "react";
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
-import {StyleSheet, TextInput, TouchableOpacity, ImageBackground} from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ImageBackground,
+  Alert
+} from "react-native";
 import {Text, View} from "react-native";
 import {img} from "../../images/manifest"
 import {firebase} from "../settings/Firebase";
@@ -86,7 +92,20 @@ export const RegistrationScreen = ({navigation}) => {
             alert(error)
           });
 
-          navigation.navigate('Home', {user: data})
+        navigation.navigate('Home', {user: data})
+
+        Alert.alert(
+          "Welcome!",
+          "Welcome to your journey in Plants Vs Cars. To learn how to play," +
+          " please visit the \"How to Play\" page in Settings at the" +
+          " bottom right.",
+          [
+            {
+              text: "OK!",
+              style: "cancel"
+            }
+          ]
+        )
       })
       .catch((error) => {
         alert(error)
