@@ -127,7 +127,7 @@ export const HomeScreen = (props) => {
       setSound(sound);
   
       console.log('Playing Sound');
-      await sound.setIsLoopingAsync();
+      await sound.setIsLoopingAsync(true);
       await sound.playAsync();
     }
   }
