@@ -258,12 +258,6 @@ const Settings = ({navigation}) => {
         )
       }
     },
-    { // comment out if not needed, but AJ's value got really messed up
-      title: "Reset Balance",
-      onPress: () => {
-        setFirebaseValue(uid, 'currency', 100);
-      }
-    },
     {
       title: "How to Play",
       onPress: () => {

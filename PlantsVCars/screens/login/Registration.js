@@ -55,7 +55,7 @@ export const RegistrationScreen = ({navigation}) => {
         const data = {
           id: uid,
           email,
-          currency: 100,
+          currency: 1000,
           flowers: [
             {name: "DandelionFlower", health: 0},
             {name: "RoseFlower", health: 0},
