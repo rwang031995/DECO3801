@@ -4,10 +4,11 @@ import ChallengesScreen from "../challenges/Challenges";
 import PvCLeaderboard from "../leadboard/Leaderboard";
 import SettingsNav from "../settings/Settings";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import React from "react";
+import React, {useEffect} from "react";
 import {img} from "../../images/manifest";
 import {firebase} from "../settings/Firebase"
 import JourneyScreen from '../journey/MakeJourney'
+import { Audio } from 'expo-av';
 
 
 const Tab = createBottomTabNavigator();
@@ -115,8 +116,37 @@ export const HomeScreen = (props) => {
   // const userID = props.extraData.id
   // console.log(props.extraData.id)
 
+  const [sound, setSound] = React.useState();
+
+  async function playSound() {
+    if (sound == undefined){
+      console.log('Loading Sound');
+      const { sound } = await Audio.Sound.createAsync(
+         require('../../assets/KawaiKitsuneLoop.mp3')
+      );
+      setSound(sound);
+  
+      console.log('Playing Sound');
+      await sound.setIsLoopingAsync();
+      await sound.playAsync();
+    }
+  }
+
+  // TODO: fix React going insane about this
+  /*
+  React.useEffect( (async () => {
+    if (sound == undefined) {
+      await playSound();
+    }
+    return sound.unloadAsync
+    })()
+    , [] ); // empty array for first-load
+    */ 
+
+
   return (
     <Tab.Navigator
+      onReady={playSound()}
       screenOptions={({route,}) => ({
         tabBarIcon: ({image}) => {
           if (route.name === 'My Garden') {
