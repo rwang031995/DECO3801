@@ -28,6 +28,10 @@ const SettingsNav = (props) => {
         name={"Configure Transport"}
         component={ConfigureTransport}
         options={{headerShown: false}}/>
+        <Stack.Screen
+          name={"Acknowledgements"}
+          component={Acknowledgements}
+          options={{headerShown: false}}/>
     </Stack.Navigator>
   )
 }
@@ -140,6 +144,27 @@ const SettingsComponent = ({settingsOptions,}) => {
   )
 }
 
+const Acknowledgements = ({navigation}) => {
+  return (
+    <View style={styles.container}>
+      <Text style={[styles.title, {fontSize: 32}]}>Acknowledgements</Text>
+      <Text></Text>
+      <Text style={styles.title}>Created with Expo and React Native</Text>
+      <Text></Text>
+      <Text style={styles.title}>Kawai Kitsune by Kevin MacLeod</Text>
+      <Text>https://www.incompetech.com/music/royalty-free/index.html?isrc=USUAN1500059</Text>
+      <Text>Licensed under Creative Commons: By Attribution 3.0 License</Text>
+      <Text>http://creativecommons.org/licenses/by/3.0/</Text>
+      <Text></Text>
+      <Text  style={styles.title}>Bus and Train stop data from TransLink SEQ GTFS</Text>
+      <Text>https://www.data.qld.gov.au/dataset/general-transit-feed-specification-gtfs-seq</Text>
+      <Text>Licensed under Creative Commons: By Attribution 4.0 License</Text>
+      <Text>http://creativecommons.org/licenses/by/4.0/</Text>
+    </View>
+  )
+
+}
+
 const Settings = ({navigation}) => {
   const uid = useContext(userId);
 
@@ -193,6 +218,10 @@ const Settings = ({navigation}) => {
       onPress: () => {
         setFirebaseValue(uid, 'currency', 100);
       }
+    },
+    {
+      title: "Acknowledgements",
+      onPress: () => {navigation.navigate("Acknowledgements")}
     }
   ];
 
