@@ -28,11 +28,56 @@ const SettingsNav = (props) => {
         name={"Configure Transport"}
         component={ConfigureTransport}
         options={{headerShown: false}}/>
-        <Stack.Screen
-          name={"Acknowledgements"}
-          component={Acknowledgements}
-          options={{headerShown: false}}/>
+      <Stack.Screen
+        name={"Acknowledgements"}
+        component={Acknowledgements}
+        options={{headerShown: false}}/>
+      <Stack.Screen
+        name={"Instructions"}
+        component={Instructions}
+        options={{headerShown: false}}
+        />
     </Stack.Navigator>
+  )
+}
+
+const Instructions = () => {
+  return(
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>
+        HOW TO PLAY
+      </Text>
+
+      <Text style={styles.instructionTitle}>{"\n"}Garden</Text>
+      <Text style={styles.instructionText}>
+        {"\n"}- The garden is where you can see and care for your plants. You begin with six plants in total.
+        {"\n"}{"\n"} - The number under each plant, next to the heart icon, represents their health. The number at the top right indicates the total health of the garden.
+        {"\n"}{"\n"}- To increase the health of your plants, select either the sun or
+        the water icons and select the plant you want to apply it to.
+        {"\n"}{"\n"}- Select the fertiliser icon and a plant to apply a health multiplier to that plant. This gives your water and sun a boost!
+        {"\n"}{"\n"}- Select the shovel icon and select a plant to remove it from your garden.
+        {"\n"}{"\n"}- The health of your garden contributes to the overall health of your suburb! You can view the leaderboard in the leaderboard tab.
+        {"\n"}{"\n"}
+      </Text>
+
+      <Text style={styles.instructionTitle}>{"\n"}Journey</Text>
+      <Text style={styles.instructionText}>
+        {"\n"}- You can view your current challenges from the challenges tab.
+        {"\n"}{"\n"}- To complete your challenge, select a mode of transport from the journey tab
+        and get going!
+        {"\n"}{"\n"}- Completing challenges gives you coins to spend on your garden.
+        {"\n"}{"\n"}
+      </Text>
+
+      <Text style={styles.instructionTitle}>{"\n"}Bonus Challenges </Text>
+      <Text style={styles.instructionText}>
+        {"\n"}- To complete your bonus challenges, select the "Take Quiz" button in the
+        challenges tab.
+        {"\n"}{"\n"}- There will be 3 questions to complete, based on our impact on the environment.
+        {"\n"}{"\n"}- Each correct answer grants you 60 coins!
+        {"\n"}{"\n"}
+      </Text>
+    </ScrollView>
   )
 }
 
@@ -220,6 +265,12 @@ const Settings = ({navigation}) => {
       }
     },
     {
+      title: "How to Play",
+      onPress: () => {
+        navigation.navigate("Instructions")
+      }
+    },
+    {
       title: "Acknowledgements",
       onPress: () => {navigation.navigate("Acknowledgements")}
     }
@@ -233,10 +284,14 @@ const Settings = ({navigation}) => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 18
+    fontSize: 14,
+    fontFamily: "PressStart2P"
   },
   subtitle: {
-    fontSize: 14, opacity: 0.5, paddingTop: 5
+    fontSize: 10,
+    opacity: 0.5,
+    paddingTop: 5,
+    fontFamily: "PressStart2P"
   },
   touchableOpacity: {
     flex: 1
@@ -252,6 +307,13 @@ const styles = StyleSheet.create({
   switch: {
     paddingTop: 40,
     marginLeft: "auto"
+  },
+  instructionTitle: {
+    fontFamily: "PressStart2P",
+    fontSize: 12
+  },
+  instructionText: {
+
   }
 });
 
