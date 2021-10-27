@@ -33,15 +33,76 @@ const MyGardenNav = () => {
                     options={{headerShown: false}}/>
       <Stack.Screen name="My Collection" component={MyCollection}
                     options={{headerShown: false}}/>
+      <Stack.Screen name="My Collection Selection" component={MyCollectionSelection}
+                    options={{headerShown: false}}/>
     </Stack.Navigator>
   )
 }
 
 const MyCollection = () => {
   return (
-    <View>
-      <Text> Collections page</Text>
-    </View>
+    <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
+      <View style={styles.flowerContainer}>
+          {img({name: "DandelionFlower", style: styles.inventoryFlower})}
+          {img({name: "OrchidFlower", style: styles.inventoryFlower})}
+          {img({name: "SunflowerFlower", style: styles.inventoryFlower})}
+          {img({name: "TulipFlower", style: styles.inventoryFlower})}
+          {img({name: "RoseFlower", style: styles.inventoryFlower})}
+      </View>
+    </ImageBackground>
+  )
+}
+
+const MyCollectionSelection = ({route, navigation}) => {
+  const {flowerIndex, flowerHealth, currentPos, user} = route.params;
+  console.log(currentPos)
+
+  const replaceFlower = (flowerName) => {
+    changeFlower(flowerIndex, flowerName, flowerHealth);
+    navigation.navigate("Garden");
+  }
+
+  const changeFlower = (index, newName, newHealth) => {
+    if (newHealth > 100) {
+      newHealth = 100;
+    } else if (newHealth < 0) {
+      newHealth = 0;
+    }
+    let newFlower = {name: newName, health: newHealth}
+    let newFlowerSeating = [
+      ...currentPos.slice(0, index),
+      newFlower,
+      ...currentPos.slice(index + 1)
+    ]
+    firebase.firestore().collection("users").doc(user).update({
+      flowers: newFlowerSeating,
+    }).then()
+  }
+
+  console.log(flowerIndex);
+  return (
+    <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
+      <View style={{
+        flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "60%",
+        justifyContent: "space-around", position: 'absolute', top: '20%'
+      }}>
+        <TouchableOpacity style={styles.hitBox} onPress={() => replaceFlower("DandelionFlower")}>
+          {img({name: "DandelionFlower", style: styles.plantTile})}
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.hitBox} onPress={() => replaceFlower("OrchidFlower")}>
+          {img({name: "OrchidFlower", style: styles.plantTile})}
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.hitBox} onPress={() => replaceFlower("SunflowerFlower")}>
+          {img({name: "SunflowerFlower", style: styles.plantTile})}
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.hitBox} onPress={() => replaceFlower("TulipFlower")}>
+          {img({name: "TulipFlower", style: styles.plantTile})}
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.hitBox} onPress={() => replaceFlower( "RoseFlower")}>
+          {img({name: "RoseFlower", style: styles.plantTile})}
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   )
 }
 
@@ -50,15 +111,31 @@ const styles = StyleSheet.create({
     width: "33%",
     height: "33%",
   },
+  inventoryFlower: {
+    width:'33%',
+    resizeMode: 'contain'
+  }, 
   plantTile: {
     height: "75%",
     width: "75%",
+  },
+  flowerContainer: {
+    flex: 0,
+    flexDirection: "row",
+    flexWrap: "wrap"
   },
   overallBG: {
     height: windowHeight,
     width: windowWidth
   },
   hitBox: {
+    height: "33%",
+    width:"33%",
+    borderStyle: "solid",
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  }, selectBox: {
     height: "33%",
     width:"33%",
     borderStyle: "solid",
@@ -115,12 +192,11 @@ const MyGarden = ({navigation}) => {
   const [gardenHealth, setGardenHealth] = useState(0);
   const [healthModifier, setHealthModifier] = useState(1);
   const [currency, setCurrency] = useState(100);
-  const [interaction, setInteraction] = useState(0);
+  const [interaction, setInteraction] = useState("None");
   const [water, setWater] = useState(false);
   const [sun, setSun] = useState(false);
   const [fertilizer, setFertilizer] = useState(false);
   const [shovel, setShovel] = useState(false);
-  const [currentTime, setCurrentTime] = useState(moment().startOf('hour'));
   const uid = useContext(userId);
 
   /**
@@ -192,6 +268,16 @@ const MyGarden = ({navigation}) => {
         )
         setInteraction("None");
         deselectAll();
+        break;
+      case "Shovel":
+        changeFlower(index, "Barren", flowerSeating[index].health)
+        setInteraction("None");
+        deselectAll();
+        break;
+      case "None":
+        if (flowerSeating[index].name == "Barren"){
+          navigation.navigate("My Collection Selection", {flowerIndex: index, flowerHealth: flowerSeating[index].health, currentPos: flowerSeating, user: uid});
+        }
         break;
     }
   }
@@ -304,6 +390,39 @@ const MyGarden = ({navigation}) => {
         {img({name: season, style: styles.bgTile})}
         {img({name: season, style: styles.bgTile})}
         {img({name: season, style: styles.bgTile})}
+    </View>
+  );
+
+  var plantsInGround = (
+    // TODO: make this dynamic somehow
+    <View style={{
+      flex: 0, flexDirection: 'row', flexWrap: 'wrap', height: "60%",
+      justifyContent: "space-around", position: 'absolute', top: '20%'
+    }}>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(0)}>
+        {img({name: flowerSeating[0].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[0].health}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(1)}>
+        {img({name: flowerSeating[1].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[1].health}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(2)}>
+        {img({name: flowerSeating[2].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[2].health}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(3)}>
+        {img({name: flowerSeating[3].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[3].health}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(4)}>
+        {img({name: flowerSeating[4].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[4].health}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.hitBox} onPress={() => useOnFlower(5)}>
+        {img({name: flowerSeating[5].name, style: styles.plantTile})}
+        <Text style={styles.flowerbar}>♥{flowerSeating[5].health}</Text>
+      </TouchableOpacity>
     </View>
   );
 
