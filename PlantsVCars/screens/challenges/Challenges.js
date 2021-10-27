@@ -15,6 +15,10 @@ const Stack = createStackNavigator();
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+/**
+ * ChallengeScreen navigation
+ */
+
 const ChallengesScreenNav = () => {
   return (
     <Stack.Navigator>
@@ -24,6 +28,10 @@ const ChallengesScreenNav = () => {
     </Stack.Navigator>
   )
 }
+
+/**
+ * Constants for challenge selection and image.
+ */
 
 export const isCompleted = ["Cross", "Tick"]
 

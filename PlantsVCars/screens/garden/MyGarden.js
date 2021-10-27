@@ -26,6 +26,10 @@ const windowHeight = Dimensions.get('window').height;
 
 const Stack = createStackNavigator();
 
+/**
+ * Navigation stack
+ */
+
 const MyGardenNav = () => {
   return (
     <Stack.Navigator>
@@ -38,6 +42,10 @@ const MyGardenNav = () => {
     </Stack.Navigator>
   )
 }
+
+/**
+ * Colletions page
+ */
 
 const MyCollection = () => {
   return (
@@ -53,9 +61,12 @@ const MyCollection = () => {
   )
 }
 
+/**
+ * Reinstating a flower selection page
+ */
+
 const MyCollectionSelection = ({route, navigation}) => {
   const {flowerIndex, flowerHealth, currentPos, user} = route.params;
-  console.log(currentPos)
 
   const replaceFlower = (flowerName) => {
     changeFlower(flowerIndex, flowerName, flowerHealth);
@@ -79,7 +90,6 @@ const MyCollectionSelection = ({route, navigation}) => {
     }).then()
   }
 
-  console.log(flowerIndex);
   return (
     <ImageBackground source={require('../../images/bg/challengesbg.png')} style={{flex:1, width:"100%", height:"100%"}}> 
       <View style={{
@@ -105,6 +115,10 @@ const MyCollectionSelection = ({route, navigation}) => {
     </ImageBackground>
   )
 }
+
+/**
+ * code styling for page.
+ */
 
 const styles = StyleSheet.create({
   bgTile: {
@@ -221,6 +235,9 @@ const MyGarden = ({navigation}) => {
     }).then()
   }
 
+/**
+ * reduce currency.
+ */
   const subtractCost = (number) => {
     let newAmount = currency - number;
     firebase.firestore().collection("users").doc(uid).update({
@@ -228,6 +245,9 @@ const MyGarden = ({navigation}) => {
     }).then();
   }
 
+/**
+ * Unselect all selected inventory items.
+ */
   const deselectAll = () => {
     setWater(false);
     setSun(false);
@@ -235,6 +255,9 @@ const MyGarden = ({navigation}) => {
     setShovel(false);
   }
 
+/**
+ * Use inventory item on flower
+ */
   const useOnFlower = (index) => {
     switch (interaction) {
       case "Water":
@@ -282,6 +305,9 @@ const MyGarden = ({navigation}) => {
     }
   }
 
+/**
+ * Reduces garden health since last logged hour.
+ */
   const checkTime = () => {
     let currentHour = moment().startOf("hour");
     firebase.firestore().collection("users").doc(uid).get().then((doc) => {
@@ -309,6 +335,9 @@ const MyGarden = ({navigation}) => {
 
   }
   
+/**
+ * Checks for time running.
+ */
   useEffect(() => {
     const interval = setInterval(() => {
       checkTime();
@@ -496,20 +525,6 @@ const MyGarden = ({navigation}) => {
             </View>
 
           </ImageZoom>
-
-          {/*<ImageZoom*/}
-          {/*  maxZoom={1.5}*/}
-          {/*  minZoom={1}*/}
-          {/*  initialZoom={1}*/}
-          {/*  bindToBorders={true}*/}
-          {/*>*/}
-          {/*    {img({name: season + "-bg", style: styles.overallBG})}*/}
-          {/*  <View style={{position:"absolute", height:"100%", width:"100%"}}>*/}
-          {/*    {plantsInGround}*/}
-          {/*  </View>*/}
-
-          {/*</ImageZoom>*/}
-
         </View>
       </View> 
         <View style={{ height:"18%", justifyContent: 'center'}}>
